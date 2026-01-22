@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/server';
 // POST /api/notes/[id]/like - Toggle like
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth();
@@ -17,6 +17,7 @@ export async function POST(
       );
     }
 
+    const resolvedParams = await params;
     const supabase = await createClient();
 
     // Check if already liked
@@ -24,7 +25,7 @@ export async function POST(
       .from('likes')
       .select('id')
       .eq('user_id', session.user.id)
-      .eq('note_id', params.id)
+      .eq('note_id', resolvedParams.id)
       .single();
 
     if (existingLike) {
@@ -33,10 +34,10 @@ export async function POST(
         .from('likes')
         .delete()
         .eq('user_id', session.user.id)
-        .eq('note_id', params.id);
+        .eq('note_id', resolvedParams.id);
 
       // Decrement likes count
-      await supabase.rpc('decrement_likes', { note_id: params.id });
+      await supabase.rpc('decrement_likes', { note_id: resolvedParams.id });
 
       return NextResponse.json({ liked: false });
     } else {
@@ -45,11 +46,11 @@ export async function POST(
         .from('likes')
         .insert({
           user_id: session.user.id,
-          note_id: params.id,
+          note_id: resolvedParams.id,
         });
 
       // Increment likes count
-      await supabase.rpc('increment_likes', { note_id: params.id });
+      await supabase.rpc('increment_likes', { note_id: resolvedParams.id });
 
       return NextResponse.json({ liked: true });
     }
