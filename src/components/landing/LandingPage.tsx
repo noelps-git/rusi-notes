@@ -312,7 +312,7 @@ export default function LandingPage() {
                   />
                   <button
                     type="submit"
-                    className="w-full sm:w-auto px-8 min-h-[48px] bg-[#111111] text-white rounded-full font-semibold hover:bg-[#222222] active:scale-95 transition-all"
+                    className="w-full sm:w-auto px-8 min-h-[48px] bg-[#111111] text-white rounded-full font-semibold hover:bg-[#222222] active:scale-95 transition-all whitespace-nowrap"
                   >
                     Get Started
                   </button>
