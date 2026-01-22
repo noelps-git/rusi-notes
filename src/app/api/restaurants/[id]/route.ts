@@ -5,9 +5,10 @@ import { createClient } from '@/lib/supabase/server';
 // GET /api/restaurants/[id] - Get single restaurant
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const resolvedParams = await params;
     const supabase = await createClient();
 
     const { data: restaurant, error } = await supabase
@@ -17,7 +18,7 @@ export async function GET(
         owner:users(id, full_name, business_name),
         dishes(*)
       `)
-      .eq('id', params.id)
+      .eq('id', resolvedParams.id)
       .single();
 
     if (error) throw error;
@@ -42,9 +43,10 @@ export async function GET(
 // PUT /api/restaurants/[id] - Update restaurant
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const resolvedParams = await params;
     const session = await auth();
 
     if (!session) {
@@ -57,7 +59,7 @@ export async function PUT(
     const { data: restaurant } = await supabase
       .from('restaurants')
       .select('owner_id')
-      .eq('id', params.id)
+      .eq('id', resolvedParams.id)
       .single();
 
     if (!restaurant) {
@@ -79,7 +81,7 @@ export async function PUT(
     const { data: updated, error } = await supabase
       .from('restaurants')
       .update(body)
-      .eq('id', params.id)
+      .eq('id', resolvedParams.id)
       .select()
       .single();
 
@@ -98,9 +100,10 @@ export async function PUT(
 // DELETE /api/restaurants/[id] - Delete restaurant
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const resolvedParams = await params;
     const session = await auth();
 
     if (!session) {
@@ -113,7 +116,7 @@ export async function DELETE(
     const { data: restaurant } = await supabase
       .from('restaurants')
       .select('owner_id')
-      .eq('id', params.id)
+      .eq('id', resolvedParams.id)
       .single();
 
     if (!restaurant) {
@@ -133,7 +136,7 @@ export async function DELETE(
     const { error } = await supabase
       .from('restaurants')
       .delete()
-      .eq('id', params.id);
+      .eq('id', resolvedParams.id);
 
     if (error) throw error;
 

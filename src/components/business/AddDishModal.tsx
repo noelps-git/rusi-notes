@@ -67,8 +67,8 @@ export default function AddDishModal({
           is_jain: isJain,
           allergens: allergens
             .split(',')
-            .map((a) => a.trim())
-            .filter((a) => a.length > 0),
+            .map((a: string) => a.trim())
+            .filter((a: string) => a.length > 0),
           is_available: isAvailable,
         }),
       });

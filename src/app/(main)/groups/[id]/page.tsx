@@ -30,7 +30,7 @@ export default async function GroupChatPage({
   }
 
   // Fetch group details
-  const { data: group } = await supabase
+  const { data: groupData } = await supabase
     .from('groups')
     .select(`
       id,
@@ -43,12 +43,18 @@ export default async function GroupChatPage({
     .eq('id', resolvedParams.id)
     .single();
 
-  if (!group) {
+  if (!groupData) {
     notFound();
   }
 
+  // Transform creator from array to single object
+  const group = {
+    ...groupData,
+    creator: Array.isArray(groupData.creator) ? groupData.creator[0] : groupData.creator,
+  };
+
   // Fetch all members
-  const { data: members } = await supabase
+  const { data: membersData } = await supabase
     .from('group_members')
     .select(`
       id,
@@ -59,8 +65,14 @@ export default async function GroupChatPage({
     .eq('group_id', resolvedParams.id)
     .order('joined_at', { ascending: true });
 
+  // Transform user from array to single object
+  const members = membersData?.map((member: any) => ({
+    ...member,
+    user: Array.isArray(member.user) ? member.user[0] : member.user,
+  }));
+
   // Fetch initial messages
-  const { data: initialMessages } = await supabase
+  const { data: messagesData } = await supabase
     .from('messages')
     .select(`
       id,
@@ -73,6 +85,12 @@ export default async function GroupChatPage({
     .eq('group_id', resolvedParams.id)
     .order('created_at', { ascending: true })
     .limit(100);
+
+  // Transform sender from array to single object
+  const initialMessages = messagesData?.map((message: any) => ({
+    ...message,
+    sender: Array.isArray(message.sender) ? message.sender[0] : message.sender,
+  }));
 
   return (
     <GroupChatClient

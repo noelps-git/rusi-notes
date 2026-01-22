@@ -5,9 +5,10 @@ import { createClient } from '@/lib/supabase/server';
 // GET /api/notes/[id] - Get single note
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const resolvedParams = await params;
     const supabase = await createClient();
 
     const { data: note, error } = await supabase
@@ -18,7 +19,7 @@ export async function GET(
         restaurant:restaurants(id, name, categories),
         dish:dishes(id, name)
       `)
-      .eq('id', params.id)
+      .eq('id', resolvedParams.id)
       .single();
 
     if (error) throw error;
@@ -43,9 +44,10 @@ export async function GET(
 // PUT /api/notes/[id] - Update note
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const resolvedParams = await params;
     const session = await auth();
 
     if (!session) {
@@ -58,7 +60,7 @@ export async function PUT(
     const { data: note } = await supabase
       .from('tasting_notes')
       .select('user_id')
-      .eq('id', params.id)
+      .eq('id', resolvedParams.id)
       .single();
 
     if (!note) {
@@ -80,7 +82,7 @@ export async function PUT(
     const { data: updated, error } = await supabase
       .from('tasting_notes')
       .update(body)
-      .eq('id', params.id)
+      .eq('id', resolvedParams.id)
       .select(`
         *,
         user:users(id, full_name, avatar_url),
@@ -103,9 +105,10 @@ export async function PUT(
 // DELETE /api/notes/[id] - Delete note
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const resolvedParams = await params;
     const session = await auth();
 
     if (!session) {
@@ -118,7 +121,7 @@ export async function DELETE(
     const { data: note } = await supabase
       .from('tasting_notes')
       .select('user_id')
-      .eq('id', params.id)
+      .eq('id', resolvedParams.id)
       .single();
 
     if (!note) {
@@ -138,7 +141,7 @@ export async function DELETE(
     const { error } = await supabase
       .from('tasting_notes')
       .delete()
-      .eq('id', params.id);
+      .eq('id', resolvedParams.id);
 
     if (error) throw error;
 
