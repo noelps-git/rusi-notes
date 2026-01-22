@@ -305,7 +305,7 @@ export default function LandingPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Your email"
-                    className="flex-1 px-6 h-14 bg-white text-[#111111] rounded-full focus:outline-none focus:ring-2 focus:ring-white/30 placeholder:text-[#999999]"
+                    className="flex-1 px-8 h-14 bg-white text-[#111111] rounded-full focus:outline-none focus:ring-2 focus:ring-white/30 placeholder:text-[#999999]"
                     required
                   />
                   <button
