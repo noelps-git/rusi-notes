@@ -129,25 +129,25 @@ export default function LandingPage() {
             </div>
 
             {/* Headline - Minimalistic */}
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight text-[#111111]">
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-6 leading-tight text-[#111111] px-4">
               Track every dish.<br />
               <span className="text-[#00B14F]">Share with nanbas.</span>
             </h1>
 
             {/* Subheadline - Minimal */}
-            <p className="text-lg md:text-xl text-[#666666] mb-10 leading-relaxed max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl text-[#666666] mb-10 leading-relaxed max-w-2xl mx-auto px-4">
               Remember that mass biryani? Rate it. Share it. Find more. 🍛
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-              <Link href="/signup">
-                <button className="px-8 h-14 bg-[#00B14F] text-white rounded-full font-semibold text-base hover:bg-[#009944] transition-all shadow-lg">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 px-4">
+              <Link href="/signup" className="w-full sm:w-auto">
+                <button className="w-full sm:w-auto px-8 min-h-[48px] bg-[#00B14F] text-white rounded-full font-semibold text-base hover:bg-[#009944] transition-all shadow-lg active:scale-95">
                   Get Started
                 </button>
               </Link>
-              <Link href="#features">
-                <button className="px-8 h-14 bg-white border-2 border-[#E5E5E5] text-[#111111] rounded-full font-semibold text-base hover:border-[#00B14F] transition-all">
+              <Link href="#features" className="w-full sm:w-auto">
+                <button className="w-full sm:w-auto px-8 min-h-[48px] bg-white border-2 border-[#E5E5E5] text-[#111111] rounded-full font-semibold text-base hover:border-[#00B14F] transition-all active:scale-95">
                   Learn More
                 </button>
               </Link>
@@ -175,18 +175,18 @@ export default function LandingPage() {
       {/* Features Section */}
       <section id="features" className="py-20 bg-[#F9F9F9]">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-[#111111]">
+          <div className="text-center mb-16 px-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-[#111111]">
               Why Rusi Notes?
             </h2>
-            <p className="text-lg text-[#666666] max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg text-[#666666] max-w-2xl mx-auto">
               Track. Rate. Share. Simple.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 max-w-5xl mx-auto px-4">
             {/* Feature 1 */}
-            <div className="bg-white p-8 rounded-3xl border border-[#E5E5E5] hover:border-[#00B14F] hover:shadow-lg transition-all">
+            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E5E5E5] hover:border-[#00B14F] hover:shadow-lg transition-all">
               <div className="w-14 h-14 bg-[#00B14F]/10 rounded-2xl flex items-center justify-center mb-6 text-3xl">
                 🍛
               </div>
@@ -199,7 +199,7 @@ export default function LandingPage() {
             </div>
 
             {/* Feature 2 */}
-            <div className="bg-white p-8 rounded-3xl border border-[#E5E5E5] hover:border-[#00B14F] hover:shadow-lg transition-all">
+            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E5E5E5] hover:border-[#00B14F] hover:shadow-lg transition-all">
               <div className="w-14 h-14 bg-[#00B14F]/10 rounded-2xl flex items-center justify-center mb-6 text-3xl">
                 👥
               </div>
@@ -212,7 +212,7 @@ export default function LandingPage() {
             </div>
 
             {/* Feature 3 */}
-            <div className="bg-white p-8 rounded-3xl border border-[#E5E5E5] hover:border-[#00B14F] hover:shadow-lg transition-all">
+            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E5E5E5] hover:border-[#00B14F] hover:shadow-lg transition-all">
               <div className="w-14 h-14 bg-[#00B14F]/10 rounded-2xl flex items-center justify-center mb-6 text-3xl">
                 📍
               </div>
@@ -230,17 +230,17 @@ export default function LandingPage() {
       {/* Testimonials Section */}
       <section id="reviews" className="py-20 bg-white">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-[#111111]">
+          <div className="text-center mb-12 px-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-[#111111]">
               What Users Say
             </h2>
-            <p className="text-lg text-[#666666]">
+            <p className="text-base sm:text-lg text-[#666666]">
               Vera Level Reviews 🔥
             </p>
           </div>
 
-          <div className="max-w-3xl mx-auto">
-            <div className="bg-[#F9F9F9] p-8 md:p-12 rounded-3xl border border-[#E5E5E5]">
+          <div className="max-w-3xl mx-auto px-4">
+            <div className="bg-[#F9F9F9] p-6 sm:p-8 md:p-12 rounded-3xl border border-[#E5E5E5]">
               <div className="flex items-center gap-4 mb-6">
                 <div className="text-5xl">{testimonials[currentTestimonial].image}</div>
                 <div>
@@ -260,7 +260,8 @@ export default function LandingPage() {
               <div className="flex items-center justify-center gap-4 mt-8">
                 <button
                   onClick={prevTestimonial}
-                  className="w-10 h-10 bg-white border border-[#E5E5E5] rounded-full flex items-center justify-center hover:border-[#00B14F] transition-all"
+                  className="min-w-[44px] min-h-[44px] bg-white border border-[#E5E5E5] rounded-full flex items-center justify-center hover:border-[#00B14F] active:scale-95 transition-all"
+                  aria-label="Previous testimonial"
                 >
                   <ChevronLeft className="w-5 h-5 text-[#111111]" />
                 </button>
@@ -276,7 +277,8 @@ export default function LandingPage() {
                 </div>
                 <button
                   onClick={nextTestimonial}
-                  className="w-10 h-10 bg-white border border-[#E5E5E5] rounded-full flex items-center justify-center hover:border-[#00B14F] transition-all"
+                  className="min-w-[44px] min-h-[44px] bg-white border border-[#E5E5E5] rounded-full flex items-center justify-center hover:border-[#00B14F] active:scale-95 transition-all"
+                  aria-label="Next testimonial"
                 >
                   <ChevronRight className="w-5 h-5 text-[#111111]" />
                 </button>
@@ -289,35 +291,35 @@ export default function LandingPage() {
       {/* CTA Section */}
       <section className="py-20 bg-[#00B14F]">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
+          <div className="max-w-3xl mx-auto text-center px-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-white">
               Start tracking today
             </h2>
-            <p className="text-lg text-white/80 mb-10">
+            <p className="text-base sm:text-lg text-white/80 mb-10">
               Join thousands of foodies in Chennai 🦁
             </p>
 
             {!submitted ? (
-              <form onSubmit={handleSubmit} className="max-w-md mx-auto">
+              <form onSubmit={handleSubmit} className="max-w-md mx-auto px-4">
                 <div className="flex flex-col sm:flex-row gap-3">
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Your email"
-                    className="flex-1 px-8 h-14 bg-white text-[#111111] rounded-full focus:outline-none focus:ring-2 focus:ring-white/30 placeholder:text-[#999999]"
+                    className="flex-1 px-6 sm:px-8 min-h-[48px] bg-white text-[#111111] text-base rounded-full focus:outline-none focus:ring-2 focus:ring-white/30 placeholder:text-[#999999]"
                     required
                   />
                   <button
                     type="submit"
-                    className="px-8 h-14 bg-[#111111] text-white rounded-full font-semibold hover:bg-[#222222] transition-all"
+                    className="w-full sm:w-auto px-8 min-h-[48px] bg-[#111111] text-white rounded-full font-semibold hover:bg-[#222222] active:scale-95 transition-all"
                   >
                     Get Started
                   </button>
                 </div>
               </form>
             ) : (
-              <div className="flex items-center justify-center gap-3 py-4">
+              <div className="flex items-center justify-center gap-3 py-4 px-4">
                 <Check className="w-6 h-6 text-white" />
                 <span className="text-white font-medium">Redirecting...</span>
               </div>

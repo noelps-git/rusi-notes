@@ -11,6 +11,12 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Rusi Notes - Saapadu Review Podalam!",
   description: "Vera Level food reviews! Track your favorite dishes, connect with your Nanba gang, and discover Chennai's best restaurants. Mass collaboration for foodies!",
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 5,
+    userScalable: true,
+  },
 };
 
 export default function RootLayout({
