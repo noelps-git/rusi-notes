@@ -14,6 +14,7 @@ export default function SignupPage() {
     fullName: '',
     role: 'user' as UserRole,
     businessName: '',
+    canPostReviews: true,
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -29,6 +30,7 @@ export default function SignupPage() {
         password: formData.password,
         fullName: formData.fullName,
         role: formData.role,
+        canPostReviews: formData.canPostReviews,
       };
 
       if (formData.role === 'business') {
@@ -178,6 +180,19 @@ export default function SignupPage() {
               </div>
             </div>
           )}
+
+          <div className="flex items-center gap-3 p-4 bg-[#F9F9F9] rounded-2xl">
+            <input
+              type="checkbox"
+              id="canPostReviews"
+              checked={formData.canPostReviews}
+              onChange={(e) => setFormData({ ...formData, canPostReviews: e.target.checked })}
+              className="w-5 h-5 text-[#00B14F] border-[#E5E5E5] rounded focus:ring-[#00B14F] focus:ring-2"
+            />
+            <label htmlFor="canPostReviews" className="text-sm text-[#111111] cursor-pointer">
+              Allow me to post reviews and share with the community
+            </label>
+          </div>
 
           <button
             type="submit"

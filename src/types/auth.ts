@@ -25,6 +25,7 @@ export interface SignUpData {
   password: string;
   fullName: string;
   role: UserRole;
+  canPostReviews?: boolean;
   businessData?: {
     businessName: string;
     businessLicense: string;

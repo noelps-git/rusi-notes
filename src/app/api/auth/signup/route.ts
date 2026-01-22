@@ -6,7 +6,7 @@ import type { SignUpData } from '@/types/auth';
 export async function POST(req: NextRequest) {
   try {
     const body: SignUpData = await req.json();
-    const { email, password, fullName, role, businessData } = body;
+    const { email, password, fullName, role, businessData, canPostReviews } = body;
 
     // Validate required fields
     if (!email || !password || !fullName || !role) {
@@ -35,6 +35,7 @@ export async function POST(req: NextRequest) {
       password_hash: passwordHash,
       full_name: fullName,
       role,
+      can_post_reviews: canPostReviews !== undefined ? canPostReviews : true,
     };
 
     // Add business-specific fields if role is business
