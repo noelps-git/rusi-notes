@@ -5,9 +5,9 @@
   --foreground: #ffffff;
 
   /* Role-specific colors */
-  --user-primary: #0009FF;
-  --business-primary: #0009FF;
-  --admin-primary: #0009FF;
+  --user-primary: #00B14F;
+  --business-primary: #00B14F;
+  --admin-primary: #00B14F;
 }
 
 @theme inline {

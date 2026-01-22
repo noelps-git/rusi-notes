@@ -70,7 +70,7 @@ export default function WelcomeDashboard({ userName, userEmail }: WelcomeDashboa
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#111111]">
-        <div className="animate-spin rounded-full h-12 w-12 border-2 border-[#0009FF] border-t-transparent"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-2 border-[#00B14F] border-t-transparent"></div>
       </div>
     );
   }
@@ -89,8 +89,8 @@ export default function WelcomeDashboard({ userName, userEmail }: WelcomeDashboa
             </button>
 
             <div className="text-center mb-6">
-              <div className="w-20 h-20 bg-[#0009FF]/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Sparkles className="w-10 h-10 text-[#0009FF]" />
+              <div className="w-20 h-20 bg-[#00B14F]/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Sparkles className="w-10 h-10 text-[#00B14F]" />
               </div>
               <h2 className="text-3xl font-bold mb-2">
                 Welcome to Rusi Notes! 🎉
@@ -132,7 +132,7 @@ export default function WelcomeDashboard({ userName, userEmail }: WelcomeDashboa
 
             <button
               onClick={handleCreateNote}
-              className="w-full px-8 h-12 bg-[#0009FF] text-white rounded-[100px] font-medium hover:opacity-90 transition-all"
+              className="w-full px-8 h-12 bg-[#00B14F] text-white rounded-[100px] font-medium hover:opacity-90 transition-all"
             >
               Create Your First Note 🚀
             </button>
@@ -155,7 +155,7 @@ export default function WelcomeDashboard({ userName, userEmail }: WelcomeDashboa
           </div>
 
           <h1 className="text-5xl md:text-6xl font-bold mb-4">
-            Vanakkam, <span className="text-[#0009FF]">{userName}!</span>
+            Vanakkam, <span className="text-[#00B14F]">{userName}!</span>
           </h1>
           <p className="text-xl text-[#999999] font-normal max-w-2xl mx-auto">
             We're glad you're here! 🎉 Ready to start your <span className="text-white font-semibold">Vera Level</span> food journey?
@@ -165,25 +165,25 @@ export default function WelcomeDashboard({ userName, userEmail }: WelcomeDashboa
         {/* Quick Actions Section */}
         <div className="mb-12">
           <h2 className="text-3xl font-bold mb-6 text-center">
-            What You Can Do <span className="text-[#0009FF]">Right Now</span> 🔥
+            What You Can Do <span className="text-[#00B14F]">Right Now</span> 🔥
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
             {/* Create Note */}
             <Link
               href="/notes/create"
-              className="group bg-[#1E1E1E] p-8 rounded-2xl border border-[#333333] hover:border-[#0009FF] transition-all shadow-[0_16px_64px_rgba(0,0,0,0.5)] hover:shadow-[0_16px_64px_rgba(0,9,255,0.3)]"
+              className="group bg-[#1E1E1E] p-8 rounded-2xl border border-[#333333] hover:border-[#00B14F] transition-all shadow-[0_16px_64px_rgba(0,0,0,0.5)] hover:shadow-[0_16px_64px_rgba(0,9,255,0.3)]"
             >
-              <div className="w-16 h-16 bg-[#0009FF]/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <FileText className="w-8 h-8 text-[#0009FF]" />
+              <div className="w-16 h-16 bg-[#00B14F]/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <FileText className="w-8 h-8 text-[#00B14F]" />
               </div>
               <h3 className="text-xl font-bold mb-2 text-white">
                 Create Rusi Note 📝
               </h3>
               <p className="text-[#999999] font-normal mb-4">
-                Review a dish you tried. <span className="text-[#0009FF]">"Innum konjam masala bro!"</span>
+                Review a dish you tried. <span className="text-[#00B14F]">"Innum konjam masala bro!"</span>
               </p>
-              <div className="flex items-center gap-2 text-[#0009FF] font-medium">
+              <div className="flex items-center gap-2 text-[#00B14F] font-medium">
                 <span>Get Started</span>
                 <ChevronRight size={16} />
               </div>
@@ -192,18 +192,18 @@ export default function WelcomeDashboard({ userName, userEmail }: WelcomeDashboa
             {/* View Friends Feed */}
             <Link
               href="/friends"
-              className="group bg-[#1E1E1E] p-8 rounded-2xl border border-[#333333] hover:border-[#0009FF] transition-all shadow-[0_16px_64px_rgba(0,0,0,0.5)] hover:shadow-[0_16px_64px_rgba(0,9,255,0.3)]"
+              className="group bg-[#1E1E1E] p-8 rounded-2xl border border-[#333333] hover:border-[#00B14F] transition-all shadow-[0_16px_64px_rgba(0,0,0,0.5)] hover:shadow-[0_16px_64px_rgba(0,9,255,0.3)]"
             >
-              <div className="w-16 h-16 bg-[#0009FF]/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <Users className="w-8 h-8 text-[#0009FF]" />
+              <div className="w-16 h-16 bg-[#00B14F]/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <Users className="w-8 h-8 text-[#00B14F]" />
               </div>
               <h3 className="text-xl font-bold mb-2 text-white">
                 Friends Feed 👥
               </h3>
               <p className="text-[#999999] font-normal mb-4">
-                Connect with nanbas. See what's <span className="text-[#0009FF]">trending!</span>
+                Connect with nanbas. See what's <span className="text-[#00B14F]">trending!</span>
               </p>
-              <div className="flex items-center gap-2 text-[#0009FF] font-medium">
+              <div className="flex items-center gap-2 text-[#00B14F] font-medium">
                 <span>Explore Now</span>
                 <ChevronRight size={16} />
               </div>
@@ -212,18 +212,18 @@ export default function WelcomeDashboard({ userName, userEmail }: WelcomeDashboa
             {/* View Analytics */}
             <Link
               href="/notes"
-              className="group bg-[#1E1E1E] p-8 rounded-2xl border border-[#333333] hover:border-[#0009FF] transition-all shadow-[0_16px_64px_rgba(0,0,0,0.5)] hover:shadow-[0_16px_64px_rgba(0,9,255,0.3)]"
+              className="group bg-[#1E1E1E] p-8 rounded-2xl border border-[#333333] hover:border-[#00B14F] transition-all shadow-[0_16px_64px_rgba(0,0,0,0.5)] hover:shadow-[0_16px_64px_rgba(0,9,255,0.3)]"
             >
-              <div className="w-16 h-16 bg-[#0009FF]/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <BarChart3 className="w-8 h-8 text-[#0009FF]" />
+              <div className="w-16 h-16 bg-[#00B14F]/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <BarChart3 className="w-8 h-8 text-[#00B14F]" />
               </div>
               <h3 className="text-xl font-bold mb-2 text-white">
                 View Analytics 📊
               </h3>
               <p className="text-[#999999] font-normal mb-4">
-                Track your reviews. <span className="text-[#0009FF]">Thala-style stats!</span>
+                Track your reviews. <span className="text-[#00B14F]">Thala-style stats!</span>
               </p>
-              <div className="flex items-center gap-2 text-[#0009FF] font-medium">
+              <div className="flex items-center gap-2 text-[#00B14F] font-medium">
                 <span>View Stats</span>
                 <ChevronRight size={16} />
               </div>
@@ -234,12 +234,12 @@ export default function WelcomeDashboard({ userName, userEmail }: WelcomeDashboa
         {/* Share Section */}
         <div className="max-w-2xl mx-auto">
           <div className="bg-[#1E1E1E] p-8 md:p-10 rounded-2xl border border-[#333333] shadow-[0_16px_64px_rgba(0,0,0,0.5)] text-center">
-            <div className="w-16 h-16 bg-[#0009FF]/20 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Share2 className="w-8 h-8 text-[#0009FF]" />
+            <div className="w-16 h-16 bg-[#00B14F]/20 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Share2 className="w-8 h-8 text-[#00B14F]" />
             </div>
 
             <h2 className="text-2xl md:text-3xl font-bold mb-3">
-              Share <span className="text-[#0009FF]">Rusi Notes</span> with Friends! 📢
+              Share <span className="text-[#00B14F]">Rusi Notes</span> with Friends! 📢
             </h2>
             <p className="text-[#999999] font-normal mb-6">
               Invite your Nanba gang to join the food revolution! <span className="text-white">"Viral-ah paravalam!"</span>
@@ -251,7 +251,7 @@ export default function WelcomeDashboard({ userName, userEmail }: WelcomeDashboa
               </div>
               <button
                 onClick={handleCopyLink}
-                className="px-6 h-12 bg-[#0009FF] text-white rounded-[100px] font-medium hover:opacity-90 transition-all flex items-center gap-2 whitespace-nowrap"
+                className="px-6 h-12 bg-[#00B14F] text-white rounded-[100px] font-medium hover:opacity-90 transition-all flex items-center gap-2 whitespace-nowrap"
               >
                 {linkCopied ? (
                   <>

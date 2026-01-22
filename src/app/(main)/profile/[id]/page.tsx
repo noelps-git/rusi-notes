@@ -103,7 +103,7 @@ export default async function UserProfilePage({
           <div className="flex flex-col md:flex-row gap-6">
             {/* Avatar */}
             <div className="flex-shrink-0">
-              <div className="w-24 h-24 rounded-full bg-[#0009FF] flex items-center justify-center text-white text-4xl font-bold">
+              <div className="w-24 h-24 rounded-full bg-[#00B14F] flex items-center justify-center text-white text-4xl font-bold">
                 {user.full_name.charAt(0).toUpperCase()}
               </div>
             </div>
@@ -132,7 +132,7 @@ export default async function UserProfilePage({
                   {user.dietary_preferences.map((pref: string) => (
                     <span
                       key={pref}
-                      className="px-3 py-1 bg-[#0009FF]/20 text-[#0009FF] text-xs font-medium rounded-full border border-[#0009FF]/30"
+                      className="px-3 py-1 bg-[#00B14F]/20 text-[#00B14F] text-xs font-medium rounded-full border border-[#00B14F]/30"
                     >
                       {pref}
                     </span>
@@ -144,7 +144,7 @@ export default async function UserProfilePage({
               {!isOwnProfile && (
                 <div className="flex gap-3">
                   {!friendshipStatus && (
-                    <button className="px-6 py-2 bg-[#0009FF] text-white rounded-[100px] hover:opacity-90 transition-all">
+                    <button className="px-6 py-2 bg-[#00B14F] text-white rounded-[100px] hover:opacity-90 transition-all">
                       Add Nanba
                     </button>
                   )}
@@ -167,24 +167,24 @@ export default async function UserProfilePage({
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div className="bg-[#1E1E1E] rounded-2xl border border-[#333333] p-6 text-center">
-            <div className="w-12 h-12 bg-[#0009FF]/20 rounded-full flex items-center justify-center mx-auto mb-3">
-              <MessageCircle className="w-6 h-6 text-[#0009FF]" />
+            <div className="w-12 h-12 bg-[#00B14F]/20 rounded-full flex items-center justify-center mx-auto mb-3">
+              <MessageCircle className="w-6 h-6 text-[#00B14F]" />
             </div>
             <div className="text-3xl font-bold text-white mb-1">{stats.notes}</div>
             <div className="text-sm text-[#999999]">Rusi Notes</div>
           </div>
 
           <div className="bg-[#1E1E1E] rounded-2xl border border-[#333333] p-6 text-center">
-            <div className="w-12 h-12 bg-[#0009FF]/20 rounded-full flex items-center justify-center mx-auto mb-3">
-              <Users className="w-6 h-6 text-[#0009FF]" />
+            <div className="w-12 h-12 bg-[#00B14F]/20 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Users className="w-6 h-6 text-[#00B14F]" />
             </div>
             <div className="text-3xl font-bold text-white mb-1">{stats.friends}</div>
             <div className="text-sm text-[#999999]">Nanbas</div>
           </div>
 
           <div className="bg-[#1E1E1E] rounded-2xl border border-[#333333] p-6 text-center">
-            <div className="w-12 h-12 bg-[#0009FF]/20 rounded-full flex items-center justify-center mx-auto mb-3">
-              <Heart className="w-6 h-6 text-[#0009FF]" />
+            <div className="w-12 h-12 bg-[#00B14F]/20 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Heart className="w-6 h-6 text-[#00B14F]" />
             </div>
             <div className="text-3xl font-bold text-white mb-1">{stats.likes}</div>
             <div className="text-sm text-[#999999]">Likes Given</div>
@@ -203,14 +203,14 @@ export default async function UserProfilePage({
                 <Link
                   key={note.id}
                   href={`/notes/${note.id}`}
-                  className="bg-[#111111] border border-[#333333] rounded-xl p-4 hover:border-[#0009FF] transition-all"
+                  className="bg-[#111111] border border-[#333333] rounded-xl p-4 hover:border-[#00B14F] transition-all"
                 >
                   <h3 className="font-semibold text-white mb-2 line-clamp-1">{note.title}</h3>
                   <p className="text-sm text-[#999999] mb-3 line-clamp-2">{note.content}</p>
 
                   <div className="flex items-center gap-4 text-xs text-[#666666]">
                     <div className="flex items-center gap-1">
-                      <Award size={14} className="text-[#0009FF]" />
+                      <Award size={14} className="text-[#00B14F]" />
                       <span>{note.rating}/5</span>
                     </div>
                     <div className="flex items-center gap-1">

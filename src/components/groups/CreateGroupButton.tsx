@@ -56,7 +56,7 @@ export default function CreateGroupButton() {
       {/* Create Button */}
       <button
         onClick={() => setIsOpen(true)}
-        className="flex items-center gap-2 px-6 py-3 bg-[#0009FF] text-white rounded-[100px] hover:opacity-90 transition-all shadow-[0_16px_64px_rgba(0,9,255,0.3)]"
+        className="flex items-center gap-2 px-6 py-3 bg-[#00B14F] text-white rounded-[100px] hover:opacity-90 transition-all shadow-[0_16px_64px_rgba(0,9,255,0.3)]"
       >
         <Plus size={20} />
         <span className="font-medium">Create Gang 🦁</span>
@@ -91,14 +91,14 @@ export default function CreateGroupButton() {
               {/* Group Name */}
               <div>
                 <label className="block text-sm font-medium text-white mb-2">
-                  Gang Name <span className="text-[#0009FF]">*</span>
+                  Gang Name <span className="text-[#00B14F]">*</span>
                 </label>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g., Chennai Foodies Gang 🍛"
-                  className="w-full px-4 py-3 bg-[#111111] border border-[#333333] rounded-lg text-white placeholder-[#666666] focus:outline-none focus:border-[#0009FF] transition-all"
+                  className="w-full px-4 py-3 bg-[#111111] border border-[#333333] rounded-lg text-white placeholder-[#666666] focus:outline-none focus:border-[#00B14F] transition-all"
                   required
                 />
               </div>
@@ -113,7 +113,7 @@ export default function CreateGroupButton() {
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="What's this gang about? 🤔"
                   rows={3}
-                  className="w-full px-4 py-3 bg-[#111111] border border-[#333333] rounded-lg text-white placeholder-[#666666] focus:outline-none focus:border-[#0009FF] transition-all resize-none"
+                  className="w-full px-4 py-3 bg-[#111111] border border-[#333333] rounded-lg text-white placeholder-[#666666] focus:outline-none focus:border-[#00B14F] transition-all resize-none"
                 />
               </div>
 
@@ -128,18 +128,18 @@ export default function CreateGroupButton() {
                     onClick={() => setIsPrivate(true)}
                     className={`w-full flex items-center gap-3 p-4 border-2 rounded-lg transition-all ${
                       isPrivate
-                        ? 'border-[#0009FF] bg-[#0009FF]/10'
+                        ? 'border-[#00B14F] bg-[#00B14F]/10'
                         : 'border-[#333333] hover:border-[#666666]'
                     }`}
                   >
                     <div
                       className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                        isPrivate ? 'bg-[#0009FF]/20' : 'bg-[#333333]'
+                        isPrivate ? 'bg-[#00B14F]/20' : 'bg-[#333333]'
                       }`}
                     >
                       <Lock
                         size={20}
-                        className={isPrivate ? 'text-[#0009FF]' : 'text-[#666666]'}
+                        className={isPrivate ? 'text-[#00B14F]' : 'text-[#666666]'}
                       />
                     </div>
                     <div className="text-left flex-1">
@@ -191,7 +191,7 @@ export default function CreateGroupButton() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 px-6 py-3 bg-[#0009FF] text-white rounded-[100px] hover:opacity-90 transition-all disabled:opacity-50"
+                  className="flex-1 px-6 py-3 bg-[#00B14F] text-white rounded-[100px] hover:opacity-90 transition-all disabled:opacity-50"
                 >
                   {loading ? 'Creating...' : 'Create Gang 🚀'}
                 </button>
