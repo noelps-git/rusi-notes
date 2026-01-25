@@ -73,9 +73,7 @@ export default function LandingPage() {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[#00B14F] rounded-xl flex items-center justify-center">
-                <span className="text-2xl">🍽️</span>
-              </div>
+              <img src="/logo.svg" alt="Rusi Notes Logo" className="w-10 h-10" />
               <span className="text-xl font-bold text-[#111111]">Rusi Notes</span>
             </div>
 
@@ -334,9 +332,7 @@ export default function LandingPage() {
           <div className="max-w-4xl mx-auto">
             <div className="flex flex-col md:flex-row justify-between items-center gap-6">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-[#00B14F] rounded-lg flex items-center justify-center">
-                  <span className="text-xl">🍽️</span>
-                </div>
+                <img src="/logo.svg" alt="Rusi Notes" className="w-8 h-8" />
                 <span className="font-bold text-[#111111]">Rusi Notes</span>
               </div>
               <div className="flex gap-8 text-sm text-[#666666]">

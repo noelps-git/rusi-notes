@@ -179,7 +179,7 @@ export default function CreateNotePage() {
   if (status === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00B14F]"></div>
       </div>
     );
   }
@@ -189,10 +189,10 @@ export default function CreateNotePage() {
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+          <h1 className="text-4xl font-bold text-[#111111] mb-2">
             Share Your Tasting Experience
           </h1>
-          <p className="text-gray-600">
+          <p className="text-[#111111]">
             Document your culinary journey and share it with food lovers
           </p>
         </div>
@@ -209,13 +209,13 @@ export default function CreateNotePage() {
 
             {/* Restaurant Selection */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-[#111111] mb-2">
                 Restaurant <span className="text-gray-400">(Optional)</span>
               </label>
               <select
                 value={restaurantId}
                 onChange={(e) => setRestaurantId(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00B14F] focus:border-transparent transition-all text-[#111111]"
               >
                 <option value="">Select a restaurant...</option>
                 {restaurants.map((restaurant) => (
@@ -229,7 +229,7 @@ export default function CreateNotePage() {
             {/* Dish Selection */}
             {restaurantId && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-[#111111] mb-2">
                   Dish <span className="text-gray-400">(Optional)</span>
                 </label>
                 {loadingDishes ? (
@@ -238,7 +238,7 @@ export default function CreateNotePage() {
                   <select
                     value={dishId}
                     onChange={(e) => setDishId(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00B14F] focus:border-transparent transition-all text-[#111111]"
                   >
                     <option value="">Select a dish...</option>
                     {dishes.map((dish) => (
@@ -257,7 +257,7 @@ export default function CreateNotePage() {
 
             {/* Title */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-[#111111] mb-2">
                 Title <span className="text-red-500">*</span>
               </label>
               <input
@@ -265,14 +265,14 @@ export default function CreateNotePage() {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g., Amazing Filter Coffee Experience"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00B14F] focus:border-transparent transition-all text-[#111111]"
                 required
               />
             </div>
 
             {/* Rating */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-[#111111] mb-2">
                 Rating <span className="text-red-500">*</span>
               </label>
               <div className="flex items-center gap-2">
@@ -296,7 +296,7 @@ export default function CreateNotePage() {
                   </button>
                 ))}
                 {rating > 0 && (
-                  <span className="ml-2 text-sm text-gray-600">
+                  <span className="ml-2 text-sm text-[#111111]">
                     {rating} out of 5 stars
                   </span>
                 )}
@@ -305,7 +305,7 @@ export default function CreateNotePage() {
 
             {/* Content */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-[#111111] mb-2">
                 Your Review <span className="text-red-500">*</span>
               </label>
               <textarea
@@ -313,21 +313,21 @@ export default function CreateNotePage() {
                 onChange={(e) => setContent(e.target.value)}
                 placeholder="Share your experience... What did you love? What flavors stood out? Would you recommend it?"
                 rows={6}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all resize-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00B14F] focus:border-transparent transition-all resize-none text-[#111111]"
                 required
               />
             </div>
 
             {/* Image Upload */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-[#111111] mb-2">
                 Photos <span className="text-gray-400">(Optional)</span>
               </label>
               <div className="space-y-4">
                 {/* Upload Button */}
-                <label className="flex items-center justify-center w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-indigo-500 transition-colors">
+                <label className="flex items-center justify-center w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-[#00B14F] transition-colors">
                   <Upload size={20} className="mr-2 text-gray-500" />
-                  <span className="text-gray-600">Upload Image</span>
+                  <span className="text-[#111111]">Upload Image</span>
                   <input
                     type="file"
                     accept="image/*"
@@ -362,7 +362,7 @@ export default function CreateNotePage() {
 
             {/* Tags */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-[#111111] mb-2">
                 Tags <span className="text-gray-400">(Optional)</span>
               </label>
               <div className="space-y-3">
@@ -374,12 +374,12 @@ export default function CreateNotePage() {
                     onChange={(e) => setTagInput(e.target.value)}
                     onKeyPress={handleKeyPress}
                     placeholder="Add tags (e.g., spicy, sweet, must-try)"
-                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00B14F] focus:border-transparent transition-all text-[#111111]"
                   />
                   <button
                     type="button"
                     onClick={handleAddTag}
-                    className="px-4 py-2 bg-indigo-100 text-indigo-700 rounded-lg hover:bg-indigo-200 transition-colors"
+                    className="px-4 py-2 bg-[#00B14F]/10 text-[#00B14F] rounded-lg hover:bg-[#00B14F]/20 transition-colors"
                   >
                     Add
                   </button>
@@ -391,7 +391,7 @@ export default function CreateNotePage() {
                     {tags.map((tag) => (
                       <span
                         key={tag}
-                        className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm"
+                        className="inline-flex items-center gap-1 px-3 py-1 bg-[#00B14F]/10 text-[#00B14F] rounded-full text-sm"
                       >
                         <TagIcon size={14} />
                         {tag}
@@ -412,7 +412,7 @@ export default function CreateNotePage() {
             {/* Visibility Toggle */}
             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
               <div>
-                <h3 className="text-sm font-medium text-gray-900">
+                <h3 className="text-sm font-medium text-[#111111]">
                   Public Note
                 </h3>
                 <p className="text-sm text-gray-500">
@@ -423,7 +423,7 @@ export default function CreateNotePage() {
                 type="button"
                 onClick={() => setIsPublic(!isPublic)}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  isPublic ? 'bg-indigo-600' : 'bg-gray-300'
+                  isPublic ? 'bg-[#00B14F]' : 'bg-gray-300'
                 }`}
               >
                 <span
@@ -439,14 +439,14 @@ export default function CreateNotePage() {
               <button
                 type="button"
                 onClick={() => router.back()}
-                className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                className="flex-1 px-6 py-3 border border-gray-300 text-[#111111] rounded-lg hover:bg-gray-50 transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 px-6 py-3 bg-[#00B14F] text-white rounded-full font-semibold hover:bg-[#009944] transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? 'Publishing...' : 'Publish Note'}
               </button>

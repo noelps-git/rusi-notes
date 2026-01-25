@@ -71,12 +71,12 @@ export function HamburgerMenu({ isOpen, onClose }: HamburgerMenuProps) {
         }`}
       >
         <div className="flex flex-col h-full">
-          <div className="p-6 border-b border-gray-200">
+          <div className="p-6 border-b border-[#E5E5E5]">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold text-gray-900">Menu</h2>
+              <h2 className="text-xl font-semibold text-[#111111]">Menu</h2>
               <button
                 onClick={onClose}
-                className="p-2 text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+                className="p-2 text-[#666666] hover:text-[#111111] rounded-lg hover:bg-[#F9F9F9] transition-colors"
               >
                 <svg
                   className="w-6 h-6"
@@ -92,14 +92,14 @@ export function HamburgerMenu({ isOpen, onClose }: HamburgerMenuProps) {
               </button>
             </div>
 
-            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-              <div className="h-12 w-12 rounded-full bg-indigo-600 flex items-center justify-center text-white font-medium">
+            <div className="flex items-center gap-3 p-3 bg-[#F9F9F9] rounded-lg">
+              <div className="h-12 w-12 rounded-full bg-[#00B14F] flex items-center justify-center text-white font-medium">
                 {session.user.name?.charAt(0).toUpperCase()}
               </div>
               <div>
-                <div className="font-medium text-gray-900">{session.user.name}</div>
-                <div className="text-sm text-gray-600">{session.user.email}</div>
-                <div className="text-xs text-indigo-600 font-medium capitalize mt-1">
+                <div className="font-medium text-[#111111]">{session.user.name}</div>
+                <div className="text-sm text-[#666666]">{session.user.email}</div>
+                <div className="text-xs text-[#00B14F] font-medium capitalize mt-1">
                   {session.user.role}
                 </div>
               </div>
@@ -113,7 +113,7 @@ export function HamburgerMenu({ isOpen, onClose }: HamburgerMenuProps) {
                   key={item.href}
                   href={item.href}
                   onClick={onClose}
-                  className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded-lg transition-colors"
+                  className="flex items-center gap-3 px-4 py-3 text-[#666666] hover:bg-[#00B14F]/10 hover:text-[#00B14F] rounded-lg transition-colors"
                 >
                   <span className="text-xl">{item.icon}</span>
                   <span className="font-medium">{item.label}</span>
@@ -121,33 +121,33 @@ export function HamburgerMenu({ isOpen, onClose }: HamburgerMenuProps) {
               ))}
             </div>
 
-            <div className="mt-6 pt-6 border-t border-gray-200">
+            <div className="mt-6 pt-6 border-t border-[#E5E5E5]">
               <div className="space-y-1">
                 <Link
                   href="/about"
                   onClick={onClose}
-                  className="block px-4 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                  className="block px-4 py-2 text-sm text-[#666666] hover:text-[#111111] transition-colors"
                 >
                   About Us
                 </Link>
                 <Link
                   href="/privacy"
                   onClick={onClose}
-                  className="block px-4 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                  className="block px-4 py-2 text-sm text-[#666666] hover:text-[#111111] transition-colors"
                 >
                   Privacy Policy
                 </Link>
                 <Link
                   href="/terms"
                   onClick={onClose}
-                  className="block px-4 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                  className="block px-4 py-2 text-sm text-[#666666] hover:text-[#111111] transition-colors"
                 >
                   Terms of Service
                 </Link>
                 <Link
                   href="/contact"
                   onClick={onClose}
-                  className="block px-4 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                  className="block px-4 py-2 text-sm text-[#666666] hover:text-[#111111] transition-colors"
                 >
                   Contact
                 </Link>
@@ -155,7 +155,7 @@ export function HamburgerMenu({ isOpen, onClose }: HamburgerMenuProps) {
             </div>
           </nav>
 
-          <div className="p-4 border-t border-gray-200">
+          <div className="p-4 border-t border-[#E5E5E5]">
             <button
               onClick={handleSignOut}
               className="w-full flex items-center justify-center gap-2 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors font-medium"

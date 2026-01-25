@@ -12,9 +12,7 @@ export default function AuthLayout({
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             <Link href="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[#00B14F] rounded-xl flex items-center justify-center">
-                <span className="text-2xl">🍽️</span>
-              </div>
+              <img src="/logo.svg" alt="Rusi Notes Logo" className="w-10 h-10" />
               <span className="text-xl font-bold text-[#111111]">Rusi Notes</span>
             </Link>
           </div>

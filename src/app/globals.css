@@ -220,6 +220,13 @@ body {
   animation-delay: 0.6s;
 }
 
+/* Ensure all form inputs have black text */
+input,
+textarea,
+select {
+  color: #111111 !important;
+}
+
 /* Mobile optimizations */
 @media (max-width: 640px) {
   /* Prevent zoom on input focus on iOS */
