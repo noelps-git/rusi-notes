@@ -215,7 +215,7 @@ export default function CreateNotePage() {
               <select
                 value={restaurantId}
                 onChange={(e) => setRestaurantId(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00B14F] focus:border-transparent transition-all text-[#111111]"
+                className="w-full px-4 py-3 bg-white border border-[#E5E5E5] rounded-full text-[#111111] placeholder-[#999999] focus:outline-none focus:ring-2 focus:ring-[#00B14F] focus:border-transparent transition-all"
               >
                 <option value="">Select a restaurant...</option>
                 {restaurants.map((restaurant) => (
@@ -238,7 +238,7 @@ export default function CreateNotePage() {
                   <select
                     value={dishId}
                     onChange={(e) => setDishId(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00B14F] focus:border-transparent transition-all text-[#111111]"
+                    className="w-full px-4 py-3 bg-white border border-[#E5E5E5] rounded-full text-[#111111] placeholder-[#999999] focus:outline-none focus:ring-2 focus:ring-[#00B14F] focus:border-transparent transition-all"
                   >
                     <option value="">Select a dish...</option>
                     {dishes.map((dish) => (
@@ -265,7 +265,7 @@ export default function CreateNotePage() {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g., Amazing Filter Coffee Experience"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00B14F] focus:border-transparent transition-all text-[#111111]"
+                className="w-full px-4 py-3 bg-white border border-[#E5E5E5] rounded-full text-[#111111] placeholder-[#999999] focus:outline-none focus:ring-2 focus:ring-[#00B14F] focus:border-transparent transition-all"
                 required
               />
             </div>
@@ -313,7 +313,7 @@ export default function CreateNotePage() {
                 onChange={(e) => setContent(e.target.value)}
                 placeholder="Share your experience... What did you love? What flavors stood out? Would you recommend it?"
                 rows={6}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00B14F] focus:border-transparent transition-all resize-none text-[#111111]"
+                className="w-full px-4 py-3 bg-white border border-[#E5E5E5] rounded-3xl text-[#111111] placeholder-[#999999] focus:outline-none focus:ring-2 focus:ring-[#00B14F] focus:border-transparent transition-all resize-none"
                 required
               />
             </div>
@@ -374,7 +374,7 @@ export default function CreateNotePage() {
                     onChange={(e) => setTagInput(e.target.value)}
                     onKeyPress={handleKeyPress}
                     placeholder="Add tags (e.g., spicy, sweet, must-try)"
-                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00B14F] focus:border-transparent transition-all text-[#111111]"
+                    className="flex-1 px-4 py-2 bg-white border border-[#E5E5E5] rounded-full text-[#111111] placeholder-[#999999] focus:outline-none focus:ring-2 focus:ring-[#00B14F] focus:border-transparent transition-all"
                   />
                   <button
                     type="button"
