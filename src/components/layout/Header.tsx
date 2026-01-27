@@ -2,12 +2,11 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useSession } from 'next-auth/react';
+import { SignInButton, SignUpButton, UserButton, SignedIn, SignedOut } from '@clerk/nextjs';
 import { HamburgerMenu } from './HamburgerMenu';
 import NotificationBell from '@/components/notifications/NotificationBell';
 
 export function Header() {
-  const { data: session } = useSession();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -20,7 +19,7 @@ export function Header() {
               <span className="text-xl font-bold text-[#111111]">Rusi Notes</span>
             </Link>
 
-            {session && (
+            <SignedIn>
               <nav className="hidden md:flex gap-6">
                 <Link
                   href="/dashboard"
@@ -40,88 +39,63 @@ export function Header() {
                 >
                   Notes
                 </Link>
-                {session.user.role === 'user' && (
-                  <>
-                    <Link
-                      href="/groups"
-                      className="text-sm font-medium text-[#666666] hover:text-[#00B14F] transition-colors"
-                    >
-                      Groups
-                    </Link>
-                    <Link
-                      href="/friends"
-                      className="text-sm font-medium text-[#666666] hover:text-[#00B14F] transition-colors"
-                    >
-                      Friends
-                    </Link>
-                    <Link
-                      href="/bookmarks"
-                      className="text-sm font-medium text-[#666666] hover:text-[#00B14F] transition-colors"
-                    >
-                      Bookmarks
-                    </Link>
-                  </>
-                )}
-                {session.user.role === 'business' && (
-                  <Link
-                    href="/business/dashboard"
-                    className="text-sm font-medium text-[#666666] hover:text-[#00B14F] transition-colors"
-                  >
-                    Business
-                  </Link>
-                )}
-                {session.user.role === 'admin' && (
-                  <Link
-                    href="/admin/dashboard"
-                    className="text-sm font-medium text-[#666666] hover:text-[#00B14F] transition-colors"
-                  >
-                    Admin
-                  </Link>
-                )}
+                <Link
+                  href="/groups"
+                  className="text-sm font-medium text-[#666666] hover:text-[#00B14F] transition-colors"
+                >
+                  Groups
+                </Link>
+                <Link
+                  href="/friends"
+                  className="text-sm font-medium text-[#666666] hover:text-[#00B14F] transition-colors"
+                >
+                  Friends
+                </Link>
+                <Link
+                  href="/bookmarks"
+                  className="text-sm font-medium text-[#666666] hover:text-[#00B14F] transition-colors"
+                >
+                  Bookmarks
+                </Link>
               </nav>
-            )}
+            </SignedIn>
           </div>
 
           <div className="flex items-center gap-4">
-            {session ? (
-              <>
-                <div className="hidden md:block">
-                  <NotificationBell />
-                </div>
-
-                <button
-                  onClick={() => setIsMenuOpen(true)}
-                  className="flex items-center gap-2 rounded-lg p-2 hover:bg-[#F9F9F9] transition-colors"
-                >
-                  <div className="h-8 w-8 rounded-full bg-[#00B14F] flex items-center justify-center text-white font-medium text-sm">
-                    {session.user.name?.charAt(0).toUpperCase()}
-                  </div>
-                  <span className="hidden md:block text-sm font-medium text-[#111111]">
-                    {session.user.name}
-                  </span>
-                </button>
-              </>
-            ) : (
+            <SignedIn>
+              <div className="hidden md:block">
+                <NotificationBell />
+              </div>
+              <UserButton
+                appearance={{
+                  elements: {
+                    avatarBox: 'w-8 h-8',
+                    userButtonTrigger: 'hover:opacity-80',
+                  },
+                }}
+              />
+            </SignedIn>
+            <SignedOut>
               <div className="flex gap-3">
-                <Link href="/login">
+                <SignInButton mode="modal">
                   <button className="px-4 py-2 text-sm font-medium text-[#666666] hover:text-[#00B14F] transition-colors">
                     Sign In
                   </button>
-                </Link>
-                <Link href="/signup">
+                </SignInButton>
+                <SignUpButton mode="modal">
                   <button className="px-6 h-11 text-sm font-medium text-white bg-[#00B14F] rounded-full hover:bg-[#009944] transition-all">
                     Sign Up
                   </button>
-                </Link>
+                </SignUpButton>
               </div>
-            )}
+            </SignedOut>
           </div>
         </div>
       </header>
 
-      {session && (
+      <SignedIn>
         <HamburgerMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
-      )}
+      </SignedIn>
     </>
   );
 }

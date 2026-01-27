@@ -1,10 +1,12 @@
-import { auth } from '@/lib/auth/auth';
+import { clerkMiddleware } from '@clerk/nextjs/server';
 
-export default auth((req) => {
-  // Middleware logic is handled by authConfig.authorized callback
-  // This is just a wrapper to enable the middleware
-});
+export default clerkMiddleware();
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|public).*)'],
+  matcher: [
+    // Skip Next.js internals and all static files, unless found in search params
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    // Always run for API routes
+    '/(api|trpc)(.*)',
+  ],
 };
