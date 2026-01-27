@@ -80,7 +80,7 @@ export default function WelcomeDashboard({ userName, userEmail }: WelcomeDashboa
       {/* Create Note Modal */}
       {showCreateNoteModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="bg-[#1E1E1E] rounded-2xl border border-[#333333] p-8 max-w-lg w-full shadow-[0_16px_64px_rgba(0,9,255,0.3)] relative">
+          <div className="bg-[#1E1E1E] rounded-2xl border border-[#333333] p-6 max-w-md w-full shadow-[0_16px_64px_rgba(0,9,255,0.3)] relative">
             <button
               onClick={() => setShowCreateNoteModal(false)}
               className="absolute top-4 right-4 text-[#999999] hover:text-white transition-colors"
@@ -88,42 +88,42 @@ export default function WelcomeDashboard({ userName, userEmail }: WelcomeDashboa
               <X size={24} />
             </button>
 
-            <div className="text-center mb-6">
-              <div className="w-20 h-20 bg-[#00B14F]/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Sparkles className="w-10 h-10 text-[#00B14F]" />
+            <div className="text-center mb-4">
+              <div className="w-16 h-16 bg-[#00B14F]/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Sparkles className="w-8 h-8 text-[#00B14F]" />
               </div>
-              <h2 className="text-3xl font-bold mb-2">
+              <h2 className="text-2xl font-bold mb-2">
                 Welcome to Rusi Notes! 🎉
               </h2>
-              <p className="text-[#999999] font-normal">
+              <p className="text-sm text-[#999999] font-normal">
                 Start your food journey by creating your first Rusi Note!
               </p>
             </div>
 
-            <div className="space-y-4 mb-6">
-              <div className="flex items-start gap-3 p-4 bg-[#111111] rounded-xl border border-[#333333]">
-                <span className="text-2xl">🍛</span>
+            <div className="space-y-3 mb-4">
+              <div className="flex items-start gap-2 p-3 bg-[#111111] rounded-xl border border-[#333333]">
+                <span className="text-xl">🍛</span>
                 <div>
-                  <h3 className="font-semibold text-white mb-1">Review Dishes</h3>
-                  <p className="text-sm text-[#999999] font-normal">
+                  <h3 className="text-sm font-semibold text-white mb-0.5">Review Dishes</h3>
+                  <p className="text-xs text-[#999999] font-normal">
                     Rate specific dishes, not just restaurants
                   </p>
                 </div>
               </div>
-              <div className="flex items-start gap-3 p-4 bg-[#111111] rounded-xl border border-[#333333]">
-                <span className="text-2xl">📸</span>
+              <div className="flex items-start gap-2 p-3 bg-[#111111] rounded-xl border border-[#333333]">
+                <span className="text-xl">📸</span>
                 <div>
-                  <h3 className="font-semibold text-white mb-1">Add Photos</h3>
-                  <p className="text-sm text-[#999999] font-normal">
+                  <h3 className="text-sm font-semibold text-white mb-0.5">Add Photos</h3>
+                  <p className="text-xs text-[#999999] font-normal">
                     Capture your food moments visually
                   </p>
                 </div>
               </div>
-              <div className="flex items-start gap-3 p-4 bg-[#111111] rounded-xl border border-[#333333]">
-                <span className="text-2xl">👥</span>
+              <div className="flex items-start gap-2 p-3 bg-[#111111] rounded-xl border border-[#333333]">
+                <span className="text-xl">👥</span>
                 <div>
-                  <h3 className="font-semibold text-white mb-1">Share with Friends</h3>
-                  <p className="text-sm text-[#999999] font-normal">
+                  <h3 className="text-sm font-semibold text-white mb-0.5">Share with Friends</h3>
+                  <p className="text-xs text-[#999999] font-normal">
                     Let your Nanba gang know what's mass!
                   </p>
                 </div>
@@ -132,13 +132,13 @@ export default function WelcomeDashboard({ userName, userEmail }: WelcomeDashboa
 
             <button
               onClick={handleCreateNote}
-              className="w-full px-8 h-12 bg-[#00B14F] text-white rounded-[100px] font-medium hover:opacity-90 transition-all"
+              className="w-full px-6 h-10 bg-[#00B14F] text-white rounded-[100px] text-sm font-medium hover:opacity-90 transition-all"
             >
               Create Your First Note 🚀
             </button>
             <button
               onClick={() => setShowCreateNoteModal(false)}
-              className="w-full mt-3 px-8 h-12 bg-transparent border-2 border-[#333333] text-white rounded-[100px] font-medium hover:border-white/80 transition-all"
+              className="w-full mt-2 px-6 h-10 bg-transparent border-2 border-[#333333] text-white rounded-[100px] text-sm font-medium hover:border-white/80 transition-all"
             >
               Maybe Later
             </button>
