@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/lib/auth/auth';
+import { auth } from '@clerk/nextjs/server';
 import { createClient } from '@/lib/supabase/server';
 
 // GET /api/groups/[id]/messages - Get messages for group (with polling support)
@@ -8,9 +8,9 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
+    const { userId } = await auth();
 
-    if (!session) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -29,7 +29,7 @@ export async function GET(
       .from('group_members')
       .select('id')
       .eq('group_id', resolvedParams.id)
-      .eq('user_id', session.user.id)
+      .eq('user_id', userId)
       .single();
 
     if (!membership) {
@@ -80,9 +80,9 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
+    const { userId } = await auth();
 
-    if (!session) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized. Please sign in.' },
         { status: 401 }
@@ -107,7 +107,7 @@ export async function POST(
       .from('group_members')
       .select('id')
       .eq('group_id', resolvedParams.id)
-      .eq('user_id', session.user.id)
+      .eq('user_id', userId)
       .single();
 
     if (!membership) {
@@ -122,7 +122,7 @@ export async function POST(
       .from('messages')
       .insert({
         group_id: resolvedParams.id,
-        sender_id: session.user.id,
+        sender_id: userId,
         content: content.trim(),
         message_type: message_type || 'text',
         metadata: metadata || null,

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useUser } from '@clerk/nextjs';
 import { Star, MapPin, Calendar, Heart, Bookmark, Plus } from 'lucide-react';
 import Link from 'next/link';
 
@@ -29,21 +29,21 @@ type Note = {
 
 export default function NotesPage() {
   const router = useRouter();
-  const { data: session } = useSession();
+  const { user, isSignedIn } = useUser();
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'my-notes'>('all');
 
   useEffect(() => {
     fetchNotes();
-  }, [filter, session]);
+  }, [filter, user]);
 
   const fetchNotes = async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
-      if (filter === 'my-notes' && session?.user?.id) {
-        params.append('userId', session.user.id);
+      if (filter === 'my-notes' && user?.id) {
+        params.append('userId', user.id);
       }
 
       const res = await fetch(`/api/notes?${params.toString()}`);
@@ -82,7 +82,7 @@ export default function NotesPage() {
               </p>
             </div>
 
-            {session && (
+            {isSignedIn && (
               <Link
                 href="/notes/create"
                 className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl"
@@ -94,7 +94,7 @@ export default function NotesPage() {
           </div>
 
           {/* Filter Tabs */}
-          {session && (
+          {isSignedIn && (
             <div className="flex gap-4 mt-6">
               <button
                 onClick={() => setFilter('all')}
@@ -156,7 +156,7 @@ export default function NotesPage() {
                 ? 'Start sharing your food experiences'
                 : 'Be the first to share a tasting note'}
             </p>
-            {session && (
+            {isSignedIn && (
               <Link
                 href="/notes/create"
                 className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all shadow-lg"
@@ -300,7 +300,7 @@ export default function NotesPage() {
       </div>
 
       {/* Floating Action Button for Mobile */}
-      {session && (
+      {isSignedIn && (
         <Link
           href="/notes/create"
           className="fixed bottom-6 right-6 md:hidden flex items-center justify-center w-14 h-14 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-full shadow-2xl hover:scale-110 transition-transform z-20"

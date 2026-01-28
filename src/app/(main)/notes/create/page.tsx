@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useUser } from '@clerk/nextjs';
 import { Star, Upload, X, Tag as TagIcon } from 'lucide-react';
 
 type Restaurant = {
@@ -20,7 +20,7 @@ type Dish = {
 
 export default function CreateNotePage() {
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { isLoaded, isSignedIn } = useUser();
   const [loading, setLoading] = useState(false);
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [dishes, setDishes] = useState<Dish[]>([]);
@@ -41,10 +41,10 @@ export default function CreateNotePage() {
 
   // Redirect if not authenticated
   useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/login');
+    if (isLoaded && !isSignedIn) {
+      router.push('/');
     }
-  }, [status, router]);
+  }, [isLoaded, isSignedIn, router]);
 
   // Fetch restaurants on mount
   useEffect(() => {
@@ -176,7 +176,7 @@ export default function CreateNotePage() {
     }
   };
 
-  if (status === 'loading') {
+  if (!isLoaded) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00B14F]"></div>

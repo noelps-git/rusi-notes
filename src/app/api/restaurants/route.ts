@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/lib/auth/auth';
+import { auth, currentUser } from '@clerk/nextjs/server';
 import { createClient } from '@/lib/supabase/server';
 
 // GET /api/restaurants - List all restaurants with optional filters
@@ -48,9 +48,10 @@ export async function GET(req: NextRequest) {
 // POST /api/restaurants - Create new restaurant (business users only)
 export async function POST(req: NextRequest) {
   try {
-    const session = await auth();
+    const { userId } = await auth();
+    const user = await currentUser();
 
-    if (!session || session.user.role !== 'business') {
+    if (!userId || (user?.publicMetadata as any)?.role !== 'business') {
       return NextResponse.json(
         { error: 'Unauthorized. Business account required.' },
         { status: 403 }
@@ -130,7 +131,7 @@ export async function POST(req: NextRequest) {
     const { data: restaurant, error } = await supabase
       .from('restaurants')
       .insert({
-        owner_id: session.user.id,
+        owner_id: userId,
         name,
         description,
         categories,

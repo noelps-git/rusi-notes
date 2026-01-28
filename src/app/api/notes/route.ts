@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/lib/auth/auth';
+import { auth } from '@clerk/nextjs/server';
 import { createClient } from '@/lib/supabase/server';
 
 // GET /api/notes - List all tasting notes
@@ -47,9 +47,9 @@ export async function GET(req: NextRequest) {
 // POST /api/notes - Create new tasting note
 export async function POST(req: NextRequest) {
   try {
-    const session = await auth();
+    const { userId } = await auth();
 
-    if (!session) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized. Please sign in.' },
         { status: 401 }
@@ -90,7 +90,7 @@ export async function POST(req: NextRequest) {
     const { data: note, error } = await supabase
       .from('tasting_notes')
       .insert({
-        user_id: session.user.id,
+        user_id: userId,
         restaurant_id,
         dish_id,
         title,

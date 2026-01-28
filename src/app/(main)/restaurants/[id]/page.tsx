@@ -1,7 +1,7 @@
 'use client';
 
 import { use, useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
+import { useUser } from '@clerk/nextjs';
 import Link from 'next/link';
 import { Restaurant } from '@/types/database';
 import { Button } from '@/components/ui/Button';
@@ -9,7 +9,7 @@ import { formatCurrency } from '@/lib/utils/formatters';
 
 export default function RestaurantDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
-  const { data: session } = useSession();
+  const { user, isSignedIn } = useUser();
   const [restaurant, setRestaurant] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isFavorite, setIsFavorite] = useState(false);

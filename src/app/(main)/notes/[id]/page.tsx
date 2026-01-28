@@ -2,7 +2,7 @@
 
 import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useUser } from '@clerk/nextjs';
 import {
   Star,
   MapPin,
@@ -49,7 +49,7 @@ export default function NoteDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const router = useRouter();
-  const { data: session } = useSession();
+  const { user, isSignedIn } = useUser();
   const resolvedParams = use(params);
   const [note, setNote] = useState<Note | null>(null);
   const [loading, setLoading] = useState(true);
@@ -82,7 +82,7 @@ export default function NoteDetailPage({
   };
 
   const checkBookmark = async () => {
-    if (!session) return;
+    if (!isSignedIn) return;
 
     try {
       const res = await fetch(`/api/bookmarks/check?note_id=${resolvedParams.id}`);
@@ -97,7 +97,7 @@ export default function NoteDetailPage({
   };
 
   const handleLike = async () => {
-    if (!session) {
+    if (!isSignedIn) {
       router.push('/login');
       return;
     }
@@ -118,8 +118,8 @@ export default function NoteDetailPage({
   };
 
   const handleBookmark = async () => {
-    if (!session) {
-      router.push('/login');
+    if (!isSignedIn) {
+      router.push('/');
       return;
     }
 
@@ -202,7 +202,7 @@ export default function NoteDetailPage({
     return null;
   }
 
-  const isOwner = session?.user?.id === note.user_id;
+  const isOwner = user?.id === note.user_id;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-pink-50 to-purple-50 py-8 px-4 sm:px-6 lg:px-8">
@@ -408,7 +408,7 @@ export default function NoteDetailPage({
 
 // Comments Section Component
 function CommentsSection({ noteId }: { noteId: string }) {
-  const { data: session } = useSession();
+  const { user, isSignedIn } = useUser();
   const [comments, setComments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [commentText, setCommentText] = useState('');
@@ -436,7 +436,7 @@ function CommentsSection({ noteId }: { noteId: string }) {
   const handleSubmitComment = async (e: React.FormEvent, parentId: string | null = null) => {
     e.preventDefault();
 
-    if (!session) {
+    if (!isSignedIn) {
       alert('Please sign in to comment');
       return;
     }
@@ -494,7 +494,7 @@ function CommentsSection({ noteId }: { noteId: string }) {
       </h2>
 
       {/* Comment Form */}
-      {session ? (
+      {isSignedIn ? (
         <form onSubmit={(e) => handleSubmitComment(e)} className="mb-8">
           <textarea
             value={commentText}
@@ -545,7 +545,7 @@ function CommentsSection({ noteId }: { noteId: string }) {
               key={comment.id}
               comment={comment}
               replies={getReplies(comment.id)}
-              session={session}
+              user={user}
               onDelete={handleDeleteComment}
               onReply={(id) => setReplyingTo(id)}
             />
@@ -560,17 +560,17 @@ function CommentsSection({ noteId }: { noteId: string }) {
 function CommentItem({
   comment,
   replies,
-  session,
+  user,
   onDelete,
   onReply,
 }: {
   comment: any;
   replies: any[];
-  session: any;
+  user: any;
   onDelete: (id: string) => void;
   onReply: (id: string) => void;
 }) {
-  const isOwner = session?.user?.id === comment.user.id;
+  const isOwner = user?.id === comment.user.id;
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -618,7 +618,7 @@ function CommentItem({
         </div>
 
         {/* Reply button */}
-        {session && (
+        {user && (
           <button
             onClick={() => onReply(comment.id)}
             className="text-sm text-indigo-600 hover:text-indigo-700 mt-2"
@@ -635,7 +635,7 @@ function CommentItem({
                 key={reply.id}
                 comment={reply}
                 replies={[]}
-                session={session}
+                user={user}
                 onDelete={onDelete}
                 onReply={onReply}
               />

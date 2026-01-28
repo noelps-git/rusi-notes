@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/lib/auth/auth';
+import { auth, currentUser } from '@clerk/nextjs/server';
 import { createClient } from '@/lib/supabase/server';
 
 // GET /api/business/insights - Get business insights and analytics
 export async function GET(req: NextRequest) {
   try {
-    const session = await auth();
+    const { userId } = await auth();
+    const user = await currentUser();
 
-    if (!session || session.user.role !== 'business') {
+    if (!userId || (user?.publicMetadata as any)?.role !== 'business') {
       return NextResponse.json(
         { error: 'Unauthorized. Business account required.' },
         { status: 403 }
@@ -20,7 +21,7 @@ export async function GET(req: NextRequest) {
     const { data: restaurant } = await supabase
       .from('restaurants')
       .select('id, name')
-      .eq('owner_id', session.user.id)
+      .eq('owner_id', userId)
       .single();
 
     if (!restaurant) {

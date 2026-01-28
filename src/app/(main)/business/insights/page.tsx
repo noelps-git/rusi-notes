@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
+import { useUser } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import {
   TrendingUp,
@@ -32,25 +32,25 @@ interface Insights {
 }
 
 export default function BusinessInsightsPage() {
-  const { data: session, status } = useSession();
+  const { user, isLoaded, isSignedIn } = useUser();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [restaurant, setRestaurant] = useState<any>(null);
   const [insights, setInsights] = useState<Insights | null>(null);
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/login');
-    } else if (status === 'authenticated' && session?.user?.role !== 'business') {
+    if (isLoaded && !isSignedIn) {
+      router.push('/');
+    } else if (isSignedIn && (user?.publicMetadata as any)?.role !== 'business') {
       router.push('/dashboard');
     }
-  }, [status, session, router]);
+  }, [isLoaded, isSignedIn, user, router]);
 
   useEffect(() => {
-    if (status === 'authenticated') {
+    if (isSignedIn) {
       fetchInsights();
     }
-  }, [status]);
+  }, [isSignedIn]);
 
   const fetchInsights = async () => {
     try {

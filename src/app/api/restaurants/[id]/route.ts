@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/lib/auth/auth';
+import { auth, currentUser } from '@clerk/nextjs/server';
 import { createClient } from '@/lib/supabase/server';
 
 // GET /api/restaurants/[id] - Get single restaurant
@@ -47,9 +47,10 @@ export async function PUT(
 ) {
   try {
     const resolvedParams = await params;
-    const session = await auth();
+    const { userId } = await auth();
+    const user = await currentUser();
 
-    if (!session) {
+    if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -69,7 +70,7 @@ export async function PUT(
       );
     }
 
-    if (restaurant.owner_id !== session.user.id && session.user.role !== 'admin') {
+    if (restaurant.owner_id !== userId && (user?.publicMetadata as any)?.role !== 'admin') {
       return NextResponse.json(
         { error: 'Unauthorized. You can only edit your own restaurants.' },
         { status: 403 }
@@ -104,9 +105,10 @@ export async function DELETE(
 ) {
   try {
     const resolvedParams = await params;
-    const session = await auth();
+    const { userId } = await auth();
+    const user = await currentUser();
 
-    if (!session) {
+    if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -126,7 +128,7 @@ export async function DELETE(
       );
     }
 
-    if (restaurant.owner_id !== session.user.id && session.user.role !== 'admin') {
+    if (restaurant.owner_id !== userId && (user?.publicMetadata as any)?.role !== 'admin') {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 403 }

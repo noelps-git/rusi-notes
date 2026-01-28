@@ -1,13 +1,13 @@
-import { auth } from '@/lib/auth/auth';
+import { currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
 import { createClient } from '@/lib/supabase/server';
 import Link from 'next/link';
 
 export default async function BusinessDashboardPage() {
-  const session = await auth();
+  const user = await currentUser();
 
-  if (!session || session.user.role !== 'business') {
+  if (!user || (user.publicMetadata as any)?.role !== 'business') {
     redirect('/dashboard');
   }
 
@@ -16,7 +16,7 @@ export default async function BusinessDashboardPage() {
   const { data: restaurant } = await supabase
     .from('restaurants')
     .select('id, name, is_verified')
-    .eq('owner_id', session.user.id)
+    .eq('owner_id', user.id)
     .single();
 
   // If no restaurant, redirect to onboarding

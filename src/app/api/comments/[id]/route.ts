@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/lib/auth/auth';
+import { auth, currentUser } from '@clerk/nextjs/server';
 import { createClient } from '@/lib/supabase/server';
 
 // PUT /api/comments/[id] - Update a comment
@@ -8,9 +8,10 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
+    const { userId } = await auth();
+    const user = await currentUser();
 
-    if (!session) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -44,7 +45,7 @@ export async function PUT(
       );
     }
 
-    if (comment.user_id !== session.user.id) {
+    if (comment.user_id !== userId) {
       return NextResponse.json(
         { error: 'You can only edit your own comments' },
         { status: 403 }
@@ -84,9 +85,10 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
+    const { userId } = await auth();
+    const user = await currentUser();
 
-    if (!session) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -110,7 +112,7 @@ export async function DELETE(
       );
     }
 
-    if (comment.user_id !== session.user.id && session.user.role !== 'admin') {
+    if (comment.user_id !== userId && (user?.publicMetadata as any)?.role !== 'admin') {
       return NextResponse.json(
         { error: 'You can only delete your own comments' },
         { status: 403 }

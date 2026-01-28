@@ -1,14 +1,14 @@
-import { auth } from '@/lib/auth/auth';
+import { currentUser } from '@clerk/nextjs/server';
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { Bookmark, Star, MapPin, Calendar } from 'lucide-react';
 
 export default async function BookmarksPage() {
-  const session = await auth();
+  const user = await currentUser();
 
-  if (!session) {
-    redirect('/login');
+  if (!user) {
+    redirect('/');
   }
 
   const supabase = await createClient();
@@ -32,7 +32,7 @@ export default async function BookmarksPage() {
         restaurant:restaurants(id, name, categories)
       )
     `)
-    .eq('user_id', session.user.id)
+    .eq('user_id', user.id)
     .order('created_at', { ascending: false });
 
   const notes = bookmarks?.map((b: any) => b.note).filter(Boolean) || [];

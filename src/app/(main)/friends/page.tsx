@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
+import { useUser } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import { UserPlus, Check, X, Search, Users } from 'lucide-react';
 
@@ -22,7 +22,7 @@ type Friendship = {
 
 export default function FriendsPage() {
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { user, isLoaded, isSignedIn } = useUser();
   const [activeTab, setActiveTab] = useState<'friends' | 'requests' | 'search'>('friends');
   const [friends, setFriends] = useState<Friendship[]>([]);
   const [sentRequests, setSentRequests] = useState<Friendship[]>([]);
@@ -33,12 +33,12 @@ export default function FriendsPage() {
   const [searching, setSearching] = useState(false);
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/login');
-    } else if (status === 'authenticated') {
+    if (isLoaded && !isSignedIn) {
+      router.push('/');
+    } else if (isSignedIn) {
       fetchFriendships();
     }
-  }, [status, router]);
+  }, [isLoaded, isSignedIn, router]);
 
   const fetchFriendships = async () => {
     setLoading(true);
@@ -156,7 +156,7 @@ export default function FriendsPage() {
     }
   };
 
-  if (status === 'loading' || loading) {
+  if (!isLoaded || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#111111]">
         <div className="animate-spin rounded-full h-12 w-12 border-2 border-[#00B14F] border-t-transparent"></div>
@@ -236,7 +236,7 @@ export default function FriendsPage() {
                 <div className="space-y-4">
                   {friends.map((friendship) => {
                     const friend =
-                      friendship.requester.id === session?.user?.id
+                      friendship.requester.id === user?.id
                         ? friendship.recipient
                         : friendship.requester;
                     return (

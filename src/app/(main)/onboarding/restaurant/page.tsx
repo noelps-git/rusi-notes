@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useUser } from '@clerk/nextjs';
 import { MapPin, Building2, FileText, CheckSquare, Square } from 'lucide-react';
 
 const CHENNAI_CATEGORIES = [
@@ -22,7 +22,7 @@ const CHENNAI_CATEGORIES = [
 
 export default function RestaurantOnboardingPage() {
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { user, isLoaded, isSignedIn } = useUser();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -40,12 +40,12 @@ export default function RestaurantOnboardingPage() {
   const [priceRange, setPriceRange] = useState('₹₹');
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/login');
-    } else if (status === 'authenticated' && session?.user?.role !== 'business') {
+    if (isLoaded && !isSignedIn) {
+      router.push('/');
+    } else if (isSignedIn && (user?.publicMetadata as any)?.role !== 'business') {
       router.push('/dashboard');
     }
-  }, [status, session, router]);
+  }, [isLoaded, isSignedIn, user, router]);
 
   const toggleCategory = (categoryId: string) => {
     if (categories.includes(categoryId)) {

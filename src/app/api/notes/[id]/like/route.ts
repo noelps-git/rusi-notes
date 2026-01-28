@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/lib/auth/auth';
+import { auth } from '@clerk/nextjs/server';
 import { createClient } from '@/lib/supabase/server';
 
 // POST /api/notes/[id]/like - Toggle like
@@ -8,9 +8,9 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
+    const { userId } = await auth();
 
-    if (!session) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized. Please sign in.' },
         { status: 401 }
@@ -24,7 +24,7 @@ export async function POST(
     const { data: existingLike } = await supabase
       .from('likes')
       .select('id')
-      .eq('user_id', session.user.id)
+      .eq('user_id', userId)
       .eq('note_id', resolvedParams.id)
       .single();
 
@@ -33,7 +33,7 @@ export async function POST(
       await supabase
         .from('likes')
         .delete()
-        .eq('user_id', session.user.id)
+        .eq('user_id', userId)
         .eq('note_id', resolvedParams.id);
 
       // Decrement likes count
@@ -45,7 +45,7 @@ export async function POST(
       await supabase
         .from('likes')
         .insert({
-          user_id: session.user.id,
+          user_id: userId,
           note_id: resolvedParams.id,
         });
 

@@ -1,4 +1,4 @@
-import { auth } from '@/lib/auth/auth';
+import { currentUser } from '@clerk/nextjs/server';
 import { createClient } from '@/lib/supabase/server';
 import { redirect, notFound } from 'next/navigation';
 import Link from 'next/link';
@@ -9,10 +9,10 @@ export default async function UserProfilePage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const session = await auth();
+  const clerkUser = await currentUser();
 
-  if (!session) {
-    redirect('/login');
+  if (!clerkUser) {
+    redirect('/');
   }
 
   const resolvedParams = await params;
@@ -30,7 +30,7 @@ export default async function UserProfilePage({
   }
 
   // Check if viewing own profile
-  const isOwnProfile = session.user.id === user.id;
+  const isOwnProfile = clerkUser.id === user.id;
 
   // Get user stats
   const [notesResult, friendsResult, likesResult] = await Promise.all([
@@ -80,7 +80,7 @@ export default async function UserProfilePage({
     const { data: friendship } = await supabase
       .from('friendships')
       .select('id, status, requester_id')
-      .or(`and(requester_id.eq.${session.user.id},recipient_id.eq.${user.id}),and(requester_id.eq.${user.id},recipient_id.eq.${session.user.id})`)
+      .or(`and(requester_id.eq.${clerkUser.id},recipient_id.eq.${user.id}),and(requester_id.eq.${user.id},recipient_id.eq.${clerkUser.id})`)
       .single();
 
     friendshipStatus = friendship;

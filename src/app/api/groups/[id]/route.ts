@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/lib/auth/auth';
+import { auth } from '@clerk/nextjs/server';
 import { createClient } from '@/lib/supabase/server';
 
 // GET /api/groups/[id] - Get single group with members
@@ -8,9 +8,9 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
+    const { userId } = await auth();
 
-    if (!session) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -25,7 +25,7 @@ export async function GET(
       .from('group_members')
       .select('role')
       .eq('group_id', resolvedParams.id)
-      .eq('user_id', session.user.id)
+      .eq('user_id', userId)
       .single();
 
     if (!membership) {
@@ -84,9 +84,9 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
+    const { userId } = await auth();
 
-    if (!session) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -101,7 +101,7 @@ export async function PUT(
       .from('group_members')
       .select('role')
       .eq('group_id', resolvedParams.id)
-      .eq('user_id', session.user.id)
+      .eq('user_id', userId)
       .single();
 
     if (!membership || membership.role !== 'admin') {
@@ -144,9 +144,9 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
+    const { userId } = await auth();
 
-    if (!session) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -161,7 +161,7 @@ export async function DELETE(
       .from('group_members')
       .select('role')
       .eq('group_id', resolvedParams.id)
-      .eq('user_id', session.user.id)
+      .eq('user_id', userId)
       .single();
 
     if (!membership || membership.role !== 'admin') {

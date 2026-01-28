@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
+import { useUser } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -33,24 +33,24 @@ interface Analytics {
 }
 
 export default function AdminDashboardPage() {
-  const { data: session, status } = useSession();
+  const { user, isLoaded, isSignedIn } = useUser();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [analytics, setAnalytics] = useState<Analytics | null>(null);
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/login');
-    } else if (status === 'authenticated' && session?.user?.role !== 'admin') {
+    if (isLoaded && !isSignedIn) {
+      router.push('/');
+    } else if (isSignedIn && (user?.publicMetadata as any)?.role !== 'admin') {
       router.push('/dashboard');
     }
-  }, [status, session, router]);
+  }, [isLoaded, isSignedIn, user, router]);
 
   useEffect(() => {
-    if (status === 'authenticated') {
+    if (isSignedIn) {
       fetchAnalytics();
     }
-  }, [status]);
+  }, [isSignedIn]);
 
   const fetchAnalytics = async () => {
     try {

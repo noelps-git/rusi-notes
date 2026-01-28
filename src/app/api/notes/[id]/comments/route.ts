@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/lib/auth/auth';
+import { auth, currentUser } from '@clerk/nextjs/server';
 import { createClient } from '@/lib/supabase/server';
 import { createNotification } from '@/lib/utils/notifications';
 
@@ -43,14 +43,16 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
+    const { userId } = await auth();
 
-    if (!session) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized. Please sign in.' },
         { status: 401 }
       );
     }
+
+    const user = await currentUser();
 
     const resolvedParams = await params;
     const body = await req.json();
@@ -84,7 +86,7 @@ export async function POST(
       .from('comments')
       .insert({
         note_id: resolvedParams.id,
-        user_id: session.user.id,
+        user_id: userId,
         content: content.trim(),
         parent_id: parent_id || null,
       })
@@ -101,16 +103,16 @@ export async function POST(
     if (error) throw error;
 
     // Create notification for note author (if not commenting on own note)
-    if (note.user_id !== session.user.id) {
+    if (note.user_id !== userId) {
       await createNotification({
         user_id: note.user_id,
         type: 'comment',
         title: 'New Comment',
-        message: `${session.user.name || 'Someone'} commented on your note "${note.title || 'Untitled'}"`,
+        message: `${user?.fullName || 'Someone'} commented on your note "${note.title || 'Untitled'}"`,
         link: `/notes/${note.id}`,
         metadata: {
-          commenter_id: session.user.id,
-          commenter_name: session.user.name,
+          commenter_id: userId,
+          commenter_name: user?.fullName,
           comment_id: comment.id,
           note_id: note.id,
         },

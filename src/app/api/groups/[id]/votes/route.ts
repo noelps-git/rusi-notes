@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/lib/auth/auth';
+import { auth } from '@clerk/nextjs/server';
 import { createClient } from '@/lib/supabase/server';
 
 // POST /api/groups/[id]/votes - Create a vote
@@ -8,9 +8,9 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
+    const { userId } = await auth();
 
-    if (!session) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized. Please sign in.' },
         { status: 401 }
@@ -35,7 +35,7 @@ export async function POST(
       .from('group_members')
       .select('id')
       .eq('group_id', resolvedParams.id)
-      .eq('user_id', session.user.id)
+      .eq('user_id', userId)
       .single();
 
     if (!membership) {
@@ -50,7 +50,7 @@ export async function POST(
       .from('messages')
       .insert({
         group_id: resolvedParams.id,
-        sender_id: session.user.id,
+        sender_id: userId,
         content: `📊 Poll: ${question}`,
         message_type: 'vote',
       })
@@ -78,7 +78,7 @@ export async function POST(
         message_id: message.id,
         question,
         options: formattedOptions,
-        created_by: session.user.id,
+        created_by: userId,
         expires_at: expiresAt,
       })
       .select()
@@ -105,9 +105,9 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
+    const { userId } = await auth();
 
-    if (!session) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -122,7 +122,7 @@ export async function GET(
       .from('group_members')
       .select('id')
       .eq('group_id', resolvedParams.id)
-      .eq('user_id', session.user.id)
+      .eq('user_id', userId)
       .single();
 
     if (!membership) {
@@ -159,7 +159,7 @@ export async function GET(
       .from('vote_responses')
       .select('vote_id, option_id')
       .in('vote_id', voteIds)
-      .eq('user_id', session.user.id);
+      .eq('user_id', userId);
 
     const votesWithUserResponse = votes?.map((vote: any) => ({
       ...vote,

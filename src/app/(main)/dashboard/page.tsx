@@ -1,18 +1,18 @@
-import { auth } from '@/lib/auth/auth';
+import { currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import WelcomeDashboard from '@/components/dashboard/WelcomeDashboard';
 
 export default async function DashboardPage() {
-  const session = await auth();
+  const user = await currentUser();
 
-  if (!session) {
-    redirect('/login');
+  if (!user) {
+    redirect('/');
   }
 
   return (
     <WelcomeDashboard
-      userName={session.user.name || 'Friend'}
-      userEmail={session.user.email || ''}
+      userName={user.fullName || 'Friend'}
+      userEmail={user.emailAddresses[0]?.emailAddress || ''}
     />
   );
 }

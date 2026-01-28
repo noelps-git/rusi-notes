@@ -1,4 +1,4 @@
-import { auth } from '@/lib/auth/auth';
+import { currentUser } from '@clerk/nextjs/server';
 import { createClient } from '@/lib/supabase/server';
 import { redirect, notFound } from 'next/navigation';
 import GroupChatClient from '@/components/groups/GroupChatClient';
@@ -8,10 +8,10 @@ export default async function GroupChatPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const session = await auth();
+  const user = await currentUser();
 
-  if (!session) {
-    redirect('/login');
+  if (!user) {
+    redirect('/');
   }
 
   const resolvedParams = await params;
@@ -22,7 +22,7 @@ export default async function GroupChatPage({
     .from('group_members')
     .select('id, role')
     .eq('group_id', resolvedParams.id)
-    .eq('user_id', session.user.id)
+    .eq('user_id', user.id)
     .single();
 
   if (!membership) {
@@ -97,7 +97,7 @@ export default async function GroupChatPage({
       group={group}
       members={members || []}
       initialMessages={initialMessages || []}
-      currentUserId={session.user.id}
+      currentUserId={user.id}
       userRole={membership.role}
     />
   );

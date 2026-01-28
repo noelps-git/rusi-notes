@@ -1,4 +1,4 @@
-import { auth } from '@/lib/auth/auth';
+import { currentUser } from '@clerk/nextjs/server';
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
@@ -6,10 +6,10 @@ import { Users, Plus, Lock, Globe, MessageCircle } from 'lucide-react';
 import CreateGroupButton from '@/components/groups/CreateGroupButton';
 
 export default async function GroupsPage() {
-  const session = await auth();
+  const user = await currentUser();
 
-  if (!session) {
-    redirect('/login');
+  if (!user) {
+    redirect('/');
   }
 
   const supabase = await createClient();
@@ -30,7 +30,7 @@ export default async function GroupsPage() {
         creator:users!groups_creator_id_fkey(id, full_name, avatar_url)
       )
     `)
-    .eq('user_id', session.user.id)
+    .eq('user_id', user.id)
     .order('joined_at', { ascending: false });
 
   const groups = memberships?.map((m: any) => ({

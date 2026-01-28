@@ -1,6 +1,6 @@
 'use client';
 
-import { useSession, signOut } from 'next-auth/react';
+import { useUser, useClerk } from '@clerk/nextjs';
 import Link from 'next/link';
 import { useEffect } from 'react';
 
@@ -10,7 +10,8 @@ interface HamburgerMenuProps {
 }
 
 export function HamburgerMenu({ isOpen, onClose }: HamburgerMenuProps) {
-  const { data: session } = useSession();
+  const { user, isSignedIn } = useUser();
+  const { signOut } = useClerk();
 
   useEffect(() => {
     if (isOpen) {
@@ -23,7 +24,7 @@ export function HamburgerMenu({ isOpen, onClose }: HamburgerMenuProps) {
     };
   }, [isOpen]);
 
-  if (!session) return null;
+  if (!isSignedIn) return null;
 
   const handleSignOut = () => {
     signOut({ callbackUrl: '/' });
@@ -40,7 +41,7 @@ export function HamburgerMenu({ isOpen, onClose }: HamburgerMenuProps) {
     { href: '/profile', label: 'Profile', icon: '👤' },
   ];
 
-  if (session.user.role === 'business') {
+  if ((user?.publicMetadata as any)?.role === 'business') {
     menuItems.push(
       { href: '/business/dashboard', label: 'Business Dashboard', icon: '🏪' },
       { href: '/business/insights', label: 'Insights', icon: '📈' },
@@ -48,7 +49,7 @@ export function HamburgerMenu({ isOpen, onClose }: HamburgerMenuProps) {
     );
   }
 
-  if (session.user.role === 'admin') {
+  if ((user?.publicMetadata as any)?.role === 'admin') {
     menuItems.push(
       { href: '/admin/dashboard', label: 'Admin Dashboard', icon: '⚙️' },
       { href: '/admin/users', label: 'User Management', icon: '👥' },
@@ -94,13 +95,13 @@ export function HamburgerMenu({ isOpen, onClose }: HamburgerMenuProps) {
 
             <div className="flex items-center gap-3 p-3 bg-[#F9F9F9] rounded-lg">
               <div className="h-12 w-12 rounded-full bg-[#00B14F] flex items-center justify-center text-white font-medium">
-                {session.user.name?.charAt(0).toUpperCase()}
+                {user?.fullName?.charAt(0).toUpperCase()}
               </div>
               <div>
-                <div className="font-medium text-[#111111]">{session.user.name}</div>
-                <div className="text-sm text-[#666666]">{session.user.email}</div>
+                <div className="font-medium text-[#111111]">{user?.fullName}</div>
+                <div className="text-sm text-[#666666]">{user?.emailAddresses[0]?.emailAddress}</div>
                 <div className="text-xs text-[#00B14F] font-medium capitalize mt-1">
-                  {session.user.role}
+                  {(user?.publicMetadata as any)?.role}
                 </div>
               </div>
             </div>

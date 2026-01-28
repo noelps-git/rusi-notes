@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/lib/auth/auth';
+import { auth } from '@clerk/nextjs/server';
 import { createClient } from '@/lib/supabase/server';
 
 // GET /api/groups - Get all groups user is a member of
 export async function GET(req: NextRequest) {
   try {
-    const session = await auth();
+    const { userId } = await auth();
 
-    if (!session) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
           creator:users!groups_creator_id_fkey(id, full_name, avatar_url)
         )
       `)
-      .eq('user_id', session.user.id);
+      .eq('user_id', userId);
 
     if (error) throw error;
 
@@ -57,9 +57,9 @@ export async function GET(req: NextRequest) {
 // POST /api/groups - Create a new group
 export async function POST(req: NextRequest) {
   try {
-    const session = await auth();
+    const { userId } = await auth();
 
-    if (!session) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized. Please sign in.' },
         { status: 401 }
@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
       .insert({
         name: name.trim(),
         description: description?.trim() || null,
-        creator_id: session.user.id,
+        creator_id: userId,
         is_private: is_private !== undefined ? is_private : true,
       })
       .select()
@@ -97,7 +97,7 @@ export async function POST(req: NextRequest) {
       .from('group_members')
       .insert({
         group_id: group.id,
-        user_id: session.user.id,
+        user_id: userId,
         role: 'admin',
       });
 

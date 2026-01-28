@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/lib/auth/auth';
+import { auth, currentUser } from '@clerk/nextjs/server';
 import { createClient } from '@/lib/supabase/server';
 
 // GET /api/notes/[id] - Get single note
@@ -48,12 +48,13 @@ export async function PUT(
 ) {
   try {
     const resolvedParams = await params;
-    const session = await auth();
+    const { userId } = await auth();
 
-    if (!session) {
+    if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const user = await currentUser();
     const supabase = await createClient();
 
     // Check if user owns this note
@@ -70,7 +71,7 @@ export async function PUT(
       );
     }
 
-    if (note.user_id !== session.user.id && session.user.role !== 'admin') {
+    if (note.user_id !== userId && (user?.publicMetadata as any)?.role !== 'admin') {
       return NextResponse.json(
         { error: 'Unauthorized. You can only edit your own notes.' },
         { status: 403 }
@@ -109,12 +110,13 @@ export async function DELETE(
 ) {
   try {
     const resolvedParams = await params;
-    const session = await auth();
+    const { userId } = await auth();
 
-    if (!session) {
+    if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const user = await currentUser();
     const supabase = await createClient();
 
     // Check if user owns this note
@@ -131,7 +133,7 @@ export async function DELETE(
       );
     }
 
-    if (note.user_id !== session.user.id && session.user.role !== 'admin') {
+    if (note.user_id !== userId && (user?.publicMetadata as any)?.role !== 'admin') {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 403 }
