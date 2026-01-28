@@ -99,7 +99,7 @@ export default function RestaurantDetailPage({ params }: { params: Promise<{ id:
                 </div>
               </div>
 
-              {session && (
+              {isSignedIn && (
                 <button
                   onClick={toggleFavorite}
                   className={`p-4 rounded-full transition-all ${
@@ -171,7 +171,7 @@ export default function RestaurantDetailPage({ params }: { params: Promise<{ id:
             )}
 
             {/* Write Review CTA */}
-            {session && (
+            {isSignedIn && (
               <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-6 text-white">
                 <h3 className="text-xl font-bold mb-2">Share Your Experience</h3>
                 <p className="mb-4 text-white/90">Tried this restaurant? Write a tasting note!</p>
