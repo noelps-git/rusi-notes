@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useUser } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
-import { UserPlus, Check, X, Search, Users } from 'lucide-react';
+import { UserPlus, Check, X, Search, Users, Loader2 } from 'lucide-react';
+import { useToast } from '@/components/ui/Toast';
 
 type User = {
   id: string;
@@ -23,6 +24,7 @@ type Friendship = {
 export default function FriendsPage() {
   const router = useRouter();
   const { user, isLoaded, isSignedIn } = useUser();
+  const { showToast } = useToast();
   const [activeTab, setActiveTab] = useState<'friends' | 'requests' | 'search'>('friends');
   const [friends, setFriends] = useState<Friendship[]>([]);
   const [sentRequests, setSentRequests] = useState<Friendship[]>([]);
@@ -31,6 +33,7 @@ export default function FriendsPage() {
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [searching, setSearching] = useState(false);
+  const [sendingRequest, setSendingRequest] = useState<string | null>(null);
 
   useEffect(() => {
     if (isLoaded && !isSignedIn) {
@@ -88,6 +91,7 @@ export default function FriendsPage() {
   };
 
   const handleSendRequest = async (userId: string) => {
+    setSendingRequest(userId);
     try {
       const res = await fetch('/api/friends', {
         method: 'POST',
@@ -96,15 +100,18 @@ export default function FriendsPage() {
       });
 
       if (res.ok) {
-        alert('Friend request sent!');
+        showToast('Friend request sent!', 'success');
         await fetchFriendships();
         setSearchResults(searchResults.filter((u) => u.id !== userId));
       } else {
         const data = await res.json();
-        alert(data.error || 'Failed to send request');
+        showToast(data.error || 'Failed to send request', 'error');
       }
     } catch (err) {
       console.error('Error sending friend request:', err);
+      showToast('Something went wrong', 'error');
+    } finally {
+      setSendingRequest(null);
     }
   };
 
@@ -117,10 +124,14 @@ export default function FriendsPage() {
       });
 
       if (res.ok) {
+        showToast('Friend request accepted!', 'success');
         await fetchFriendships();
+      } else {
+        showToast('Failed to accept request', 'error');
       }
     } catch (err) {
       console.error('Error accepting request:', err);
+      showToast('Something went wrong', 'error');
     }
   };
 
@@ -133,10 +144,14 @@ export default function FriendsPage() {
       });
 
       if (res.ok) {
+        showToast('Friend request declined', 'info');
         await fetchFriendships();
+      } else {
+        showToast('Failed to decline request', 'error');
       }
     } catch (err) {
       console.error('Error rejecting request:', err);
+      showToast('Something went wrong', 'error');
     }
   };
 
@@ -149,10 +164,14 @@ export default function FriendsPage() {
       });
 
       if (res.ok) {
+        showToast('Friend removed', 'info');
         await fetchFriendships();
+      } else {
+        showToast('Failed to remove friend', 'error');
       }
     } catch (err) {
       console.error('Error removing friend:', err);
+      showToast('Something went wrong', 'error');
     }
   };
 
@@ -397,10 +416,15 @@ export default function FriendsPage() {
                       </div>
                       <button
                         onClick={() => handleSendRequest(user.id)}
-                        className="flex items-center gap-2 px-4 py-2 bg-[#00B14F] text-white rounded-[100px] hover:opacity-90 transition-all"
+                        disabled={sendingRequest === user.id}
+                        className="flex items-center gap-2 px-4 py-2 bg-[#00B14F] text-white rounded-[100px] hover:opacity-90 transition-all disabled:opacity-50"
                       >
-                        <UserPlus size={20} />
-                        Add Nanba
+                        {sendingRequest === user.id ? (
+                          <Loader2 size={20} className="animate-spin" />
+                        ) : (
+                          <UserPlus size={20} />
+                        )}
+                        {sendingRequest === user.id ? 'Sending...' : 'Add Nanba'}
                       </button>
                     </div>
                   ))}

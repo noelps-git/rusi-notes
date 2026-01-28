@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { redirect, notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Mail, Calendar, Award, Heart, MessageCircle, Users } from 'lucide-react';
+import { AddFriendButton } from '@/components/profile/AddFriendButton';
 
 export default async function UserProfilePage({
   params,
@@ -144,9 +145,7 @@ export default async function UserProfilePage({
               {!isOwnProfile && (
                 <div className="flex gap-3">
                   {!friendshipStatus && (
-                    <button className="px-6 py-2 bg-[#00B14F] text-white rounded-[100px] hover:opacity-90 transition-all">
-                      Add Nanba
-                    </button>
+                    <AddFriendButton userId={user.id} />
                   )}
                   {friendshipStatus?.status === 'accepted' && (
                     <span className="px-6 py-2 bg-green-500/20 text-green-400 rounded-[100px] border border-green-500/30">

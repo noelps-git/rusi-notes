@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@clerk/nextjs';
 import { Star, Upload, X, Tag as TagIcon } from 'lucide-react';
+import { useToast } from '@/components/ui/Toast';
 
 type Restaurant = {
   id: string;
@@ -21,6 +22,7 @@ type Dish = {
 export default function CreateNotePage() {
   const router = useRouter();
   const { isLoaded, isSignedIn } = useUser();
+  const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [dishes, setDishes] = useState<Dish[]>([]);
@@ -168,6 +170,7 @@ export default function CreateNotePage() {
         throw new Error(data.error || 'Failed to create note');
       }
 
+      showToast('Review published successfully!', 'success');
       // Redirect to the new note
       router.push(`/notes/${data.id}`);
     } catch (err: any) {
