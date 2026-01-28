@@ -29,11 +29,12 @@ export default function SignUpPage() {
 
         {/* Clerk Sign Up */}
         <SignUp
-          afterSignUpUrl="/dashboard"
+          fallbackRedirectUrl="/dashboard"
           appearance={{
             elements: {
               formButtonPrimary: 'bg-[#00B14F] hover:bg-[#009944]',
-              card: 'bg-[#1E1E1E] border border-[#333333]',
+              rootBox: 'mx-auto',
+              card: 'bg-[#1E1E1E] border border-[#333333] shadow-xl',
               headerTitle: 'text-white',
               headerSubtitle: 'text-[#999999]',
               socialButtonsBlockButton: 'bg-[#2A2A2A] border-[#333333] text-white hover:bg-[#333333]',
@@ -42,6 +43,8 @@ export default function SignUpPage() {
               footerActionLink: 'text-[#00B14F] hover:text-[#00D65F]',
               dividerLine: 'bg-[#333333]',
               dividerText: 'text-[#666666]',
+              identityPreviewText: 'text-white',
+              identityPreviewEditButton: 'text-[#00B14F]',
             },
           }}
         />
