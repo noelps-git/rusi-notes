@@ -5,9 +5,9 @@ import { createClient } from '@/lib/supabase/server';
 // GET /api/bookmarks - Get all bookmarked notes
 export async function GET(req: NextRequest) {
   try {
-    const session = await auth();
+    const { userId } = await auth();
 
-    if (!session) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
           restaurant:restaurants(id, name, categories)
         )
       `)
-      .eq('user_id', session.user.id)
+      .eq('user_id', userId)
       .order('created_at', { ascending: false });
 
     if (error) throw error;
@@ -52,9 +52,9 @@ export async function GET(req: NextRequest) {
 // POST /api/bookmarks - Add bookmark
 export async function POST(req: NextRequest) {
   try {
-    const session = await auth();
+    const { userId } = await auth();
 
-    if (!session) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized. Please sign in.' },
         { status: 401 }
@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
     const { data: existing } = await supabase
       .from('bookmarks')
       .select('id')
-      .eq('user_id', session.user.id)
+      .eq('user_id', userId)
       .eq('note_id', note_id)
       .single();
 
@@ -92,7 +92,7 @@ export async function POST(req: NextRequest) {
     const { data: bookmark, error } = await supabase
       .from('bookmarks')
       .insert({
-        user_id: session.user.id,
+        user_id: userId,
         note_id,
       })
       .select()

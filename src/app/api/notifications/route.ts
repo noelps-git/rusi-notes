@@ -5,9 +5,9 @@ import { createClient } from '@/lib/supabase/server';
 // GET /api/notifications - Get user's notifications
 export async function GET(req: NextRequest) {
   try {
-    const session = await auth();
+    const { userId } = await auth();
 
-    if (!session) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
     let query = supabase
       .from('notifications')
       .select('*')
-      .eq('user_id', session.user.id)
+      .eq('user_id', userId)
       .order('created_at', { ascending: false })
       .limit(limit);
 
@@ -49,9 +49,9 @@ export async function GET(req: NextRequest) {
 // POST /api/notifications - Create notification
 export async function POST(req: NextRequest) {
   try {
-    const session = await auth();
+    const { userId } = await auth();
 
-    if (!session) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -100,9 +100,9 @@ export async function POST(req: NextRequest) {
 // PUT /api/notifications/read-all - Mark all as read
 export async function PUT(req: NextRequest) {
   try {
-    const session = await auth();
+    const { userId } = await auth();
 
-    if (!session) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -117,7 +117,7 @@ export async function PUT(req: NextRequest) {
         is_read: true,
         read_at: new Date().toISOString(),
       })
-      .eq('user_id', session.user.id)
+      .eq('user_id', userId)
       .eq('is_read', false);
 
     if (error) throw error;

@@ -42,9 +42,9 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
+    const { userId } = await auth();
 
-    if (!session) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized. Please sign in.' },
         { status: 401 }
@@ -85,7 +85,7 @@ export async function POST(
       .upsert(
         {
           dish_id: resolvedParams.id,
-          user_id: session.user.id,
+          user_id: userId,
           rating,
           feedback: feedback || null,
           tags: tags || [],

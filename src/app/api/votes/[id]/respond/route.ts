@@ -8,9 +8,9 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
+    const { userId } = await auth();
 
-    if (!session) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized. Please sign in.' },
         { status: 401 }
@@ -75,7 +75,7 @@ export async function POST(
       .from('vote_responses')
       .select('id, option_id')
       .eq('vote_id', resolvedParams.id)
-      .eq('user_id', session.user.id)
+      .eq('user_id', userId)
       .single();
 
     if (existingResponse) {
@@ -98,7 +98,7 @@ export async function POST(
         .from('vote_responses')
         .insert({
           vote_id: resolvedParams.id,
-          user_id: session.user.id,
+          user_id: userId,
           option_id,
         });
 
@@ -124,9 +124,9 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
+    const { userId } = await auth();
 
-    if (!session) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }

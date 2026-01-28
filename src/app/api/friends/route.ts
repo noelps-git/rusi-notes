@@ -6,9 +6,9 @@ import { createNotification } from '@/lib/utils/notifications';
 // GET /api/friends - Get all friends and requests
 export async function GET(req: NextRequest) {
   try {
-    const session = await auth();
+    const { userId } = await auth();
 
-    if (!session) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -38,12 +38,12 @@ export async function GET(req: NextRequest) {
 
     // Filter by type (sent or received)
     if (type === 'sent') {
-      query = query.eq('requester_id', session.user.id);
+      query = query.eq('requester_id', userId);
     } else if (type === 'received') {
-      query = query.eq('recipient_id', session.user.id);
+      query = query.eq('recipient_id', userId);
     } else {
       // Get all friendships where user is either requester or recipient
-      query = query.or(`requester_id.eq.${session.user.id},recipient_id.eq.${session.user.id}`);
+      query = query.or(`requester_id.eq.${userId},recipient_id.eq.${userId}`);
     }
 
     query = query.order('created_at', { ascending: false });
@@ -65,9 +65,10 @@ export async function GET(req: NextRequest) {
 // POST /api/friends - Send friend request
 export async function POST(req: NextRequest) {
   try {
-    const session = await auth();
+    const { userId } = await auth();
+    const user = await currentUser();
 
-    if (!session) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized. Please sign in.' },
         { status: 401 }
@@ -85,7 +86,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Can't send friend request to yourself
-    if (recipient_id === session.user.id) {
+    if (recipient_id === userId) {
       return NextResponse.json(
         { error: 'You cannot send a friend request to yourself' },
         { status: 400 }
@@ -98,7 +99,7 @@ export async function POST(req: NextRequest) {
     const { data: existing } = await supabase
       .from('friendships')
       .select('id, status')
-      .or(`and(requester_id.eq.${session.user.id},recipient_id.eq.${recipient_id}),and(requester_id.eq.${recipient_id},recipient_id.eq.${session.user.id})`)
+      .or(`and(requester_id.eq.${userId},recipient_id.eq.${recipient_id}),and(requester_id.eq.${recipient_id},recipient_id.eq.${userId})`)
       .single();
 
     if (existing) {
@@ -119,7 +120,7 @@ export async function POST(req: NextRequest) {
     const { data: friendship, error } = await supabase
       .from('friendships')
       .insert({
-        requester_id: session.user.id,
+        requester_id: userId,
         recipient_id: recipient_id,
         status: 'pending',
       })
@@ -139,11 +140,11 @@ export async function POST(req: NextRequest) {
       user_id: recipient_id,
       type: 'friend_request',
       title: 'New Friend Request',
-      message: `${session.user.name || 'Someone'} sent you a friend request`,
+      message: `${user?.fullName || 'Someone'} sent you a friend request`,
       link: '/friends',
       metadata: {
-        requester_id: session.user.id,
-        requester_name: session.user.name,
+        requester_id: userId,
+        requester_name: user?.fullName,
         friendship_id: friendship.id,
       },
     });

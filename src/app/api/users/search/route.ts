@@ -5,9 +5,9 @@ import { createClient } from '@/lib/supabase/server';
 // GET /api/users/search - Search for users by name or email
 export async function GET(req: NextRequest) {
   try {
-    const session = await auth();
+    const { userId } = await auth();
 
-    if (!session) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
       .from('users')
       .select('id, full_name, email, avatar_url, role')
       .or(`full_name.ilike.%${query}%,email.ilike.%${query}%`)
-      .neq('id', session.user.id) // Exclude current user
+      .neq('id', userId) // Exclude current user
       .eq('role', 'user') // Only search for regular users, not business/admin
       .limit(limit);
 

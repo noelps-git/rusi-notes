@@ -8,9 +8,9 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
+    const { userId } = await auth();
 
-    if (!session) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -35,7 +35,7 @@ export async function POST(
       .from('group_members')
       .select('role')
       .eq('group_id', resolvedParams.id)
-      .eq('user_id', session.user.id)
+      .eq('user_id', userId)
       .single();
 
     if (!membership || membership.role !== 'admin') {
@@ -95,9 +95,9 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
+    const { userId } = await auth();
 
-    if (!session) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -122,7 +122,7 @@ export async function DELETE(
       .from('group_members')
       .select('role')
       .eq('group_id', resolvedParams.id)
-      .eq('user_id', session.user.id)
+      .eq('user_id', userId)
       .single();
 
     if (!membership) {
@@ -133,7 +133,7 @@ export async function DELETE(
     }
 
     // Allow self-removal or admin removing others
-    if (userId !== session.user.id && membership.role !== 'admin') {
+    if (userId !== userId && membership.role !== 'admin') {
       return NextResponse.json(
         { error: 'Only admins can remove other members' },
         { status: 403 }

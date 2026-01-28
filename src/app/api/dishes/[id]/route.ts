@@ -42,9 +42,10 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
+    const { userId } = await auth();
+    const user = await currentUser();
 
-    if (!session || session.user.role !== 'business') {
+    if (!userId || (user?.publicMetadata as any)?.role !== 'business') {
       return NextResponse.json(
         { error: 'Unauthorized. Business account required.' },
         { status: 403 }
@@ -62,7 +63,7 @@ export async function PUT(
       .eq('id', resolvedParams.id)
       .single();
 
-    if (!dish || (dish as any).restaurants.owner_id !== session.user.id) {
+    if (!dish || (dish as any).restaurants.owner_id !== userId) {
       return NextResponse.json(
         { error: 'Dish not found or unauthorized' },
         { status: 404 }
@@ -109,9 +110,10 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
+    const { userId } = await auth();
+    const user = await currentUser();
 
-    if (!session || session.user.role !== 'business') {
+    if (!userId || (user?.publicMetadata as any)?.role !== 'business') {
       return NextResponse.json(
         { error: 'Unauthorized. Business account required.' },
         { status: 403 }
@@ -128,7 +130,7 @@ export async function DELETE(
       .eq('id', resolvedParams.id)
       .single();
 
-    if (!dish || (dish as any).restaurants.owner_id !== session.user.id) {
+    if (!dish || (dish as any).restaurants.owner_id !== userId) {
       return NextResponse.json(
         { error: 'Dish not found or unauthorized' },
         { status: 404 }

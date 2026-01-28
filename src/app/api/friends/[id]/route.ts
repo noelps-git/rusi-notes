@@ -9,9 +9,10 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
+    const { userId } = await auth();
+    const user = await currentUser();
 
-    if (!session) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -46,7 +47,7 @@ export async function PUT(
     }
 
     // Only the recipient can accept/reject
-    if (friendship.recipient_id !== session.user.id) {
+    if (friendship.recipient_id !== userId) {
       return NextResponse.json(
         { error: 'You can only respond to friend requests sent to you' },
         { status: 403 }
@@ -83,11 +84,11 @@ export async function PUT(
         user_id: friendship.requester_id,
         type: 'friend_accepted',
         title: 'Friend Request Accepted',
-        message: `${session.user.name || 'Someone'} accepted your friend request`,
+        message: `${user?.fullName || 'Someone'} accepted your friend request`,
         link: '/friends',
         metadata: {
-          accepter_id: session.user.id,
-          accepter_name: session.user.name,
+          accepter_id: userId,
+          accepter_name: user?.fullName,
           friendship_id: updated.id,
         },
       });
@@ -109,9 +110,9 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
+    const { userId } = await auth();
 
-    if (!session) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -137,8 +138,8 @@ export async function DELETE(
 
     // Only the people involved can delete the friendship
     if (
-      friendship.requester_id !== session.user.id &&
-      friendship.recipient_id !== session.user.id
+      friendship.requester_id !== userId &&
+      friendship.recipient_id !== userId
     ) {
       return NextResponse.json(
         { error: 'You can only remove your own friendships' },

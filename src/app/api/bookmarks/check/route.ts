@@ -5,9 +5,9 @@ import { createClient } from '@/lib/supabase/server';
 // GET /api/bookmarks/check?note_id=xxx - Check if note is bookmarked
 export async function GET(req: NextRequest) {
   try {
-    const session = await auth();
+    const { userId } = await auth();
 
-    if (!session) {
+    if (!userId) {
       return NextResponse.json({ bookmarked: false });
     }
 
@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
     const { data: bookmark } = await supabase
       .from('bookmarks')
       .select('id')
-      .eq('user_id', session.user.id)
+      .eq('user_id', userId)
       .eq('note_id', noteId)
       .single();
 

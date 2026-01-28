@@ -8,9 +8,9 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
+    const { userId } = await auth();
 
-    if (!session) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -25,7 +25,7 @@ export async function DELETE(
       .from('bookmarks')
       .delete()
       .eq('id', resolvedParams.id)
-      .eq('user_id', session.user.id);
+      .eq('user_id', userId);
 
     if (error) throw error;
 
