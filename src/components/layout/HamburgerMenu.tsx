@@ -27,7 +27,7 @@ export function HamburgerMenu({ isOpen, onClose }: HamburgerMenuProps) {
   if (!isSignedIn) return null;
 
   const handleSignOut = () => {
-    signOut({ callbackUrl: '/' });
+    signOut({ redirectUrl: '/' });
   };
 
   const menuItems = [
