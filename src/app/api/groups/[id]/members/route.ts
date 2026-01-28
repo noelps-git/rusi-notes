@@ -106,9 +106,9 @@ export async function DELETE(
 
     const resolvedParams = await params;
     const searchParams = req.nextUrl.searchParams;
-    const userId = searchParams.get('userId');
+    const targetUserId = searchParams.get('userId');
 
-    if (!userId) {
+    if (!targetUserId) {
       return NextResponse.json(
         { error: 'User ID is required' },
         { status: 400 }
@@ -133,7 +133,7 @@ export async function DELETE(
     }
 
     // Allow self-removal or admin removing others
-    if (userId !== userId && membership.role !== 'admin') {
+    if (targetUserId !== userId && membership.role !== 'admin') {
       return NextResponse.json(
         { error: 'Only admins can remove other members' },
         { status: 403 }
@@ -145,7 +145,7 @@ export async function DELETE(
       .from('group_members')
       .delete()
       .eq('group_id', resolvedParams.id)
-      .eq('user_id', userId);
+      .eq('user_id', targetUserId);
 
     if (error) throw error;
 
