@@ -52,7 +52,7 @@ export default function LandingPage() {
     if (email) {
       setSubmitted(true);
       setTimeout(() => {
-        window.location.href = '/signup';
+        window.location.href = '/sign-up';
       }, 2000);
     }
   };
@@ -81,8 +81,8 @@ export default function LandingPage() {
             <nav className="hidden md:flex items-center gap-8">
               <a href="#features" className="text-[#666666] hover:text-[#111111] transition-colors font-medium text-sm">Features</a>
               <a href="#reviews" className="text-[#666666] hover:text-[#111111] transition-colors font-medium text-sm">Reviews</a>
-              <Link href="/login" className="text-[#666666] hover:text-[#111111] transition-colors font-medium text-sm">Sign In</Link>
-              <Link href="/signup">
+              <Link href="/sign-in" className="text-[#666666] hover:text-[#111111] transition-colors font-medium text-sm">Sign In</Link>
+              <Link href="/sign-up">
                 <button className="px-6 h-11 bg-[#00B14F] text-white rounded-full font-medium text-sm hover:bg-[#009944] transition-all">
                   Sign Up
                 </button>
@@ -104,8 +104,8 @@ export default function LandingPage() {
               <nav className="flex flex-col gap-4">
                 <a href="#features" className="text-[#666666] hover:text-[#111111] transition-colors font-medium text-sm" onClick={() => setMobileMenuOpen(false)}>Features</a>
                 <a href="#reviews" className="text-[#666666] hover:text-[#111111] transition-colors font-medium text-sm" onClick={() => setMobileMenuOpen(false)}>Reviews</a>
-                <Link href="/login" className="text-[#666666] hover:text-[#111111] transition-colors font-medium text-sm" onClick={() => setMobileMenuOpen(false)}>Sign In</Link>
-                <Link href="/signup" onClick={() => setMobileMenuOpen(false)}>
+                <Link href="/sign-in" className="text-[#666666] hover:text-[#111111] transition-colors font-medium text-sm" onClick={() => setMobileMenuOpen(false)}>Sign In</Link>
+                <Link href="/sign-up" onClick={() => setMobileMenuOpen(false)}>
                   <button className="w-full px-6 h-11 bg-[#00B14F] text-white rounded-full font-medium text-sm">
                     Sign Up
                   </button>
@@ -139,7 +139,7 @@ export default function LandingPage() {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 px-4">
-              <Link href="/signup" className="w-full sm:w-auto">
+              <Link href="/sign-up" className="w-full sm:w-auto">
                 <button className="w-full sm:w-auto px-8 min-h-[48px] bg-[#00B14F] text-white rounded-full font-semibold text-base hover:bg-[#009944] transition-all shadow-lg active:scale-95">
                   Get Started
                 </button>

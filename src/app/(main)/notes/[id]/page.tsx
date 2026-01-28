@@ -98,7 +98,7 @@ export default function NoteDetailPage({
 
   const handleLike = async () => {
     if (!isSignedIn) {
-      router.push('/login');
+      router.push('/sign-in');
       return;
     }
 
