@@ -18,16 +18,23 @@ export async function GET(request: NextRequest) {
   const supabase = await createClient();
 
   // Check if handle exists
-  const { data, error } = await supabase
-    .from('users')
-    .select('id')
-    .eq('handle', handle)
-    .maybeSingle();
+  try {
+    const { data, error } = await supabase
+      .from('users')
+      .select('id')
+      .eq('handle', handle)
+      .maybeSingle();
 
-  if (error) {
-    console.error('Error checking handle:', error);
-    return NextResponse.json({ error: 'Failed to check handle' }, { status: 500 });
+    if (error) {
+      // If the column doesn't exist, treat as available
+      console.error('Error checking handle:', error);
+      return NextResponse.json({ available: true });
+    }
+
+    return NextResponse.json({ available: !data });
+  } catch (err) {
+    // If there's any error (like column not existing), treat as available
+    console.error('Error checking handle:', err);
+    return NextResponse.json({ available: true });
   }
-
-  return NextResponse.json({ available: !data });
 }

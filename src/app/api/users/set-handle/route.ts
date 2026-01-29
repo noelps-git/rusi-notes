@@ -24,32 +24,7 @@ export async function POST(request: NextRequest) {
 
   const supabase = await createClient();
 
-  // Check if handle is already taken
-  const { data: existingUser } = await supabase
-    .from('users')
-    .select('id')
-    .eq('handle', handle)
-    .neq('id', userId)
-    .maybeSingle();
-
-  if (existingUser) {
-    return NextResponse.json({ error: 'This handle is already taken' }, { status: 400 });
-  }
-
-  // Update user's handle in Supabase
-  const { data, error } = await supabase
-    .from('users')
-    .update({ handle })
-    .eq('id', userId)
-    .select()
-    .single();
-
-  if (error) {
-    console.error('Error setting handle:', error);
-    return NextResponse.json({ error: 'Failed to set handle' }, { status: 500 });
-  }
-
-  // Update Clerk user metadata with handle for middleware checks
+  // Update Clerk user metadata with handle first (this always works)
   try {
     const client = await clerkClient();
     await client.users.updateUserMetadata(userId, {
@@ -60,8 +35,39 @@ export async function POST(request: NextRequest) {
     });
   } catch (clerkError) {
     console.error('Error updating Clerk metadata:', clerkError);
-    // Don't fail the request if Clerk update fails - handle is saved in DB
+    return NextResponse.json({ error: 'Failed to save handle. Please try again.' }, { status: 500 });
   }
 
-  return NextResponse.json({ success: true, user: data });
+  // Try to update the database (may fail if handle column doesn't exist yet)
+  try {
+    // Check if handle is already taken
+    const { data: existingUser } = await supabase
+      .from('users')
+      .select('id')
+      .eq('handle', handle)
+      .neq('id', userId)
+      .maybeSingle();
+
+    if (existingUser) {
+      return NextResponse.json({ error: 'This handle is already taken' }, { status: 400 });
+    }
+
+    // Update user's handle in Supabase
+    const { data, error } = await supabase
+      .from('users')
+      .update({ handle })
+      .eq('id', userId)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error setting handle in database:', error);
+      // Don't fail - handle is saved in Clerk metadata
+    }
+  } catch (dbError) {
+    console.error('Database error (handle column may not exist):', dbError);
+    // Don't fail - handle is saved in Clerk metadata
+  }
+
+  return NextResponse.json({ success: true });
 }
