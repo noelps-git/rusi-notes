@@ -192,8 +192,8 @@ export default function NoteDetailPage({
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 via-pink-50 to-purple-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+      <div className="min-h-screen flex items-center justify-center bg-[#111111]">
+        <div className="animate-spin rounded-full h-12 w-12 border-2 border-[#00B14F] border-t-transparent"></div>
       </div>
     );
   }
@@ -205,18 +205,18 @@ export default function NoteDetailPage({
   const isOwner = user?.id === note.user_id;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-pink-50 to-purple-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#111111] py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Back Button */}
         <button
           onClick={() => router.back()}
-          className="mb-6 text-gray-600 hover:text-gray-900 transition-colors"
+          className="mb-6 text-[#999999] hover:text-white transition-colors"
         >
           ← Back to Notes
         </button>
 
         {/* Main Card */}
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+        <div className="bg-[#1E1E1E] rounded-2xl border border-[#333333] overflow-hidden">
           {/* Images Gallery */}
           {note.images && note.images.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2 p-2">
@@ -245,27 +245,27 @@ export default function NoteDetailPage({
                       className={`${
                         star <= note.rating
                           ? 'fill-yellow-400 text-yellow-400'
-                          : 'text-gray-300'
+                          : 'text-[#333333]'
                       }`}
                     />
                   ))}
-                  <span className="ml-2 text-lg font-medium text-gray-700">
+                  <span className="ml-2 text-lg font-medium text-[#999999]">
                     {note.rating}.0
                   </span>
                 </div>
 
                 {/* Title */}
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                <h1 className="text-3xl font-bold text-white mb-2">
                   {note.title}
                 </h1>
 
                 {/* Author & Date */}
-                <div className="flex items-center gap-4 text-sm text-gray-600">
+                <div className="flex items-center gap-4 text-sm text-[#999999]">
                   <div className="flex items-center gap-2">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-medium">
+                    <div className="w-10 h-10 rounded-full bg-[#00B14F] flex items-center justify-center text-white font-medium">
                       {note.user.full_name.charAt(0).toUpperCase()}
                     </div>
-                    <span className="font-medium">{note.user.full_name}</span>
+                    <span className="font-medium text-white">{note.user.full_name}</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <Calendar size={16} />
@@ -280,13 +280,13 @@ export default function NoteDetailPage({
                   <>
                     <Link
                       href={`/notes/${note.id}/edit`}
-                      className="p-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                      className="p-2 text-[#666666] hover:text-[#00B14F] hover:bg-[#00B14F]/10 rounded-lg transition-colors"
                     >
                       <Edit size={20} />
                     </Link>
                     <button
                       onClick={handleDelete}
-                      className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      className="p-2 text-[#666666] hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
                     >
                       <Trash2 size={20} />
                     </button>
@@ -294,7 +294,7 @@ export default function NoteDetailPage({
                 )}
                 <button
                   onClick={handleShare}
-                  className="p-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                  className="p-2 text-[#666666] hover:text-[#00B14F] hover:bg-[#00B14F]/10 rounded-lg transition-colors"
                 >
                   <Share2 size={20} />
                 </button>
@@ -303,25 +303,25 @@ export default function NoteDetailPage({
 
             {/* Restaurant & Dish Info */}
             {(note.restaurant || note.dish) && (
-              <div className="bg-gray-50 rounded-lg p-4 mb-6">
+              <div className="bg-[#2A2A2A] rounded-lg p-4 mb-6 border border-[#333333]">
                 {note.restaurant && (
                   <Link
                     href={`/restaurants/${note.restaurant.id}`}
-                    className="flex items-start gap-3 hover:bg-gray-100 p-2 rounded-lg transition-colors"
+                    className="flex items-start gap-3 hover:bg-[#333333] p-2 rounded-lg transition-colors"
                   >
-                    <MapPin size={20} className="text-indigo-600 mt-1" />
+                    <MapPin size={20} className="text-[#00B14F] mt-1" />
                     <div>
-                      <h3 className="font-semibold text-gray-900">
+                      <h3 className="font-semibold text-white">
                         {note.restaurant.name}
                       </h3>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-[#999999]">
                         {note.restaurant.address}
                       </p>
                       <div className="flex gap-2 mt-1">
                         {note.restaurant.categories.slice(0, 3).map((cat) => (
                           <span
                             key={cat}
-                            className="text-xs px-2 py-1 bg-white rounded-full text-gray-600"
+                            className="text-xs px-2 py-1 bg-[#1E1E1E] rounded-full text-[#999999] border border-[#333333]"
                           >
                             {cat}
                           </span>
@@ -331,9 +331,9 @@ export default function NoteDetailPage({
                   </Link>
                 )}
                 {note.dish && (
-                  <div className="flex items-center gap-2 text-gray-700 mt-2 ml-2">
+                  <div className="flex items-center gap-2 text-[#999999] mt-2 ml-2">
                     <span className="text-lg">🍽️</span>
-                    <span className="font-medium">{note.dish.name}</span>
+                    <span className="font-medium text-white">{note.dish.name}</span>
                   </div>
                 )}
               </div>
@@ -341,7 +341,7 @@ export default function NoteDetailPage({
 
             {/* Content */}
             <div className="prose max-w-none mb-6">
-              <p className="text-gray-700 text-lg leading-relaxed whitespace-pre-wrap">
+              <p className="text-[#CCCCCC] text-lg leading-relaxed whitespace-pre-wrap">
                 {note.content}
               </p>
             </div>
@@ -352,7 +352,7 @@ export default function NoteDetailPage({
                 {note.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-sm"
+                    className="inline-flex items-center gap-1 px-3 py-1 bg-[#00B14F]/20 text-[#00B14F] rounded-full text-sm border border-[#00B14F]/30"
                   >
                     <TagIcon size={14} />
                     {tag}
@@ -362,13 +362,13 @@ export default function NoteDetailPage({
             )}
 
             {/* Action Bar */}
-            <div className="flex items-center gap-4 pt-6 border-t border-gray-200">
+            <div className="flex items-center gap-4 pt-6 border-t border-[#333333]">
               <button
                 onClick={handleLike}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
                   isLiked
-                    ? 'bg-red-50 text-red-600'
-                    : 'bg-gray-100 text-gray-600 hover:bg-red-50 hover:text-red-600'
+                    ? 'bg-red-500/20 text-red-400'
+                    : 'bg-[#2A2A2A] text-[#999999] hover:bg-red-500/20 hover:text-red-400'
                 }`}
               >
                 <Heart
@@ -383,8 +383,8 @@ export default function NoteDetailPage({
                 onClick={handleBookmark}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
                   isBookmarked
-                    ? 'bg-indigo-50 text-indigo-600'
-                    : 'bg-gray-100 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600'
+                    ? 'bg-[#00B14F]/20 text-[#00B14F]'
+                    : 'bg-[#2A2A2A] text-[#999999] hover:bg-[#00B14F]/20 hover:text-[#00B14F]'
                 }`}
               >
                 <Bookmark
@@ -488,8 +488,8 @@ function CommentsSection({ noteId }: { noteId: string }) {
     comments.filter((c) => c.parent_id === parentId);
 
   return (
-    <div className="mt-8 bg-white rounded-2xl shadow-xl p-8">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">
+    <div className="mt-8 bg-[#1E1E1E] rounded-2xl border border-[#333333] p-8">
+      <h2 className="text-2xl font-bold text-white mb-6">
         Comments ({comments.length})
       </h2>
 
@@ -501,21 +501,21 @@ function CommentsSection({ noteId }: { noteId: string }) {
             onChange={(e) => setCommentText(e.target.value)}
             placeholder="Share your thoughts..."
             rows={3}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+            className="w-full px-4 py-3 bg-[#2A2A2A] border border-[#333333] rounded-lg text-white placeholder-[#666666] focus:outline-none focus:border-[#00B14F] transition-all resize-none"
           />
           <div className="flex justify-end mt-2">
             <button
               type="submit"
               disabled={submitting || !commentText.trim()}
-              className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-2 bg-[#00B14F] text-white rounded-lg hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {submitting ? 'Posting...' : 'Post Comment'}
             </button>
           </div>
         </form>
       ) : (
-        <div className="mb-8 p-4 bg-gray-50 rounded-lg text-center">
-          <p className="text-gray-600">Please sign in to comment</p>
+        <div className="mb-8 p-4 bg-[#2A2A2A] rounded-lg text-center border border-[#333333]">
+          <p className="text-[#999999]">Please sign in to comment</p>
         </div>
       )}
 
@@ -525,17 +525,17 @@ function CommentsSection({ noteId }: { noteId: string }) {
           {[1, 2, 3].map((n) => (
             <div key={n} className="animate-pulse">
               <div className="flex gap-3">
-                <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
+                <div className="w-10 h-10 bg-[#2A2A2A] rounded-full"></div>
                 <div className="flex-1 space-y-2">
-                  <div className="h-4 bg-gray-200 rounded w-1/4"></div>
-                  <div className="h-3 bg-gray-200 rounded w-3/4"></div>
+                  <div className="h-4 bg-[#2A2A2A] rounded w-1/4"></div>
+                  <div className="h-3 bg-[#2A2A2A] rounded w-3/4"></div>
                 </div>
               </div>
             </div>
           ))}
         </div>
       ) : comments.length === 0 ? (
-        <div className="text-center py-12 text-gray-500">
+        <div className="text-center py-12 text-[#666666]">
           <p>No comments yet. Be the first to comment!</p>
         </div>
       ) : (
@@ -589,39 +589,39 @@ function CommentItem({
   return (
     <div className="flex gap-3">
       {/* Avatar */}
-      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white text-sm font-medium flex-shrink-0">
+      <div className="w-10 h-10 rounded-full bg-[#00B14F] flex items-center justify-center text-white text-sm font-medium flex-shrink-0">
         {comment.user.full_name.charAt(0).toUpperCase()}
       </div>
 
       {/* Comment Content */}
       <div className="flex-1">
-        <div className="bg-gray-50 rounded-lg p-4">
+        <div className="bg-[#2A2A2A] rounded-lg p-4 border border-[#333333]">
           <div className="flex items-start justify-between mb-2">
             <div>
-              <span className="font-semibold text-gray-900">
+              <span className="font-semibold text-white">
                 {comment.user.full_name}
               </span>
-              <span className="text-sm text-gray-500 ml-2">
+              <span className="text-sm text-[#666666] ml-2">
                 {formatDate(comment.created_at)}
               </span>
             </div>
             {isOwner && (
               <button
                 onClick={() => onDelete(comment.id)}
-                className="text-gray-400 hover:text-red-600 transition-colors"
+                className="text-[#666666] hover:text-red-500 transition-colors"
               >
                 <Trash2 size={16} />
               </button>
             )}
           </div>
-          <p className="text-gray-700 whitespace-pre-wrap">{comment.content}</p>
+          <p className="text-[#CCCCCC] whitespace-pre-wrap">{comment.content}</p>
         </div>
 
         {/* Reply button */}
         {user && (
           <button
             onClick={() => onReply(comment.id)}
-            className="text-sm text-indigo-600 hover:text-indigo-700 mt-2"
+            className="text-sm text-[#00B14F] hover:text-[#00B14F]/80 mt-2"
           >
             Reply
           </button>
