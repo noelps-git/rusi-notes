@@ -1,32 +1,9 @@
-'use client';
-
 import { SignUp } from '@clerk/nextjs';
 
 export default function SignUpPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#111111] relative overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-10 pointer-events-none">
-        <div className="absolute top-20 right-10 text-8xl">🍛</div>
-        <div className="absolute top-40 left-20 text-7xl">🍜</div>
-        <div className="absolute bottom-32 right-1/4 text-9xl">🍚</div>
-        <div className="absolute top-1/3 left-1/3 text-6xl">🌶️</div>
-        <div className="absolute bottom-20 left-10 text-8xl">☕</div>
-        <div className="absolute top-1/2 right-20 text-7xl">🥘</div>
-      </div>
-
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#00B14F]/10 via-transparent to-[#00B14F]/20 pointer-events-none" />
-
-      {/* Content */}
-      <div className="relative z-10">
-        <SignUp
-          routing="path"
-          path="/sign-up"
-          signInUrl="/sign-in"
-          fallbackRedirectUrl="/dashboard"
-        />
-      </div>
+    <div className="min-h-screen flex items-center justify-center bg-[#111111]">
+      <SignUp />
     </div>
   );
 }
