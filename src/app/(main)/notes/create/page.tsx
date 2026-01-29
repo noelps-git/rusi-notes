@@ -94,8 +94,6 @@ export default function CreateNotePage() {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
-    // For now, we'll use base64 encoding
-    // In production, upload to Supabase Storage
     const file = files[0];
     const reader = new FileReader();
     reader.onloadend = () => {
@@ -132,7 +130,6 @@ export default function CreateNotePage() {
     e.preventDefault();
     setError('');
 
-    // Validation
     if (!title.trim()) {
       setError('Title is required');
       return;
@@ -171,7 +168,6 @@ export default function CreateNotePage() {
       }
 
       showToast('Review published successfully!', 'success');
-      // Redirect to the new note
       router.push(`/notes/${data.id}`);
     } catch (err: any) {
       setError(err.message || 'Failed to create tasting note');
@@ -181,44 +177,44 @@ export default function CreateNotePage() {
 
   if (!isLoaded) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00B14F]"></div>
+      <div className="min-h-screen flex items-center justify-center bg-[#111111]">
+        <div className="animate-spin rounded-full h-12 w-12 border-2 border-[#00B14F] border-t-transparent"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-pink-50 to-purple-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#111111] py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-[#111111] mb-2">
-            Share Your Tasting Experience
+          <h1 className="text-4xl font-bold text-white mb-2">
+            Share Your Tasting Experience 🍛
           </h1>
-          <p className="text-[#111111]">
+          <p className="text-[#999999]">
             Document your culinary journey and share it with food lovers
           </p>
         </div>
 
         {/* Form Card */}
-        <div className="bg-white rounded-2xl shadow-xl p-8">
+        <div className="bg-[#1E1E1E] rounded-2xl border border-[#333333] p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Error Message */}
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg">
+              <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-lg">
                 {error}
               </div>
             )}
 
             {/* Restaurant Selection */}
             <div>
-              <label className="block text-sm font-medium text-[#111111] mb-2">
-                Restaurant <span className="text-gray-400">(Optional)</span>
+              <label className="block text-sm font-medium text-white mb-2">
+                Restaurant <span className="text-[#666666]">(Optional)</span>
               </label>
               <select
                 value={restaurantId}
                 onChange={(e) => setRestaurantId(e.target.value)}
-                className="w-full px-4 py-3 bg-white border border-[#E5E5E5] rounded-full text-[#111111] placeholder-[#999999] focus:outline-none focus:ring-2 focus:ring-[#00B14F] focus:border-transparent transition-all"
+                className="w-full px-4 py-3 bg-[#2A2A2A] border border-[#333333] rounded-[100px] text-white focus:outline-none focus:border-[#00B14F] transition-all"
               >
                 <option value="">Select a restaurant...</option>
                 {restaurants.map((restaurant) => (
@@ -232,16 +228,16 @@ export default function CreateNotePage() {
             {/* Dish Selection */}
             {restaurantId && (
               <div>
-                <label className="block text-sm font-medium text-[#111111] mb-2">
-                  Dish <span className="text-gray-400">(Optional)</span>
+                <label className="block text-sm font-medium text-white mb-2">
+                  Dish <span className="text-[#666666]">(Optional)</span>
                 </label>
                 {loadingDishes ? (
-                  <div className="text-gray-500">Loading dishes...</div>
+                  <div className="text-[#999999]">Loading dishes...</div>
                 ) : dishes.length > 0 ? (
                   <select
                     value={dishId}
                     onChange={(e) => setDishId(e.target.value)}
-                    className="w-full px-4 py-3 bg-white border border-[#E5E5E5] rounded-full text-[#111111] placeholder-[#999999] focus:outline-none focus:ring-2 focus:ring-[#00B14F] focus:border-transparent transition-all"
+                    className="w-full px-4 py-3 bg-[#2A2A2A] border border-[#333333] rounded-[100px] text-white focus:outline-none focus:border-[#00B14F] transition-all"
                   >
                     <option value="">Select a dish...</option>
                     {dishes.map((dish) => (
@@ -251,7 +247,7 @@ export default function CreateNotePage() {
                     ))}
                   </select>
                 ) : (
-                  <div className="text-gray-500 text-sm">
+                  <div className="text-[#666666] text-sm">
                     No dishes available for this restaurant
                   </div>
                 )}
@@ -260,23 +256,23 @@ export default function CreateNotePage() {
 
             {/* Title */}
             <div>
-              <label className="block text-sm font-medium text-[#111111] mb-2">
-                Title <span className="text-red-500">*</span>
+              <label className="block text-sm font-medium text-white mb-2">
+                Title <span className="text-red-400">*</span>
               </label>
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g., Amazing Filter Coffee Experience"
-                className="w-full px-4 py-3 bg-white border border-[#E5E5E5] rounded-full text-[#111111] placeholder-[#999999] focus:outline-none focus:ring-2 focus:ring-[#00B14F] focus:border-transparent transition-all"
+                className="w-full px-4 py-3 bg-[#2A2A2A] border border-[#333333] rounded-[100px] text-white placeholder-[#666666] focus:outline-none focus:border-[#00B14F] transition-all"
                 required
               />
             </div>
 
             {/* Rating */}
             <div>
-              <label className="block text-sm font-medium text-[#111111] mb-2">
-                Rating <span className="text-red-500">*</span>
+              <label className="block text-sm font-medium text-white mb-2">
+                Rating <span className="text-red-400">*</span>
               </label>
               <div className="flex items-center gap-2">
                 {[1, 2, 3, 4, 5].map((star) => (
@@ -293,13 +289,13 @@ export default function CreateNotePage() {
                       className={`${
                         star <= (hoverRating || rating)
                           ? 'fill-yellow-400 text-yellow-400'
-                          : 'text-gray-300'
+                          : 'text-[#333333]'
                       } transition-colors`}
                     />
                   </button>
                 ))}
                 {rating > 0 && (
-                  <span className="ml-2 text-sm text-[#111111]">
+                  <span className="ml-2 text-sm text-[#999999]">
                     {rating} out of 5 stars
                   </span>
                 )}
@@ -308,29 +304,28 @@ export default function CreateNotePage() {
 
             {/* Content */}
             <div>
-              <label className="block text-sm font-medium text-[#111111] mb-2">
-                Your Review <span className="text-red-500">*</span>
+              <label className="block text-sm font-medium text-white mb-2">
+                Your Review <span className="text-red-400">*</span>
               </label>
               <textarea
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 placeholder="Share your experience... What did you love? What flavors stood out? Would you recommend it?"
                 rows={6}
-                className="w-full px-4 py-3 bg-white border border-[#E5E5E5] rounded-3xl text-[#111111] placeholder-[#999999] focus:outline-none focus:ring-2 focus:ring-[#00B14F] focus:border-transparent transition-all resize-none"
+                className="w-full px-4 py-3 bg-[#2A2A2A] border border-[#333333] rounded-2xl text-white placeholder-[#666666] focus:outline-none focus:border-[#00B14F] transition-all resize-none"
                 required
               />
             </div>
 
             {/* Image Upload */}
             <div>
-              <label className="block text-sm font-medium text-[#111111] mb-2">
-                Photos <span className="text-gray-400">(Optional)</span>
+              <label className="block text-sm font-medium text-white mb-2">
+                Photos <span className="text-[#666666]">(Optional)</span>
               </label>
               <div className="space-y-4">
-                {/* Upload Button */}
-                <label className="flex items-center justify-center w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-[#00B14F] transition-colors">
-                  <Upload size={20} className="mr-2 text-gray-500" />
-                  <span className="text-[#111111]">Upload Image</span>
+                <label className="flex items-center justify-center w-full px-4 py-3 border-2 border-dashed border-[#333333] rounded-lg cursor-pointer hover:border-[#00B14F] transition-colors">
+                  <Upload size={20} className="mr-2 text-[#666666]" />
+                  <span className="text-[#999999]">Upload Image</span>
                   <input
                     type="file"
                     accept="image/*"
@@ -339,7 +334,6 @@ export default function CreateNotePage() {
                   />
                 </label>
 
-                {/* Image Previews */}
                 {images.length > 0 && (
                   <div className="grid grid-cols-2 gap-4">
                     {images.map((img, index) => (
@@ -365,11 +359,10 @@ export default function CreateNotePage() {
 
             {/* Tags */}
             <div>
-              <label className="block text-sm font-medium text-[#111111] mb-2">
-                Tags <span className="text-gray-400">(Optional)</span>
+              <label className="block text-sm font-medium text-white mb-2">
+                Tags <span className="text-[#666666]">(Optional)</span>
               </label>
               <div className="space-y-3">
-                {/* Tag Input */}
                 <div className="flex gap-2">
                   <input
                     type="text"
@@ -377,31 +370,30 @@ export default function CreateNotePage() {
                     onChange={(e) => setTagInput(e.target.value)}
                     onKeyPress={handleKeyPress}
                     placeholder="Add tags (e.g., spicy, sweet, must-try)"
-                    className="flex-1 px-4 py-2 bg-white border border-[#E5E5E5] rounded-full text-[#111111] placeholder-[#999999] focus:outline-none focus:ring-2 focus:ring-[#00B14F] focus:border-transparent transition-all"
+                    className="flex-1 px-4 py-2 bg-[#2A2A2A] border border-[#333333] rounded-[100px] text-white placeholder-[#666666] focus:outline-none focus:border-[#00B14F] transition-all"
                   />
                   <button
                     type="button"
                     onClick={handleAddTag}
-                    className="px-4 py-2 bg-[#00B14F]/10 text-[#00B14F] rounded-lg hover:bg-[#00B14F]/20 transition-colors"
+                    className="px-4 py-2 bg-[#00B14F]/20 text-[#00B14F] rounded-lg hover:bg-[#00B14F]/30 transition-colors border border-[#00B14F]/30"
                   >
                     Add
                   </button>
                 </div>
 
-                {/* Tag Pills */}
                 {tags.length > 0 && (
                   <div className="flex flex-wrap gap-2">
                     {tags.map((tag) => (
                       <span
                         key={tag}
-                        className="inline-flex items-center gap-1 px-3 py-1 bg-[#00B14F]/10 text-[#00B14F] rounded-full text-sm"
+                        className="inline-flex items-center gap-1 px-3 py-1 bg-[#00B14F]/20 text-[#00B14F] rounded-full text-sm border border-[#00B14F]/30"
                       >
                         <TagIcon size={14} />
                         {tag}
                         <button
                           type="button"
                           onClick={() => handleRemoveTag(tag)}
-                          className="ml-1 hover:text-indigo-900"
+                          className="ml-1 hover:text-white"
                         >
                           <X size={14} />
                         </button>
@@ -413,12 +405,12 @@ export default function CreateNotePage() {
             </div>
 
             {/* Visibility Toggle */}
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+            <div className="flex items-center justify-between p-4 bg-[#2A2A2A] rounded-lg border border-[#333333]">
               <div>
-                <h3 className="text-sm font-medium text-[#111111]">
+                <h3 className="text-sm font-medium text-white">
                   Public Note
                 </h3>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-[#666666]">
                   Make this note visible to everyone
                 </p>
               </div>
@@ -426,7 +418,7 @@ export default function CreateNotePage() {
                 type="button"
                 onClick={() => setIsPublic(!isPublic)}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  isPublic ? 'bg-[#00B14F]' : 'bg-gray-300'
+                  isPublic ? 'bg-[#00B14F]' : 'bg-[#333333]'
                 }`}
               >
                 <span
@@ -442,14 +434,14 @@ export default function CreateNotePage() {
               <button
                 type="button"
                 onClick={() => router.back()}
-                className="flex-1 px-6 py-3 border border-gray-300 text-[#111111] rounded-lg hover:bg-gray-50 transition-colors"
+                className="flex-1 px-6 py-3 border border-[#333333] text-white rounded-[100px] hover:bg-[#2A2A2A] transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 px-6 py-3 bg-[#00B14F] text-white rounded-full font-semibold hover:bg-[#009944] transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 px-6 py-3 bg-[#00B14F] text-white rounded-[100px] font-semibold hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? 'Publishing...' : 'Publish Note'}
               </button>

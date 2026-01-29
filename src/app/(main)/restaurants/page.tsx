@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { RestaurantCard } from '@/components/restaurants/RestaurantCard';
 import { CategoryFilter } from '@/components/restaurants/CategoryFilter';
 import { Restaurant } from '@/types/database';
-import { Input } from '@/components/ui/Input';
+import { Search } from 'lucide-react';
 
 export default function RestaurantsPage() {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
@@ -39,32 +39,33 @@ export default function RestaurantsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#111111]">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-12">
+      <div className="bg-gradient-to-r from-[#00B14F]/20 to-[#00B14F]/10 border-b border-[#333333] py-12">
         <div className="container mx-auto px-4">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Discover Chennai&apos;s Best Restaurants
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-white">
+            Discover Chennai&apos;s Best Restaurants 🍛
           </h1>
-          <p className="text-xl text-white/90 mb-6">
+          <p className="text-xl text-[#999999] mb-6">
             From Chettinad specialties to South Indian classics
           </p>
 
           {/* Search Bar */}
           <form onSubmit={handleSearch} className="max-w-2xl">
             <div className="flex gap-2">
-              <div className="flex-1">
-                <Input
+              <div className="flex-1 relative">
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-[#666666]" size={20} />
+                <input
                   type="text"
                   placeholder="Search restaurants..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="bg-white"
+                  className="w-full pl-12 pr-4 py-3 bg-[#1E1E1E] border border-[#333333] rounded-[100px] text-white placeholder-[#666666] focus:outline-none focus:border-[#00B14F] transition-all"
                 />
               </div>
               <button
                 type="submit"
-                className="px-6 py-3 bg-white text-indigo-600 font-semibold rounded-lg hover:bg-gray-100 transition-colors"
+                className="px-6 py-3 bg-[#00B14F] text-white font-semibold rounded-[100px] hover:opacity-90 transition-all"
               >
                 Search
               </button>
@@ -82,15 +83,15 @@ export default function RestaurantsPage() {
 
         {/* Results Count */}
         <div className="mb-6">
-          <p className="text-gray-600">
+          <p className="text-[#999999]">
             {loading ? (
               'Loading restaurants...'
             ) : (
               <>
-                Found <span className="font-semibold text-gray-900">{restaurants.length}</span> restaurants
+                Found <span className="font-semibold text-white">{restaurants.length}</span> restaurants
                 {selectedCategory && (
                   <span className="ml-1">
-                    in <span className="font-semibold capitalize">{selectedCategory.replace('_', ' ')}</span>
+                    in <span className="font-semibold text-[#00B14F] capitalize">{selectedCategory.replace('_', ' ')}</span>
                   </span>
                 )}
               </>
@@ -102,12 +103,12 @@ export default function RestaurantsPage() {
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden animate-pulse">
-                <div className="h-48 bg-gray-200"></div>
+              <div key={i} className="bg-[#1E1E1E] rounded-2xl border border-[#333333] overflow-hidden animate-pulse">
+                <div className="h-48 bg-[#2A2A2A]"></div>
                 <div className="p-4">
-                  <div className="h-6 bg-gray-200 rounded mb-2"></div>
-                  <div className="h-4 bg-gray-200 rounded w-2/3 mb-2"></div>
-                  <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                  <div className="h-6 bg-[#2A2A2A] rounded mb-2"></div>
+                  <div className="h-4 bg-[#2A2A2A] rounded w-2/3 mb-2"></div>
+                  <div className="h-4 bg-[#2A2A2A] rounded w-1/2"></div>
                 </div>
               </div>
             ))}
@@ -121,10 +122,10 @@ export default function RestaurantsPage() {
         ) : (
           <div className="text-center py-20">
             <div className="text-6xl mb-4">🔍</div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">
+            <h3 className="text-2xl font-bold text-white mb-2">
               No restaurants found
             </h3>
-            <p className="text-gray-600 mb-6">
+            <p className="text-[#999999] mb-6">
               Try adjusting your search or filters
             </p>
             <button
@@ -133,7 +134,7 @@ export default function RestaurantsPage() {
                 setSearchQuery('');
                 fetchRestaurants();
               }}
-              className="px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors"
+              className="px-6 py-3 bg-[#00B14F] text-white font-semibold rounded-[100px] hover:opacity-90 transition-all"
             >
               Clear Filters
             </button>
