@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { auth, clerkClient } from '@clerk/nextjs/server';
 import { createClient } from '@/lib/supabase/server';
 
 export async function POST(request: NextRequest) {
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'This handle is already taken' }, { status: 400 });
   }
 
-  // Update user's handle
+  // Update user's handle in Supabase
   const { data, error } = await supabase
     .from('users')
     .update({ handle })
@@ -47,6 +47,20 @@ export async function POST(request: NextRequest) {
   if (error) {
     console.error('Error setting handle:', error);
     return NextResponse.json({ error: 'Failed to set handle' }, { status: 500 });
+  }
+
+  // Update Clerk user metadata with handle for middleware checks
+  try {
+    const client = await clerkClient();
+    await client.users.updateUserMetadata(userId, {
+      publicMetadata: {
+        handle,
+        hasHandle: true,
+      },
+    });
+  } catch (clerkError) {
+    console.error('Error updating Clerk metadata:', clerkError);
+    // Don't fail the request if Clerk update fails - handle is saved in DB
   }
 
   return NextResponse.json({ success: true, user: data });
