@@ -214,11 +214,11 @@ export default function CreateNotePage() {
               <select
                 value={restaurantId}
                 onChange={(e) => setRestaurantId(e.target.value)}
-                className="w-full px-4 py-3 bg-[#2A2A2A] border border-[#333333] rounded-[100px] text-white focus:outline-none focus:border-[#00B14F] transition-all"
+                className="w-full px-4 py-3 bg-[#2A2A2A] border border-[#333333] rounded-[100px] text-white focus:outline-none focus:border-[#00B14F] transition-all [&>option]:bg-[#2A2A2A] [&>option]:text-white"
               >
-                <option value="">Select a restaurant...</option>
+                <option value="" className="text-[#666666]">Select a restaurant...</option>
                 {restaurants.map((restaurant) => (
-                  <option key={restaurant.id} value={restaurant.id}>
+                  <option key={restaurant.id} value={restaurant.id} className="text-white">
                     {restaurant.name} - {restaurant.address}
                   </option>
                 ))}
@@ -237,11 +237,11 @@ export default function CreateNotePage() {
                   <select
                     value={dishId}
                     onChange={(e) => setDishId(e.target.value)}
-                    className="w-full px-4 py-3 bg-[#2A2A2A] border border-[#333333] rounded-[100px] text-white focus:outline-none focus:border-[#00B14F] transition-all"
+                    className="w-full px-4 py-3 bg-[#2A2A2A] border border-[#333333] rounded-[100px] text-white focus:outline-none focus:border-[#00B14F] transition-all [&>option]:bg-[#2A2A2A] [&>option]:text-white"
                   >
-                    <option value="">Select a dish...</option>
+                    <option value="" className="text-[#666666]">Select a dish...</option>
                     {dishes.map((dish) => (
-                      <option key={dish.id} value={dish.id}>
+                      <option key={dish.id} value={dish.id} className="text-white">
                         {dish.name}
                       </option>
                     ))}
