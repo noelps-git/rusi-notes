@@ -188,8 +188,8 @@ export default function FriendsPage() {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">Nanba Gang 🦁</h1>
-          <p className="text-[#999999]">Connect with your foodie nanbas! <span className="text-[#e52020]">"Machan, anga poi try pannu!"</span></p>
+          <h1 className="text-4xl font-bold text-white mb-2">Friend Gang 🦁</h1>
+          <p className="text-[#999999]">Connect with your foodie friends! <span className="text-[#e52020]">"Machan, anga poi try pannu!"</span></p>
         </div>
 
         {/* Tabs */}
@@ -204,7 +204,7 @@ export default function FriendsPage() {
               }`}
             >
               <Users size={20} className="inline mr-2" />
-              Nanbas ({friends.length})
+              Friends ({friends.length})
             </button>
             <button
               onClick={() => setActiveTab('requests')}
@@ -230,7 +230,7 @@ export default function FriendsPage() {
               }`}
             >
               <Search size={20} className="inline mr-2" />
-              Add Nanbas
+              Add Friends
             </button>
           </div>
         </div>
@@ -242,13 +242,13 @@ export default function FriendsPage() {
               {friends.length === 0 ? (
                 <div className="text-center py-12">
                   <Users size={48} className="mx-auto text-[#333333] mb-4" />
-                  <p className="text-[#999999] mb-2">No nanbas yet da! 🤷</p>
+                  <p className="text-[#999999] mb-2">No friends yet da! 🤷</p>
                   <p className="text-sm text-[#666666] mb-4">"Yenna koduma sir idhu?"</p>
                   <button
                     onClick={() => setActiveTab('search')}
                     className="px-6 py-2 bg-[#e52020] text-white rounded-[100px] hover:opacity-90 transition-all"
                   >
-                    Find Nanbas 🔍
+                    Find Friends 🔍
                   </button>
                 </div>
               ) : (
@@ -424,7 +424,7 @@ export default function FriendsPage() {
                         ) : (
                           <UserPlus size={20} />
                         )}
-                        {sendingRequest === user.id ? 'Sending...' : 'Add Nanba'}
+                        {sendingRequest === user.id ? 'Sending...' : 'Add Friend'}
                       </button>
                     </div>
                   ))}
@@ -436,7 +436,7 @@ export default function FriendsPage() {
               ) : (
                 <div className="text-center py-12 text-[#999999]">
                   <Search size={48} className="mx-auto mb-4 text-[#333333]" />
-                  <p className="mb-2">Search for nanbas by name or email</p>
+                  <p className="mb-2">Search for friends by name or email</p>
                   <p className="text-sm text-[#666666]">"Machan, evana add pannalam?"</p>
                 </div>
               )}

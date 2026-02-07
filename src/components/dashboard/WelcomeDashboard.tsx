@@ -124,7 +124,7 @@ export default function WelcomeDashboard({ userName, userEmail }: WelcomeDashboa
                 <div>
                   <h3 className="text-sm font-semibold text-white mb-0.5">Share with Friends</h3>
                   <p className="text-xs text-[#999999] font-normal">
-                    Let your Nanba gang know what's mass!
+                    Let your Friend gang know what's mass!
                   </p>
                 </div>
               </div>
@@ -201,7 +201,7 @@ export default function WelcomeDashboard({ userName, userEmail }: WelcomeDashboa
                 Friends Feed 👥
               </h3>
               <p className="text-sm sm:text-base text-[#999999] font-normal mb-3 sm:mb-4">
-                Connect with nanbas. See what's <span className="text-[#e52020]">trending!</span>
+                Connect with friends. See what's <span className="text-[#e52020]">trending!</span>
               </p>
               <div className="flex items-center gap-2 text-[#e52020] font-medium text-sm sm:text-base">
                 <span>Explore Now</span>
@@ -242,7 +242,7 @@ export default function WelcomeDashboard({ userName, userEmail }: WelcomeDashboa
               Share <span className="text-[#e52020]">Rusi Notes</span> with Friends! 📢
             </h2>
             <p className="text-sm sm:text-base text-[#999999] font-normal mb-4 sm:mb-6 px-2">
-              Invite your Nanba gang to join the food revolution! <span className="text-white">"Viral-ah paravalam!"</span>
+              Invite your Friend gang to join the food revolution! <span className="text-white">"Viral-ah paravalam!"</span>
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-center">

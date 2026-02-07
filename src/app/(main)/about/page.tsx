@@ -20,7 +20,7 @@ export default function AboutPage() {
           <p className="text-lg">
             Rusi Notes is Chennai's favorite food review platform - built by foodies,
             for foodies. We believe that the best restaurant recommendations come from
-            your nanbas (friends), not random strangers on the internet.
+            your friends (friends), not random strangers on the internet.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-12">
@@ -35,7 +35,7 @@ export default function AboutPage() {
               <div className="w-12 h-12 bg-[#e52020]/20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Users className="text-[#e52020]" size={24} />
               </div>
-              <h3 className="text-white font-semibold mb-2">Nanba Network</h3>
+              <h3 className="text-white font-semibold mb-2">Friend Network</h3>
               <p className="text-sm text-[#999999]">See what your friends are eating</p>
             </div>
             <div className="bg-[#1E1E1E] p-6 rounded-2xl border border-[#333333] text-center">

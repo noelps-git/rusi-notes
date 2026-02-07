@@ -163,7 +163,7 @@ export default function GroupChatClient({
         >
           <Users size={20} className="text-[#999999]" />
           <span className="text-sm font-medium text-[#999999]">
-            {members.length} {members.length === 1 ? 'nanba' : 'nanbas'}
+            {members.length} {members.length === 1 ? 'friend' : 'friends'}
           </span>
         </button>
       </div>
@@ -269,7 +269,7 @@ export default function GroupChatClient({
         {showMembers && (
           <div className="w-80 bg-[#1E1E1E] border-l border-[#333333] flex flex-col">
             <div className="p-4 border-b border-[#333333]">
-              <h2 className="font-bold text-white">Nanba Gang 🦁</h2>
+              <h2 className="font-bold text-white">Friend Gang 🦁</h2>
               <p className="text-xs text-[#666666] mt-1">{members.length} mass members</p>
             </div>
             <div className="flex-1 overflow-y-auto p-4 space-y-2">

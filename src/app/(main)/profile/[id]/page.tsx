@@ -96,7 +96,7 @@ export default async function UserProfilePage({
           className="inline-flex items-center gap-2 text-[#999999] hover:text-white transition-colors mb-6"
         >
           <ArrowLeft size={20} />
-          <span>Back to Nanbas</span>
+          <span>Back to Friends</span>
         </Link>
 
         {/* Profile Header */}
@@ -149,7 +149,7 @@ export default async function UserProfilePage({
                   )}
                   {friendshipStatus?.status === 'accepted' && (
                     <span className="px-6 py-2 bg-green-500/20 text-green-400 rounded-[100px] border border-green-500/30">
-                      Nanbas 🦁
+                      Friends 🦁
                     </span>
                   )}
                   {friendshipStatus?.status === 'pending' && (
@@ -178,7 +178,7 @@ export default async function UserProfilePage({
               <Users className="w-6 h-6 text-[#e52020]" />
             </div>
             <div className="text-3xl font-bold text-white mb-1">{stats.friends}</div>
-            <div className="text-sm text-[#999999]">Nanbas</div>
+            <div className="text-sm text-[#999999]">Friends</div>
           </div>
 
           <div className="bg-[#1E1E1E] rounded-2xl border border-[#333333] p-6 text-center">

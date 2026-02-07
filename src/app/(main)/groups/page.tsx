@@ -63,7 +63,7 @@ export default async function GroupsPage() {
               My Gangs 🦁
             </h1>
             <p className="text-[#999999]">
-              "Nanba gang-oda saapadu discuss pannalam!" <span className="text-[#e52020]">Mass chat groups! 💬</span>
+              "Friend gang-oda saapadu discuss pannalam!" <span className="text-[#e52020]">Mass chat groups! 💬</span>
             </p>
           </div>
           <CreateGroupButton />
@@ -79,7 +79,7 @@ export default async function GroupsPage() {
               No Groups Yet da! 🤷
             </h2>
             <p className="text-[#999999] mb-2 max-w-md mx-auto">
-              Create your first gang to start chatting with nanbas about food spots!
+              Create your first gang to start chatting with friends about food spots!
             </p>
             <p className="text-sm text-[#666666] mb-6">"Yaarudaiya group-la join aagalam?"</p>
             <CreateGroupButton />
@@ -121,7 +121,7 @@ export default async function GroupsPage() {
                 <div className="flex items-center gap-4 text-sm text-[#999999] mb-4">
                   <div className="flex items-center gap-1">
                     <Users size={16} />
-                    <span>{group.memberCount} nanbas</span>
+                    <span>{group.memberCount} friends</span>
                   </div>
                   {group.membershipRole === 'admin' && (
                     <span className="px-2 py-1 bg-[#e52020]/20 text-[#e52020] text-xs font-medium rounded-full border border-[#e52020]/30">
@@ -157,7 +157,7 @@ export default async function GroupsPage() {
           <div className="mt-8 bg-[#1E1E1E] border border-[#333333] rounded-2xl p-4">
             <p className="text-sm text-[#999999]">
               <strong className="text-[#e52020]">💡 Vera Level Tip:</strong> Click on any gang to start chatting,
-              view nanbas, and manage settings. <span className="text-white">Admins-ku full powers! 👑</span>
+              view friends, and manage settings. <span className="text-white">Admins-ku full powers! 👑</span>
             </p>
           </div>
         )}

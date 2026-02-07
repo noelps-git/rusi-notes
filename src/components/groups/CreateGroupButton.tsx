@@ -145,7 +145,7 @@ export default function CreateGroupButton() {
                     <div className="text-left flex-1">
                       <div className="font-medium text-white">Private</div>
                       <div className="text-sm text-[#999999]">
-                        Only invited nanbas can join
+                        Only invited friends can join
                       </div>
                     </div>
                   </button>

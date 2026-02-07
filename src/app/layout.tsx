@@ -10,8 +10,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Rusi Notes - Saapadu Review Podalam!",
-  description: "Vera Level food reviews! Track your favorite dishes, connect with your Nanba gang, and discover Chennai's best restaurants. Mass collaboration for foodies!",
+  title: "Rusi Notes - Your Personal Food Journal",
+  description: "Track your favorite dishes, share reviews with friends, and discover amazing restaurants. Join thousands of food lovers on their culinary journey.",
   viewport: {
     width: 'device-width',
     initialScale: 1,

@@ -55,7 +55,7 @@ export function AddFriendButton({ userId }: AddFriendButtonProps) {
       ) : (
         <UserPlus size={18} />
       )}
-      {loading ? 'Sending...' : 'Add Nanba'}
+      {loading ? 'Sending...' : 'Add Friend'}
     </button>
   );
 }

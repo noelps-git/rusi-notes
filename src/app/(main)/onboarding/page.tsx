@@ -88,7 +88,7 @@ export default function OnboardingPage() {
         throw new Error(data.error || 'Failed to set handle');
       }
 
-      showToast('Semma! Your handle is ready! 🔥', 'success');
+      showToast('Your handle is set up!', 'success');
       window.location.href = '/dashboard';
     } catch (err: any) {
       setError(err.message || 'Something went wrong');
@@ -113,10 +113,10 @@ export default function OnboardingPage() {
             <Sparkles size={32} className="text-[#e52020] sm:w-10 sm:h-10" />
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2 sm:mb-3">
-            Dei, First Things First! 🙌
+            Welcome! Let&apos;s Get Started
           </h1>
           <p className="text-[#999999] text-base sm:text-lg px-2">
-            Before you start reviewing that biriyani, let&apos;s get you a cool handle, machan!
+            First, let&apos;s create your unique handle so friends can find you.
           </p>
         </div>
 
@@ -178,7 +178,7 @@ export default function OnboardingPage() {
               {/* Availability Status */}
               {handle && handle.length >= 3 && !checking && (
                 <p className={`mt-2 text-sm ${isAvailable ? 'text-[#e52020]' : 'text-red-400'}`}>
-                  {isAvailable ? '✓ Semma! This handle is yours for the taking!' : '✗ Aiyyo! Someone already took this one'}
+                  {isAvailable ? '✓ Great! This handle is available.' : '✗ Sorry, this handle is already taken.'}
                 </p>
               )}
             </div>
