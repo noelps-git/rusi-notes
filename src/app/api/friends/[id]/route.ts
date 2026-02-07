@@ -3,6 +3,20 @@ import { auth, currentUser } from '@clerk/nextjs/server';
 import { createClient } from '@/lib/supabase/server';
 import { createNotification } from '@/lib/utils/notifications';
 
+// Helper to get database user ID from Clerk user
+async function getDbUserId(supabase: any, user: any): Promise<string | null> {
+  const email = user?.emailAddresses[0]?.emailAddress;
+  if (!email) return null;
+
+  const { data: dbUser } = await supabase
+    .from('users')
+    .select('id')
+    .eq('email', email)
+    .maybeSingle();
+
+  return dbUser?.id || null;
+}
+
 // PUT /api/friends/[id] - Accept or reject friend request
 export async function PUT(
   req: NextRequest,
@@ -32,6 +46,15 @@ export async function PUT(
 
     const supabase = await createClient();
 
+    // Get current user's database ID
+    const dbUserId = await getDbUserId(supabase, user);
+    if (!dbUserId) {
+      return NextResponse.json(
+        { error: 'User profile not found' },
+        { status: 400 }
+      );
+    }
+
     // Check if user is the recipient of this friend request
     const { data: friendship } = await supabase
       .from('friendships')
@@ -47,7 +70,7 @@ export async function PUT(
     }
 
     // Only the recipient can accept/reject
-    if (friendship.recipient_id !== userId) {
+    if (friendship.recipient_id !== dbUserId) {
       return NextResponse.json(
         { error: 'You can only respond to friend requests sent to you' },
         { status: 403 }
@@ -87,7 +110,7 @@ export async function PUT(
         message: `${user?.fullName || 'Someone'} accepted your friend request`,
         link: '/friends',
         metadata: {
-          accepter_id: userId,
+          accepter_id: dbUserId,
           accepter_name: user?.fullName,
           friendship_id: updated.id,
         },
@@ -111,6 +134,7 @@ export async function DELETE(
 ) {
   try {
     const { userId } = await auth();
+    const user = await currentUser();
 
     if (!userId) {
       return NextResponse.json(
@@ -121,6 +145,15 @@ export async function DELETE(
 
     const resolvedParams = await params;
     const supabase = await createClient();
+
+    // Get current user's database ID
+    const dbUserId = await getDbUserId(supabase, user);
+    if (!dbUserId) {
+      return NextResponse.json(
+        { error: 'User profile not found' },
+        { status: 400 }
+      );
+    }
 
     // Check if user is part of this friendship
     const { data: friendship } = await supabase
@@ -138,8 +171,8 @@ export async function DELETE(
 
     // Only the people involved can delete the friendship
     if (
-      friendship.requester_id !== userId &&
-      friendship.recipient_id !== userId
+      friendship.requester_id !== dbUserId &&
+      friendship.recipient_id !== dbUserId
     ) {
       return NextResponse.json(
         { error: 'You can only remove your own friendships' },
