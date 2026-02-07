@@ -63,7 +63,7 @@ export default async function GroupsPage() {
               My Gangs 🦁
             </h1>
             <p className="text-[#999999]">
-              "Nanba gang-oda saapadu discuss pannalam!" <span className="text-[#00B14F]">Mass chat groups! 💬</span>
+              "Nanba gang-oda saapadu discuss pannalam!" <span className="text-[#e52020]">Mass chat groups! 💬</span>
             </p>
           </div>
           <CreateGroupButton />
@@ -72,8 +72,8 @@ export default async function GroupsPage() {
         {/* Groups Grid */}
         {groupsWithCounts.length === 0 ? (
           <div className="bg-[#1E1E1E] rounded-2xl shadow-[0_16px_64px_rgba(0,0,0,0.5)] border border-[#333333] p-12 text-center">
-            <div className="w-20 h-20 bg-[#00B14F]/20 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Users size={40} className="text-[#00B14F]" />
+            <div className="w-20 h-20 bg-[#e52020]/20 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Users size={40} className="text-[#e52020]" />
             </div>
             <h2 className="text-2xl font-bold text-white mb-3">
               No Groups Yet da! 🤷
@@ -90,7 +90,7 @@ export default async function GroupsPage() {
               <Link
                 key={group.id}
                 href={`/groups/${group.id}`}
-                className="bg-[#1E1E1E] rounded-2xl shadow-[0_16px_64px_rgba(0,0,0,0.5)] border border-[#333333] hover:border-[#00B14F] transition-all p-6 hover:-translate-y-1"
+                className="bg-[#1E1E1E] rounded-2xl shadow-[0_16px_64px_rgba(0,0,0,0.5)] border border-[#333333] hover:border-[#e52020] transition-all p-6 hover:-translate-y-1"
               >
                 {/* Group Header */}
                 <div className="flex items-start justify-between mb-4">
@@ -106,8 +106,8 @@ export default async function GroupsPage() {
                   </div>
                   <div className="flex-shrink-0 ml-3">
                     {group.is_private ? (
-                      <div className="w-10 h-10 bg-[#00B14F]/20 rounded-full flex items-center justify-center">
-                        <Lock size={20} className="text-[#00B14F]" />
+                      <div className="w-10 h-10 bg-[#e52020]/20 rounded-full flex items-center justify-center">
+                        <Lock size={20} className="text-[#e52020]" />
                       </div>
                     ) : (
                       <div className="w-10 h-10 bg-green-500/20 rounded-full flex items-center justify-center">
@@ -124,7 +124,7 @@ export default async function GroupsPage() {
                     <span>{group.memberCount} nanbas</span>
                   </div>
                   {group.membershipRole === 'admin' && (
-                    <span className="px-2 py-1 bg-[#00B14F]/20 text-[#00B14F] text-xs font-medium rounded-full border border-[#00B14F]/30">
+                    <span className="px-2 py-1 bg-[#e52020]/20 text-[#e52020] text-xs font-medium rounded-full border border-[#e52020]/30">
                       Boss 👑
                     </span>
                   )}
@@ -132,7 +132,7 @@ export default async function GroupsPage() {
 
                 {/* Creator Info */}
                 <div className="flex items-center gap-2 pt-4 border-t border-[#333333]">
-                  <div className="w-6 h-6 rounded-full bg-[#00B14F] flex items-center justify-center text-white text-xs font-bold">
+                  <div className="w-6 h-6 rounded-full bg-[#e52020] flex items-center justify-center text-white text-xs font-bold">
                     {group.creator?.full_name?.charAt(0).toUpperCase() || 'U'}
                   </div>
                   <span className="text-xs text-[#999999]">
@@ -142,7 +142,7 @@ export default async function GroupsPage() {
 
                 {/* Chat Button */}
                 <div className="mt-4 pt-4 border-t border-[#333333]">
-                  <div className="flex items-center gap-2 text-[#00B14F] font-medium text-sm">
+                  <div className="flex items-center gap-2 text-[#e52020] font-medium text-sm">
                     <MessageCircle size={16} />
                     <span>Open Chat 💬</span>
                   </div>
@@ -156,7 +156,7 @@ export default async function GroupsPage() {
         {groupsWithCounts.length > 0 && (
           <div className="mt-8 bg-[#1E1E1E] border border-[#333333] rounded-2xl p-4">
             <p className="text-sm text-[#999999]">
-              <strong className="text-[#00B14F]">💡 Vera Level Tip:</strong> Click on any gang to start chatting,
+              <strong className="text-[#e52020]">💡 Vera Level Tip:</strong> Click on any gang to start chatting,
               view nanbas, and manage settings. <span className="text-white">Admins-ku full powers! 👑</span>
             </p>
           </div>

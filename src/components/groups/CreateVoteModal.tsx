@@ -95,8 +95,8 @@ export default function CreateVoteModal({
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[#00B14F]/20 rounded-full flex items-center justify-center">
-                <BarChart3 className="w-5 h-5 text-[#00B14F]" />
+              <div className="w-10 h-10 bg-[#e52020]/20 rounded-full flex items-center justify-center">
+                <BarChart3 className="w-5 h-5 text-[#e52020]" />
               </div>
               <h2 className="text-2xl font-bold text-white">Create Poll 📊</h2>
             </div>
@@ -120,14 +120,14 @@ export default function CreateVoteModal({
             {/* Question */}
             <div>
               <label className="block text-sm font-medium text-white mb-2">
-                Question <span className="text-[#00B14F]">*</span>
+                Question <span className="text-[#e52020]">*</span>
               </label>
               <input
                 type="text"
                 value={question}
                 onChange={(e) => setQuestion(e.target.value)}
                 placeholder="e.g., Where should we eat this weekend? 🍛"
-                className="w-full px-4 py-3 bg-[#111111] border border-[#333333] rounded-lg text-white placeholder-[#666666] focus:outline-none focus:border-[#00B14F] transition-all"
+                className="w-full px-4 py-3 bg-[#111111] border border-[#333333] rounded-lg text-white placeholder-[#666666] focus:outline-none focus:border-[#e52020] transition-all"
                 required
               />
             </div>
@@ -135,7 +135,7 @@ export default function CreateVoteModal({
             {/* Options */}
             <div>
               <label className="block text-sm font-medium text-white mb-2">
-                Options <span className="text-[#00B14F]">*</span>
+                Options <span className="text-[#e52020]">*</span>
                 <span className="text-[#666666] text-xs ml-2">(min 2, max 10)</span>
               </label>
               <div className="space-y-2">
@@ -146,7 +146,7 @@ export default function CreateVoteModal({
                       value={option}
                       onChange={(e) => handleOptionChange(index, e.target.value)}
                       placeholder={`Option ${index + 1}`}
-                      className="flex-1 px-4 py-2 bg-[#111111] border border-[#333333] rounded-lg text-white placeholder-[#666666] focus:outline-none focus:border-[#00B14F] transition-all"
+                      className="flex-1 px-4 py-2 bg-[#111111] border border-[#333333] rounded-lg text-white placeholder-[#666666] focus:outline-none focus:border-[#e52020] transition-all"
                     />
                     {options.length > 2 && (
                       <button
@@ -165,7 +165,7 @@ export default function CreateVoteModal({
                 <button
                   type="button"
                   onClick={handleAddOption}
-                  className="mt-3 flex items-center gap-2 px-4 py-2 text-[#00B14F] hover:bg-[#00B14F]/10 rounded-lg transition-all text-sm font-medium"
+                  className="mt-3 flex items-center gap-2 px-4 py-2 text-[#e52020] hover:bg-[#e52020]/10 rounded-lg transition-all text-sm font-medium"
                 >
                   <Plus size={16} />
                   Add Option
@@ -180,7 +180,7 @@ export default function CreateVoteModal({
                   type="checkbox"
                   checked={hasExpiry}
                   onChange={(e) => setHasExpiry(e.target.checked)}
-                  className="w-4 h-4 accent-[#00B14F]"
+                  className="w-4 h-4 accent-[#e52020]"
                 />
                 <span className="text-sm font-medium text-white">Set expiry time ⏰</span>
               </label>
@@ -193,7 +193,7 @@ export default function CreateVoteModal({
                     onChange={(e) => setExpiresInHours(parseInt(e.target.value) || 24)}
                     min="1"
                     max="168"
-                    className="w-24 px-4 py-2 bg-[#111111] border border-[#333333] rounded-lg text-white focus:outline-none focus:border-[#00B14F] transition-all"
+                    className="w-24 px-4 py-2 bg-[#111111] border border-[#333333] rounded-lg text-white focus:outline-none focus:border-[#e52020] transition-all"
                   />
                   <span className="text-sm text-[#999999]">hours (max 7 days)</span>
                 </div>
@@ -212,7 +212,7 @@ export default function CreateVoteModal({
               <button
                 type="submit"
                 disabled={creating}
-                className="flex-1 px-6 py-3 bg-[#00B14F] text-white rounded-[100px] hover:opacity-90 transition-all disabled:opacity-50"
+                className="flex-1 px-6 py-3 bg-[#e52020] text-white rounded-[100px] hover:opacity-90 transition-all disabled:opacity-50"
               >
                 {creating ? 'Creating...' : 'Create Poll 🚀'}
               </button>

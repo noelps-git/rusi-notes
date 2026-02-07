@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth, clerkClient } from '@clerk/nextjs/server';
+import { auth, currentUser } from '@clerk/nextjs/server';
 import { createClient } from '@/lib/supabase/server';
 
 export async function POST(request: NextRequest) {
@@ -19,54 +19,68 @@ export async function POST(request: NextRequest) {
   // Validate handle format
   const handleRegex = /^[a-z0-9_.-]{3,20}$/;
   if (!handleRegex.test(handle)) {
-    return NextResponse.json({ error: 'Invalid handle format. Use only lowercase letters, numbers, dots, underscores, and hyphens.' }, { status: 400 });
+    return NextResponse.json({ error: 'Invalid handle format' }, { status: 400 });
+  }
+
+  // Get user info from Clerk
+  const user = await currentUser();
+  const email = user?.emailAddresses[0]?.emailAddress;
+
+  if (!email) {
+    return NextResponse.json({ error: 'No email found' }, { status: 400 });
   }
 
   const supabase = await createClient();
 
-  // Update Clerk user metadata with handle first (this always works)
-  try {
-    const client = await clerkClient();
-    await client.users.updateUserMetadata(userId, {
-      publicMetadata: {
-        handle,
-        hasHandle: true,
-      },
-    });
-  } catch (clerkError) {
-    console.error('Error updating Clerk metadata:', clerkError);
-    return NextResponse.json({ error: 'Failed to save handle. Please try again.' }, { status: 500 });
+  // Check if handle is already taken
+  const { data: handleTaken } = await supabase
+    .from('users')
+    .select('id')
+    .eq('handle', handle)
+    .maybeSingle();
+
+  if (handleTaken) {
+    return NextResponse.json({ error: 'Handle already taken' }, { status: 400 });
   }
 
-  // Try to update the database (may fail if handle column doesn't exist yet)
-  try {
-    // Check if handle is already taken
-    const { data: existingUser } = await supabase
+  // Check if user exists by email
+  const { data: existingUser } = await supabase
+    .from('users')
+    .select('id, clerk_id')
+    .eq('email', email)
+    .maybeSingle();
+
+  let error;
+
+  if (existingUser) {
+    // Update existing user's handle and clerk_id
+    const result = await supabase
       .from('users')
-      .select('id')
-      .eq('handle', handle)
-      .neq('id', userId)
-      .maybeSingle();
-
-    if (existingUser) {
-      return NextResponse.json({ error: 'This handle is already taken' }, { status: 400 });
-    }
-
-    // Update user's handle in Supabase
-    const { data, error } = await supabase
+      .update({
+        handle,
+        clerk_id: userId,
+        full_name: user?.fullName || user?.firstName || 'User',
+      })
+      .eq('id', existingUser.id);
+    error = result.error;
+  } else {
+    // Create new user with handle and clerk_id
+    const result = await supabase
       .from('users')
-      .update({ handle })
-      .eq('id', userId)
-      .select()
-      .single();
+      .insert({
+        email,
+        handle,
+        clerk_id: userId,
+        full_name: user?.fullName || user?.firstName || 'User',
+        password_hash: 'clerk_managed', // Placeholder - auth is managed by Clerk
+        role: 'user',
+      });
+    error = result.error;
+  }
 
-    if (error) {
-      console.error('Error setting handle in database:', error);
-      // Don't fail - handle is saved in Clerk metadata
-    }
-  } catch (dbError) {
-    console.error('Database error (handle column may not exist):', dbError);
-    // Don't fail - handle is saved in Clerk metadata
+  if (error) {
+    console.error('Error setting handle:', error);
+    return NextResponse.json({ error: `Failed to save: ${error.message}` }, { status: 500 });
   }
 
   return NextResponse.json({ success: true });

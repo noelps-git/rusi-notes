@@ -19,17 +19,17 @@ export function Footer() {
             <h4 className="text-sm font-semibold text-[#111111] mb-4">Platform</h4>
             <ul className="space-y-2">
               <li>
-                <Link href="/restaurants" className="text-sm text-[#666666] hover:text-[#00B14F] transition-colors">
+                <Link href="/restaurants" className="text-sm text-[#666666] hover:text-[#e52020] transition-colors">
                   Restaurants
                 </Link>
               </li>
               <li>
-                <Link href="/notes" className="text-sm text-[#666666] hover:text-[#00B14F] transition-colors">
+                <Link href="/notes" className="text-sm text-[#666666] hover:text-[#e52020] transition-colors">
                   Tasting Notes
                 </Link>
               </li>
               <li>
-                <Link href="/groups" className="text-sm text-[#666666] hover:text-[#00B14F] transition-colors">
+                <Link href="/groups" className="text-sm text-[#666666] hover:text-[#e52020] transition-colors">
                   Groups
                 </Link>
               </li>
@@ -40,12 +40,12 @@ export function Footer() {
             <h4 className="text-sm font-semibold text-[#111111] mb-4">Company</h4>
             <ul className="space-y-2">
               <li>
-                <Link href="/about" className="text-sm text-[#666666] hover:text-[#00B14F] transition-colors">
+                <Link href="/about" className="text-sm text-[#666666] hover:text-[#e52020] transition-colors">
                   About Us
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="text-sm text-[#666666] hover:text-[#00B14F] transition-colors">
+                <Link href="/contact" className="text-sm text-[#666666] hover:text-[#e52020] transition-colors">
                   Contact
                 </Link>
               </li>
@@ -56,12 +56,12 @@ export function Footer() {
             <h4 className="text-sm font-semibold text-[#111111] mb-4">Legal</h4>
             <ul className="space-y-2">
               <li>
-                <Link href="/privacy" className="text-sm text-[#666666] hover:text-[#00B14F] transition-colors">
+                <Link href="/privacy" className="text-sm text-[#666666] hover:text-[#e52020] transition-colors">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link href="/terms" className="text-sm text-[#666666] hover:text-[#00B14F] transition-colors">
+                <Link href="/terms" className="text-sm text-[#666666] hover:text-[#e52020] transition-colors">
                   Terms of Service
                 </Link>
               </li>

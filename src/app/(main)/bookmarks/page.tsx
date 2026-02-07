@@ -43,7 +43,7 @@ export default async function BookmarksPage() {
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
-            <Bookmark size={32} className="text-[#00B14F]" />
+            <Bookmark size={32} className="text-[#e52020]" />
             <h1 className="text-4xl font-bold text-white">
               My Bookmarks
             </h1>
@@ -56,8 +56,8 @@ export default async function BookmarksPage() {
         {/* Bookmarks Grid */}
         {notes.length === 0 ? (
           <div className="bg-[#1E1E1E] rounded-2xl border border-[#333333] p-12 text-center">
-            <div className="w-20 h-20 bg-[#00B14F]/20 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Bookmark size={40} className="text-[#00B14F]" />
+            <div className="w-20 h-20 bg-[#e52020]/20 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Bookmark size={40} className="text-[#e52020]" />
             </div>
             <h2 className="text-2xl font-bold text-white mb-3">
               No Bookmarks Yet
@@ -68,7 +68,7 @@ export default async function BookmarksPage() {
             </p>
             <Link
               href="/notes"
-              className="inline-block px-6 py-3 bg-[#00B14F] text-white rounded-[100px] hover:opacity-90 transition-all"
+              className="inline-block px-6 py-3 bg-[#e52020] text-white rounded-[100px] hover:opacity-90 transition-all"
             >
               Explore Notes
             </Link>
@@ -79,7 +79,7 @@ export default async function BookmarksPage() {
               <Link
                 key={note.id}
                 href={`/notes/${note.id}`}
-                className="bg-[#1E1E1E] rounded-2xl border border-[#333333] hover:border-[#00B14F] transition-all overflow-hidden group"
+                className="bg-[#1E1E1E] rounded-2xl border border-[#333333] hover:border-[#e52020] transition-all overflow-hidden group"
               >
                 {/* Image */}
                 {note.images && note.images.length > 0 ? (
@@ -101,8 +101,8 @@ export default async function BookmarksPage() {
                     </div>
                   </div>
                 ) : (
-                  <div className="h-48 bg-gradient-to-br from-[#00B14F]/20 to-[#00B14F]/10 flex items-center justify-center">
-                    <Bookmark size={48} className="text-[#00B14F]/50" />
+                  <div className="h-48 bg-gradient-to-br from-[#e52020]/20 to-[#e52020]/10 flex items-center justify-center">
+                    <Bookmark size={48} className="text-[#e52020]/50" />
                   </div>
                 )}
 
@@ -111,7 +111,7 @@ export default async function BookmarksPage() {
                   {/* Restaurant */}
                   {note.restaurant && (
                     <div className="flex items-center gap-2 mb-2">
-                      <MapPin size={14} className="text-[#00B14F]" />
+                      <MapPin size={14} className="text-[#e52020]" />
                       <span className="text-sm font-medium text-[#999999]">
                         {note.restaurant.name}
                       </span>
@@ -119,7 +119,7 @@ export default async function BookmarksPage() {
                   )}
 
                   {/* Title */}
-                  <h3 className="text-lg font-bold text-white mb-2 line-clamp-2 group-hover:text-[#00B14F] transition-colors">
+                  <h3 className="text-lg font-bold text-white mb-2 line-clamp-2 group-hover:text-[#e52020] transition-colors">
                     {note.title}
                   </h3>
 
@@ -136,7 +136,7 @@ export default async function BookmarksPage() {
                       {note.tags.slice(0, 3).map((tag: string, index: number) => (
                         <span
                           key={index}
-                          className="px-2 py-1 bg-[#00B14F]/20 text-[#00B14F] text-xs font-medium rounded-full border border-[#00B14F]/30"
+                          className="px-2 py-1 bg-[#e52020]/20 text-[#e52020] text-xs font-medium rounded-full border border-[#e52020]/30"
                         >
                           #{tag}
                         </span>
@@ -153,7 +153,7 @@ export default async function BookmarksPage() {
                   <div className="flex items-center justify-between pt-3 border-t border-[#333333]">
                     {/* Author */}
                     <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-full bg-[#00B14F] flex items-center justify-center text-white text-xs font-medium">
+                      <div className="w-6 h-6 rounded-full bg-[#e52020] flex items-center justify-center text-white text-xs font-medium">
                         {note.user?.full_name?.charAt(0).toUpperCase() || 'U'}
                       </div>
                       <span className="text-xs text-[#999999]">
@@ -177,8 +177,8 @@ export default async function BookmarksPage() {
 
         {/* Stats */}
         {notes.length > 0 && (
-          <div className="mt-8 bg-gradient-to-r from-[#00B14F]/20 to-[#00B14F]/10 border border-[#00B14F]/30 rounded-2xl p-6 text-center">
-            <p className="text-4xl font-bold mb-2 text-[#00B14F]">{notes.length}</p>
+          <div className="mt-8 bg-gradient-to-r from-[#e52020]/20 to-[#e52020]/10 border border-[#e52020]/30 rounded-2xl p-6 text-center">
+            <p className="text-4xl font-bold mb-2 text-[#e52020]">{notes.length}</p>
             <p className="text-[#999999]">
               Saved {notes.length === 1 ? 'Note' : 'Notes'}
             </p>

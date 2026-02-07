@@ -178,7 +178,7 @@ export default function FriendsPage() {
   if (!isLoaded || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#111111]">
-        <div className="animate-spin rounded-full h-12 w-12 border-2 border-[#00B14F] border-t-transparent"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-2 border-[#e52020] border-t-transparent"></div>
       </div>
     );
   }
@@ -189,7 +189,7 @@ export default function FriendsPage() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-white mb-2">Nanba Gang 🦁</h1>
-          <p className="text-[#999999]">Connect with your foodie nanbas! <span className="text-[#00B14F]">"Machan, anga poi try pannu!"</span></p>
+          <p className="text-[#999999]">Connect with your foodie nanbas! <span className="text-[#e52020]">"Machan, anga poi try pannu!"</span></p>
         </div>
 
         {/* Tabs */}
@@ -199,7 +199,7 @@ export default function FriendsPage() {
               onClick={() => setActiveTab('friends')}
               className={`flex-1 px-6 py-4 font-medium transition-colors ${
                 activeTab === 'friends'
-                  ? 'text-[#00B14F] border-b-2 border-[#00B14F]'
+                  ? 'text-[#e52020] border-b-2 border-[#e52020]'
                   : 'text-[#999999] hover:text-white'
               }`}
             >
@@ -210,13 +210,13 @@ export default function FriendsPage() {
               onClick={() => setActiveTab('requests')}
               className={`flex-1 px-6 py-4 font-medium transition-colors relative ${
                 activeTab === 'requests'
-                  ? 'text-[#00B14F] border-b-2 border-[#00B14F]'
+                  ? 'text-[#e52020] border-b-2 border-[#e52020]'
                   : 'text-[#999999] hover:text-white'
               }`}
             >
               Requests
               {receivedRequests.length > 0 && (
-                <span className="absolute top-2 right-2 w-5 h-5 bg-[#00B14F] text-white text-xs rounded-full flex items-center justify-center">
+                <span className="absolute top-2 right-2 w-5 h-5 bg-[#e52020] text-white text-xs rounded-full flex items-center justify-center">
                   {receivedRequests.length}
                 </span>
               )}
@@ -225,7 +225,7 @@ export default function FriendsPage() {
               onClick={() => setActiveTab('search')}
               className={`flex-1 px-6 py-4 font-medium transition-colors ${
                 activeTab === 'search'
-                  ? 'text-[#00B14F] border-b-2 border-[#00B14F]'
+                  ? 'text-[#e52020] border-b-2 border-[#e52020]'
                   : 'text-[#999999] hover:text-white'
               }`}
             >
@@ -246,7 +246,7 @@ export default function FriendsPage() {
                   <p className="text-sm text-[#666666] mb-4">"Yenna koduma sir idhu?"</p>
                   <button
                     onClick={() => setActiveTab('search')}
-                    className="px-6 py-2 bg-[#00B14F] text-white rounded-[100px] hover:opacity-90 transition-all"
+                    className="px-6 py-2 bg-[#e52020] text-white rounded-[100px] hover:opacity-90 transition-all"
                   >
                     Find Nanbas 🔍
                   </button>
@@ -261,15 +261,15 @@ export default function FriendsPage() {
                     return (
                       <div
                         key={friendship.id}
-                        className="flex items-center justify-between p-4 border border-[#333333] rounded-2xl hover:border-[#00B14F] transition-all"
+                        className="flex items-center justify-between p-4 border border-[#333333] rounded-2xl hover:border-[#e52020] transition-all"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 rounded-full bg-[#00B14F]/20 flex items-center justify-center text-[#00B14F] font-bold text-xl">
-                            {friend.full_name.charAt(0).toUpperCase()}
+                          <div className="w-12 h-12 rounded-full bg-[#e52020]/20 flex items-center justify-center text-[#e52020] font-bold text-xl">
+                            {friend?.full_name?.charAt(0)?.toUpperCase() || 'U'}
                           </div>
                           <div>
                             <h3 className="font-semibold text-white">
-                              {friend.full_name}
+                              {friend?.full_name || 'Unknown User'}
                             </h3>
                             <p className="text-sm text-[#999999]">{friend.email}</p>
                           </div>
@@ -302,15 +302,15 @@ export default function FriendsPage() {
                     {receivedRequests.map((request) => (
                       <div
                         key={request.id}
-                        className="flex items-center justify-between p-4 border border-[#333333] rounded-2xl hover:border-[#00B14F] transition-all"
+                        className="flex items-center justify-between p-4 border border-[#333333] rounded-2xl hover:border-[#e52020] transition-all"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 rounded-full bg-[#00B14F]/20 flex items-center justify-center text-[#00B14F] font-bold text-xl">
-                            {request.requester.full_name.charAt(0).toUpperCase()}
+                          <div className="w-12 h-12 rounded-full bg-[#e52020]/20 flex items-center justify-center text-[#e52020] font-bold text-xl">
+                            {request.requester?.full_name?.charAt(0)?.toUpperCase() || 'U'}
                           </div>
                           <div>
                             <h3 className="font-semibold text-white">
-                              {request.requester.full_name}
+                              {request.requester?.full_name || 'Unknown User'}
                             </h3>
                             <p className="text-sm text-[#999999]">
                               {request.requester.email}
@@ -354,12 +354,12 @@ export default function FriendsPage() {
                         className="flex items-center justify-between p-4 border border-[#333333] rounded-2xl"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 rounded-full bg-[#00B14F]/20 flex items-center justify-center text-[#00B14F] font-bold text-xl">
-                            {request.recipient.full_name.charAt(0).toUpperCase()}
+                          <div className="w-12 h-12 rounded-full bg-[#e52020]/20 flex items-center justify-center text-[#e52020] font-bold text-xl">
+                            {request.recipient?.full_name?.charAt(0)?.toUpperCase() || 'U'}
                           </div>
                           <div>
                             <h3 className="font-semibold text-white">
-                              {request.recipient.full_name}
+                              {request.recipient?.full_name || 'Unknown User'}
                             </h3>
                             <p className="text-sm text-[#999999]">Waiting for response... ⏰</p>
                           </div>
@@ -383,12 +383,12 @@ export default function FriendsPage() {
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                     placeholder="Yaara thedanumnu sollu... (name or email)"
-                    className="flex-1 px-4 py-3 bg-[#111111] border border-[#333333] rounded-[100px] text-white placeholder-[#666666] focus:outline-none focus:border-[#00B14F] transition-all"
+                    className="flex-1 px-4 py-3 bg-[#111111] border border-[#333333] rounded-[100px] text-white placeholder-[#666666] focus:outline-none focus:border-[#e52020] transition-all"
                   />
                   <button
                     onClick={handleSearch}
                     disabled={searching || searchQuery.trim().length < 2}
-                    className="px-6 py-3 bg-[#00B14F] text-white rounded-[100px] hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-6 py-3 bg-[#e52020] text-white rounded-[100px] hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {searching ? 'Searching...' : 'Search 🔍'}
                   </button>
@@ -401,15 +401,15 @@ export default function FriendsPage() {
                   {searchResults.map((user) => (
                     <div
                       key={user.id}
-                      className="flex items-center justify-between p-4 border border-[#333333] rounded-2xl hover:border-[#00B14F] transition-all"
+                      className="flex items-center justify-between p-4 border border-[#333333] rounded-2xl hover:border-[#e52020] transition-all"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-full bg-[#00B14F]/20 flex items-center justify-center text-[#00B14F] font-bold text-xl">
-                          {user.full_name.charAt(0).toUpperCase()}
+                        <div className="w-12 h-12 rounded-full bg-[#e52020]/20 flex items-center justify-center text-[#e52020] font-bold text-xl">
+                          {user?.full_name?.charAt(0)?.toUpperCase() || 'U'}
                         </div>
                         <div>
                           <h3 className="font-semibold text-white">
-                            {user.full_name}
+                            {user?.full_name || 'Unknown User'}
                           </h3>
                           <p className="text-sm text-[#999999]">{user.email}</p>
                         </div>
@@ -417,7 +417,7 @@ export default function FriendsPage() {
                       <button
                         onClick={() => handleSendRequest(user.id)}
                         disabled={sendingRequest === user.id}
-                        className="flex items-center gap-2 px-4 py-2 bg-[#00B14F] text-white rounded-[100px] hover:opacity-90 transition-all disabled:opacity-50"
+                        className="flex items-center gap-2 px-4 py-2 bg-[#e52020] text-white rounded-[100px] hover:opacity-90 transition-all disabled:opacity-50"
                       >
                         {sendingRequest === user.id ? (
                           <Loader2 size={20} className="animate-spin" />

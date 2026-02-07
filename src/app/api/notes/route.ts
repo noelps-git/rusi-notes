@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { auth, currentUser } from '@clerk/nextjs/server';
 import { createClient } from '@/lib/supabase/server';
 
 // GET /api/notes - List all tasting notes
@@ -47,12 +47,23 @@ export async function GET(req: NextRequest) {
 // POST /api/notes - Create new tasting note
 export async function POST(req: NextRequest) {
   try {
-    const { userId } = await auth();
+    const { userId: clerkUserId } = await auth();
 
-    if (!userId) {
+    if (!clerkUserId) {
       return NextResponse.json(
         { error: 'Unauthorized. Please sign in.' },
         { status: 401 }
+      );
+    }
+
+    // Get user email from Clerk
+    const user = await currentUser();
+    const email = user?.emailAddresses[0]?.emailAddress;
+
+    if (!email) {
+      return NextResponse.json(
+        { error: 'No email found for user' },
+        { status: 400 }
       );
     }
 
@@ -86,11 +97,25 @@ export async function POST(req: NextRequest) {
 
     const supabase = await createClient();
 
-    // Create tasting note
+    // Look up the database user by email
+    const { data: dbUser } = await supabase
+      .from('users')
+      .select('id')
+      .eq('email', email)
+      .maybeSingle();
+
+    if (!dbUser) {
+      return NextResponse.json(
+        { error: 'Please complete your profile setup first' },
+        { status: 400 }
+      );
+    }
+
+    // Create tasting note with database user ID
     const { data: note, error } = await supabase
       .from('tasting_notes')
       .insert({
-        user_id: userId,
+        user_id: dbUser.id,
         restaurant_id,
         dish_id,
         title,

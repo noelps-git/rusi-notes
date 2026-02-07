@@ -3,8 +3,9 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@clerk/nextjs';
-import { Star, Upload, X, Tag as TagIcon } from 'lucide-react';
+import { Star, Upload, X, Tag as TagIcon, Plus, ChevronDown } from 'lucide-react';
 import { useToast } from '@/components/ui/Toast';
+import { AddRestaurantModal } from '@/components/restaurants/AddRestaurantModal';
 
 type Restaurant = {
   id: string;
@@ -27,10 +28,13 @@ export default function CreateNotePage() {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [dishes, setDishes] = useState<Dish[]>([]);
   const [loadingDishes, setLoadingDishes] = useState(false);
+  const [showAddRestaurant, setShowAddRestaurant] = useState(false);
 
   // Form state
   const [restaurantId, setRestaurantId] = useState('');
   const [dishId, setDishId] = useState('');
+  const [dishName, setDishName] = useState(''); // For custom dish input
+  const [isCustomRestaurant, setIsCustomRestaurant] = useState(false); // Track if user added the restaurant
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [rating, setRating] = useState(0);
@@ -65,7 +69,8 @@ export default function CreateNotePage() {
 
   const fetchRestaurants = async () => {
     try {
-      const res = await fetch('/api/restaurants');
+      // Include all restaurants (including user-submitted unverified ones) for the review form
+      const res = await fetch('/api/restaurants?includeAll=true');
       if (res.ok) {
         const data = await res.json();
         setRestaurants(data);
@@ -126,10 +131,33 @@ export default function CreateNotePage() {
     }
   };
 
+  const handleAddRestaurantSuccess = (restaurant: { id: string; name: string; address: string }) => {
+    // Add the new restaurant to the list and select it
+    setRestaurants((prev) => [...prev, { ...restaurant, categories: [] }]);
+    setRestaurantId(restaurant.id);
+    setIsCustomRestaurant(true); // Mark as custom restaurant
+    setDishId('');
+    setDishName('');
+    setShowAddRestaurant(false);
+    showToast(`Added "${restaurant.name}" successfully!`, 'success');
+  };
+
+  const handleRestaurantChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newRestaurantId = e.target.value;
+    setRestaurantId(newRestaurantId);
+    setIsCustomRestaurant(false); // Reset custom flag when selecting from dropdown
+    setDishId('');
+    setDishName('');
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
+    if (!restaurantId) {
+      setError('Please select a restaurant');
+      return;
+    }
     if (!title.trim()) {
       setError('Title is required');
       return;
@@ -152,6 +180,7 @@ export default function CreateNotePage() {
         body: JSON.stringify({
           restaurant_id: restaurantId || null,
           dish_id: dishId || null,
+          dish_name: dishName || null, // For custom dish names
           title,
           content,
           rating,
@@ -178,7 +207,7 @@ export default function CreateNotePage() {
   if (!isLoaded) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#111111]">
-        <div className="animate-spin rounded-full h-12 w-12 border-2 border-[#00B14F] border-t-transparent"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-2 border-[#e52020] border-t-transparent"></div>
       </div>
     );
   }
@@ -209,20 +238,35 @@ export default function CreateNotePage() {
             {/* Restaurant Selection */}
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-2">
-                Restaurant <span className="text-gray-400">(Optional)</span>
+                Restaurant <span className="text-red-500">*</span>
               </label>
-              <select
-                value={restaurantId}
-                onChange={(e) => setRestaurantId(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-[100px] text-gray-900 focus:outline-none focus:border-[#00B14F] transition-all"
+
+              {/* Restaurant Dropdown */}
+              <div className="relative">
+                <select
+                  value={restaurantId}
+                  onChange={handleRestaurantChange}
+                  className="w-full px-4 py-3 pr-12 bg-gray-50 border border-gray-200 rounded-[100px] text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#e52020] transition-all appearance-none cursor-pointer"
+                >
+                  <option value="" className="text-gray-400">Choose a restaurant...</option>
+                  {restaurants.map((restaurant) => (
+                    <option key={restaurant.id} value={restaurant.id}>
+                      {restaurant.name} - {restaurant.address}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+              </div>
+
+              {/* Add Restaurant Button */}
+              <button
+                type="button"
+                onClick={() => setShowAddRestaurant(true)}
+                className="mt-3 flex items-center gap-2 text-[#e52020] hover:text-[#009940] transition-colors text-sm font-medium"
               >
-                <option value="" className="text-gray-400">Select a restaurant...</option>
-                {restaurants.map((restaurant) => (
-                  <option key={restaurant.id} value={restaurant.id}>
-                    {restaurant.name} - {restaurant.address}
-                  </option>
-                ))}
-              </select>
+                <Plus className="w-4 h-4" />
+                Can't find your restaurant? Add it here
+              </button>
             </div>
 
             {/* Dish Selection */}
@@ -231,25 +275,44 @@ export default function CreateNotePage() {
                 <label className="block text-sm font-medium text-gray-900 mb-2">
                   Dish <span className="text-gray-400">(Optional)</span>
                 </label>
-                {loadingDishes ? (
-                  <div className="text-gray-500">Loading dishes...</div>
-                ) : dishes.length > 0 ? (
-                  <select
-                    value={dishId}
-                    onChange={(e) => setDishId(e.target.value)}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-[100px] text-gray-900 focus:outline-none focus:border-[#00B14F] transition-all"
-                  >
-                    <option value="" className="text-gray-400">Select a dish...</option>
-                    {dishes.map((dish) => (
-                      <option key={dish.id} value={dish.id}>
-                        {dish.name}
-                      </option>
-                    ))}
-                  </select>
-                ) : (
-                  <div className="text-gray-400 text-sm">
-                    No dishes available for this restaurant
+                {isCustomRestaurant ? (
+                  // Text input for custom restaurants
+                  <input
+                    type="text"
+                    value={dishName}
+                    onChange={(e) => setDishName(e.target.value)}
+                    placeholder="e.g., Chicken Biryani, Masala Dosa"
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-[100px] text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#e52020] transition-all"
+                  />
+                ) : loadingDishes ? (
+                  <div className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-[100px] text-gray-500">
+                    Loading dishes...
                   </div>
+                ) : dishes.length > 0 ? (
+                  <div className="relative">
+                    <select
+                      value={dishId}
+                      onChange={(e) => setDishId(e.target.value)}
+                      className="w-full px-4 py-3 pr-12 bg-gray-50 border border-gray-200 rounded-[100px] text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#e52020] transition-all appearance-none cursor-pointer"
+                    >
+                      <option value="" className="text-gray-400">Choose a dish...</option>
+                      {dishes.map((dish) => (
+                        <option key={dish.id} value={dish.id}>
+                          {dish.name}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+                  </div>
+                ) : (
+                  // Text input when no dishes available
+                  <input
+                    type="text"
+                    value={dishName}
+                    onChange={(e) => setDishName(e.target.value)}
+                    placeholder="e.g., Chicken Biryani, Masala Dosa"
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-[100px] text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#e52020] transition-all"
+                  />
                 )}
               </div>
             )}
@@ -264,7 +327,7 @@ export default function CreateNotePage() {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g., Amazing Filter Coffee Experience"
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-[100px] text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#00B14F] transition-all"
+                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-[100px] text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#e52020] transition-all"
                 required
               />
             </div>
@@ -312,7 +375,7 @@ export default function CreateNotePage() {
                 onChange={(e) => setContent(e.target.value)}
                 placeholder="Share your experience... What did you love? What flavors stood out? Would you recommend it?"
                 rows={6}
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#00B14F] transition-all resize-none"
+                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#e52020] transition-all resize-none"
                 required
               />
             </div>
@@ -323,7 +386,7 @@ export default function CreateNotePage() {
                 Photos <span className="text-gray-400">(Optional)</span>
               </label>
               <div className="space-y-4">
-                <label className="flex items-center justify-center w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-[#00B14F] transition-colors bg-gray-50">
+                <label className="flex items-center justify-center w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-[#e52020] transition-colors bg-gray-50">
                   <Upload size={20} className="mr-2 text-gray-400" />
                   <span className="text-gray-500">Upload Image</span>
                   <input
@@ -370,12 +433,12 @@ export default function CreateNotePage() {
                     onChange={(e) => setTagInput(e.target.value)}
                     onKeyPress={handleKeyPress}
                     placeholder="Add tags (e.g., spicy, sweet, must-try)"
-                    className="flex-1 px-4 py-2 bg-gray-50 border border-gray-200 rounded-[100px] text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#00B14F] transition-all"
+                    className="flex-1 px-4 py-2 bg-gray-50 border border-gray-200 rounded-[100px] text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#e52020] transition-all"
                   />
                   <button
                     type="button"
                     onClick={handleAddTag}
-                    className="px-4 py-2 bg-[#00B14F] text-white rounded-lg hover:opacity-90 transition-colors"
+                    className="px-4 py-2 bg-[#e52020] text-white rounded-lg hover:opacity-90 transition-colors"
                   >
                     Add
                   </button>
@@ -386,14 +449,14 @@ export default function CreateNotePage() {
                     {tags.map((tag) => (
                       <span
                         key={tag}
-                        className="inline-flex items-center gap-1 px-3 py-1 bg-[#00B14F]/10 text-[#00B14F] rounded-full text-sm border border-[#00B14F]/20"
+                        className="inline-flex items-center gap-1 px-3 py-1 bg-[#e52020]/10 text-[#e52020] rounded-full text-sm border border-[#e52020]/20"
                       >
                         <TagIcon size={14} />
                         {tag}
                         <button
                           type="button"
                           onClick={() => handleRemoveTag(tag)}
-                          className="ml-1 hover:text-[#00B14F]/70"
+                          className="ml-1 hover:text-[#e52020]/70"
                         >
                           <X size={14} />
                         </button>
@@ -418,7 +481,7 @@ export default function CreateNotePage() {
                 type="button"
                 onClick={() => setIsPublic(!isPublic)}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  isPublic ? 'bg-[#00B14F]' : 'bg-gray-300'
+                  isPublic ? 'bg-[#e52020]' : 'bg-gray-300'
                 }`}
               >
                 <span
@@ -441,7 +504,7 @@ export default function CreateNotePage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 px-6 py-3 bg-[#00B14F] text-white rounded-[100px] font-semibold hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 px-6 py-3 bg-[#e52020] text-white rounded-[100px] font-semibold hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? 'Publishing...' : 'Publish Note'}
               </button>
@@ -449,6 +512,13 @@ export default function CreateNotePage() {
           </form>
         </div>
       </div>
+
+      {/* Add Restaurant Modal */}
+      <AddRestaurantModal
+        isOpen={showAddRestaurant}
+        onClose={() => setShowAddRestaurant(false)}
+        onSuccess={handleAddRestaurantSuccess}
+      />
     </div>
   );
 }

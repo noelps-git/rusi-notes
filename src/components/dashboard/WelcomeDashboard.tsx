@@ -70,7 +70,7 @@ export default function WelcomeDashboard({ userName, userEmail }: WelcomeDashboa
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#111111]">
-        <div className="animate-spin rounded-full h-12 w-12 border-2 border-[#00B14F] border-t-transparent"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-2 border-[#e52020] border-t-transparent"></div>
       </div>
     );
   }
@@ -89,8 +89,8 @@ export default function WelcomeDashboard({ userName, userEmail }: WelcomeDashboa
             </button>
 
             <div className="text-center mb-4">
-              <div className="w-16 h-16 bg-[#00B14F]/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Sparkles className="w-8 h-8 text-[#00B14F]" />
+              <div className="w-16 h-16 bg-[#e52020]/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Sparkles className="w-8 h-8 text-[#e52020]" />
               </div>
               <h2 className="text-2xl font-bold mb-2">
                 Welcome to Rusi Notes! 🎉
@@ -132,7 +132,7 @@ export default function WelcomeDashboard({ userName, userEmail }: WelcomeDashboa
 
             <button
               onClick={handleCreateNote}
-              className="w-full px-6 h-10 bg-[#00B14F] text-white rounded-[100px] text-sm font-medium hover:opacity-90 transition-all"
+              className="w-full px-6 h-10 bg-[#e52020] text-white rounded-[100px] text-sm font-medium hover:opacity-90 transition-all"
             >
               Create Your First Note 🚀
             </button>
@@ -146,44 +146,44 @@ export default function WelcomeDashboard({ userName, userEmail }: WelcomeDashboa
         </div>
       )}
 
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-6 sm:py-8 md:py-12">
         {/* Welcome Section */}
-        <div className="mb-12 text-center">
-          <div className="inline-flex items-center gap-2 px-6 py-3 bg-[#1E1E1E] border border-[#333333] rounded-[100px] mb-6">
-            <span className="text-2xl">👋</span>
-            <span className="text-sm font-medium text-[#999999]">Welcome Aboard!</span>
+        <div className="mb-8 sm:mb-12 text-center">
+          <div className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-[#1E1E1E] border border-[#333333] rounded-[100px] mb-4 sm:mb-6">
+            <span className="text-xl sm:text-2xl">👋</span>
+            <span className="text-xs sm:text-sm font-medium text-[#999999]">Welcome Aboard!</span>
           </div>
 
-          <h1 className="text-5xl md:text-6xl font-bold mb-4">
-            Vanakkam, <span className="text-[#00B14F]">{userName}!</span>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4">
+            Vanakkam, <span className="text-[#e52020]">{userName}!</span>
           </h1>
-          <p className="text-xl text-[#999999] font-normal max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg md:text-xl text-[#999999] font-normal max-w-2xl mx-auto px-2">
             We're glad you're here! 🎉 Ready to start your <span className="text-white font-semibold">Vera Level</span> food journey?
           </p>
         </div>
 
         {/* Quick Actions Section */}
-        <div className="mb-12">
-          <h2 className="text-3xl font-bold mb-6 text-center">
-            What You Can Do <span className="text-[#00B14F]">Right Now</span> 🔥
+        <div className="mb-8 sm:mb-12">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6 text-center px-2">
+            What You Can Do <span className="text-[#e52020]">Right Now</span> 🔥
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-6xl mx-auto">
             {/* Create Note */}
             <Link
               href="/notes/create"
-              className="group bg-[#1E1E1E] p-8 rounded-2xl border border-[#333333] hover:border-[#00B14F] transition-all shadow-[0_16px_64px_rgba(0,0,0,0.5)] hover:shadow-[0_16px_64px_rgba(0,9,255,0.3)]"
+              className="group bg-[#1E1E1E] p-5 sm:p-6 md:p-8 rounded-2xl border border-[#333333] hover:border-[#e52020] transition-all shadow-[0_8px_32px_rgba(0,0,0,0.3)] sm:shadow-[0_16px_64px_rgba(0,0,0,0.5)] hover:shadow-[0_16px_64px_rgba(0,9,255,0.3)]"
             >
-              <div className="w-16 h-16 bg-[#00B14F]/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <FileText className="w-8 h-8 text-[#00B14F]" />
+              <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-[#e52020]/20 rounded-xl sm:rounded-2xl flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform">
+                <FileText className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-[#e52020]" />
               </div>
-              <h3 className="text-xl font-bold mb-2 text-white">
+              <h3 className="text-lg sm:text-xl font-bold mb-2 text-white">
                 Create Rusi Note 📝
               </h3>
-              <p className="text-[#999999] font-normal mb-4">
-                Review a dish you tried. <span className="text-[#00B14F]">"Innum konjam masala bro!"</span>
+              <p className="text-sm sm:text-base text-[#999999] font-normal mb-3 sm:mb-4">
+                Review a dish you tried. <span className="text-[#e52020]">"Innum konjam masala bro!"</span>
               </p>
-              <div className="flex items-center gap-2 text-[#00B14F] font-medium">
+              <div className="flex items-center gap-2 text-[#e52020] font-medium text-sm sm:text-base">
                 <span>Get Started</span>
                 <ChevronRight size={16} />
               </div>
@@ -192,18 +192,18 @@ export default function WelcomeDashboard({ userName, userEmail }: WelcomeDashboa
             {/* View Friends Feed */}
             <Link
               href="/friends"
-              className="group bg-[#1E1E1E] p-8 rounded-2xl border border-[#333333] hover:border-[#00B14F] transition-all shadow-[0_16px_64px_rgba(0,0,0,0.5)] hover:shadow-[0_16px_64px_rgba(0,9,255,0.3)]"
+              className="group bg-[#1E1E1E] p-5 sm:p-6 md:p-8 rounded-2xl border border-[#333333] hover:border-[#e52020] transition-all shadow-[0_8px_32px_rgba(0,0,0,0.3)] sm:shadow-[0_16px_64px_rgba(0,0,0,0.5)] hover:shadow-[0_16px_64px_rgba(0,9,255,0.3)]"
             >
-              <div className="w-16 h-16 bg-[#00B14F]/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <Users className="w-8 h-8 text-[#00B14F]" />
+              <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-[#e52020]/20 rounded-xl sm:rounded-2xl flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform">
+                <Users className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-[#e52020]" />
               </div>
-              <h3 className="text-xl font-bold mb-2 text-white">
+              <h3 className="text-lg sm:text-xl font-bold mb-2 text-white">
                 Friends Feed 👥
               </h3>
-              <p className="text-[#999999] font-normal mb-4">
-                Connect with nanbas. See what's <span className="text-[#00B14F]">trending!</span>
+              <p className="text-sm sm:text-base text-[#999999] font-normal mb-3 sm:mb-4">
+                Connect with nanbas. See what's <span className="text-[#e52020]">trending!</span>
               </p>
-              <div className="flex items-center gap-2 text-[#00B14F] font-medium">
+              <div className="flex items-center gap-2 text-[#e52020] font-medium text-sm sm:text-base">
                 <span>Explore Now</span>
                 <ChevronRight size={16} />
               </div>
@@ -212,18 +212,18 @@ export default function WelcomeDashboard({ userName, userEmail }: WelcomeDashboa
             {/* View Analytics */}
             <Link
               href="/notes"
-              className="group bg-[#1E1E1E] p-8 rounded-2xl border border-[#333333] hover:border-[#00B14F] transition-all shadow-[0_16px_64px_rgba(0,0,0,0.5)] hover:shadow-[0_16px_64px_rgba(0,9,255,0.3)]"
+              className="group bg-[#1E1E1E] p-5 sm:p-6 md:p-8 rounded-2xl border border-[#333333] hover:border-[#e52020] transition-all shadow-[0_8px_32px_rgba(0,0,0,0.3)] sm:shadow-[0_16px_64px_rgba(0,0,0,0.5)] hover:shadow-[0_16px_64px_rgba(0,9,255,0.3)] sm:col-span-2 lg:col-span-1"
             >
-              <div className="w-16 h-16 bg-[#00B14F]/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <BarChart3 className="w-8 h-8 text-[#00B14F]" />
+              <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-[#e52020]/20 rounded-xl sm:rounded-2xl flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform">
+                <BarChart3 className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-[#e52020]" />
               </div>
-              <h3 className="text-xl font-bold mb-2 text-white">
+              <h3 className="text-lg sm:text-xl font-bold mb-2 text-white">
                 View Analytics 📊
               </h3>
-              <p className="text-[#999999] font-normal mb-4">
-                Track your reviews. <span className="text-[#00B14F]">Thala-style stats!</span>
+              <p className="text-sm sm:text-base text-[#999999] font-normal mb-3 sm:mb-4">
+                Track your reviews. <span className="text-[#e52020]">Thala-style stats!</span>
               </p>
-              <div className="flex items-center gap-2 text-[#00B14F] font-medium">
+              <div className="flex items-center gap-2 text-[#e52020] font-medium text-sm sm:text-base">
                 <span>View Stats</span>
                 <ChevronRight size={16} />
               </div>
@@ -233,51 +233,51 @@ export default function WelcomeDashboard({ userName, userEmail }: WelcomeDashboa
 
         {/* Share Section */}
         <div className="max-w-2xl mx-auto">
-          <div className="bg-[#1E1E1E] p-8 md:p-10 rounded-2xl border border-[#333333] shadow-[0_16px_64px_rgba(0,0,0,0.5)] text-center">
-            <div className="w-16 h-16 bg-[#00B14F]/20 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Share2 className="w-8 h-8 text-[#00B14F]" />
+          <div className="bg-[#1E1E1E] p-5 sm:p-6 md:p-10 rounded-2xl border border-[#333333] shadow-[0_8px_32px_rgba(0,0,0,0.3)] sm:shadow-[0_16px_64px_rgba(0,0,0,0.5)] text-center">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-[#e52020]/20 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+              <Share2 className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-[#e52020]" />
             </div>
 
-            <h2 className="text-2xl md:text-3xl font-bold mb-3">
-              Share <span className="text-[#00B14F]">Rusi Notes</span> with Friends! 📢
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 sm:mb-3">
+              Share <span className="text-[#e52020]">Rusi Notes</span> with Friends! 📢
             </h2>
-            <p className="text-[#999999] font-normal mb-6">
+            <p className="text-sm sm:text-base text-[#999999] font-normal mb-4 sm:mb-6 px-2">
               Invite your Nanba gang to join the food revolution! <span className="text-white">"Viral-ah paravalam!"</span>
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-3 items-center justify-center">
-              <div className="flex-1 w-full sm:max-w-md px-4 py-3 bg-[#111111] border border-[#333333] rounded-xl text-[#999999] font-mono text-sm overflow-hidden">
-                {window.location.origin}
+            <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-center">
+              <div className="flex-1 w-full sm:max-w-md px-3 sm:px-4 py-3 bg-[#111111] border border-[#333333] rounded-xl text-[#999999] font-mono text-xs sm:text-sm overflow-hidden truncate text-center sm:text-left">
+                rusinotes.com
               </div>
               <button
                 onClick={handleCopyLink}
-                className="px-6 h-12 bg-[#00B14F] text-white rounded-[100px] font-medium hover:opacity-90 transition-all flex items-center gap-2 whitespace-nowrap"
+                className="px-5 sm:px-6 h-11 sm:h-12 bg-[#e52020] text-white rounded-[100px] font-medium hover:opacity-90 transition-all flex items-center justify-center gap-2 whitespace-nowrap w-full sm:w-auto"
               >
                 {linkCopied ? (
                   <>
-                    <Check size={20} />
+                    <Check size={18} />
                     <span>Copied!</span>
                   </>
                 ) : (
                   <>
-                    <Copy size={20} />
+                    <Copy size={18} />
                     <span>Copy Link</span>
                   </>
                 )}
               </button>
             </div>
 
-            <div className="mt-6 flex flex-wrap justify-center gap-4 text-sm text-[#999999]">
-              <div className="flex items-center gap-2">
-                <span className="text-xl">🦁</span>
+            <div className="mt-4 sm:mt-6 flex flex-wrap justify-center gap-3 sm:gap-4 text-xs sm:text-sm text-[#999999]">
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <span className="text-lg sm:text-xl">🦁</span>
                 <span>Share with Thala Fans</span>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="text-xl">😂</span>
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <span className="text-lg sm:text-xl">😂</span>
                 <span>Spread the Mass</span>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="text-xl">💯</span>
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <span className="text-lg sm:text-xl">💯</span>
                 <span>Grow the Community</span>
               </div>
             </div>

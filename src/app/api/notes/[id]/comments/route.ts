@@ -43,9 +43,9 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { userId } = await auth();
+    const { userId: clerkUserId } = await auth();
 
-    if (!userId) {
+    if (!clerkUserId) {
       return NextResponse.json(
         { error: 'Unauthorized. Please sign in.' },
         { status: 401 }
@@ -53,6 +53,7 @@ export async function POST(
     }
 
     const user = await currentUser();
+    const email = user?.emailAddresses[0]?.emailAddress;
 
     const resolvedParams = await params;
     const body = await req.json();
@@ -66,6 +67,20 @@ export async function POST(
     }
 
     const supabase = await createClient();
+
+    // Look up the database user by email
+    const { data: dbUser } = await supabase
+      .from('users')
+      .select('id')
+      .eq('email', email)
+      .maybeSingle();
+
+    if (!dbUser) {
+      return NextResponse.json(
+        { error: 'Please complete your profile setup first' },
+        { status: 400 }
+      );
+    }
 
     // Check if note exists and get author
     const { data: note } = await supabase
@@ -86,7 +101,7 @@ export async function POST(
       .from('comments')
       .insert({
         note_id: resolvedParams.id,
-        user_id: userId,
+        user_id: dbUser.id,
         content: content.trim(),
         parent_id: parent_id || null,
       })
@@ -103,7 +118,7 @@ export async function POST(
     if (error) throw error;
 
     // Create notification for note author (if not commenting on own note)
-    if (note.user_id !== userId) {
+    if (note.user_id !== dbUser.id) {
       await createNotification({
         user_id: note.user_id,
         type: 'comment',
@@ -111,7 +126,7 @@ export async function POST(
         message: `${user?.fullName || 'Someone'} commented on your note "${note.title || 'Untitled'}"`,
         link: `/notes/${note.id}`,
         metadata: {
-          commenter_id: userId,
+          commenter_id: dbUser.id,
           commenter_name: user?.fullName,
           comment_id: comment.id,
           note_id: note.id,

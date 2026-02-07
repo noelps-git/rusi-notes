@@ -48,7 +48,7 @@ export function AddFriendButton({ userId }: AddFriendButtonProps) {
     <button
       onClick={handleAddFriend}
       disabled={loading}
-      className="flex items-center gap-2 px-6 py-2 bg-[#00B14F] text-white rounded-[100px] hover:opacity-90 transition-all disabled:opacity-50"
+      className="flex items-center gap-2 px-6 py-2 bg-[#e52020] text-white rounded-[100px] hover:opacity-90 transition-all disabled:opacity-50"
     >
       {loading ? (
         <Loader2 size={18} className="animate-spin" />

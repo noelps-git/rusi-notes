@@ -73,8 +73,8 @@ export default function VotingWidget({
     <div className="bg-[#1E1E1E] border border-[#333333] rounded-2xl p-5 my-3 max-w-md">
       {/* Header */}
       <div className="flex items-start gap-3 mb-4">
-        <div className="w-10 h-10 bg-[#00B14F]/20 rounded-full flex items-center justify-center flex-shrink-0">
-          <BarChart3 className="w-5 h-5 text-[#00B14F]" />
+        <div className="w-10 h-10 bg-[#e52020]/20 rounded-full flex items-center justify-center flex-shrink-0">
+          <BarChart3 className="w-5 h-5 text-[#e52020]" />
         </div>
         <div className="flex-1">
           <h4 className="text-white font-semibold mb-1">{question}</h4>
@@ -111,14 +111,14 @@ export default function VotingWidget({
               <div
                 className={`relative p-3 rounded-lg border-2 transition-all overflow-hidden ${
                   isSelected
-                    ? 'border-[#00B14F] bg-[#00B14F]/10'
+                    ? 'border-[#e52020] bg-[#e52020]/10'
                     : 'border-[#333333] hover:border-[#666666]'
                 }`}
               >
                 {/* Background bar for results */}
                 {hasVoted && (
                   <div
-                    className="absolute inset-0 bg-[#00B14F]/10 transition-all duration-300"
+                    className="absolute inset-0 bg-[#e52020]/10 transition-all duration-300"
                     style={{ width: `${percentage}%` }}
                   />
                 )}
@@ -127,12 +127,12 @@ export default function VotingWidget({
                 <div className="relative flex items-center justify-between">
                   <div className="flex items-center gap-2 flex-1">
                     {isSelected && (
-                      <CheckCircle className="w-4 h-4 text-[#00B14F] flex-shrink-0" />
+                      <CheckCircle className="w-4 h-4 text-[#e52020] flex-shrink-0" />
                     )}
                     <span className="text-sm text-white">{option.text}</span>
                   </div>
                   {hasVoted && (
-                    <span className="text-xs font-medium text-[#00B14F] ml-2">
+                    <span className="text-xs font-medium text-[#e52020] ml-2">
                       {percentage}%
                     </span>
                   )}

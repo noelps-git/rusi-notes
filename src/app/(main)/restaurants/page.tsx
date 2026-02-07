@@ -41,7 +41,7 @@ export default function RestaurantsPage() {
   return (
     <div className="min-h-screen bg-[#111111]">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-[#00B14F]/20 to-[#00B14F]/10 border-b border-[#333333] py-12">
+      <div className="bg-gradient-to-r from-[#e52020]/20 to-[#e52020]/10 border-b border-[#333333] py-12">
         <div className="container mx-auto px-4">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 text-white">
             Discover Chennai&apos;s Best Restaurants 🍛
@@ -60,12 +60,12 @@ export default function RestaurantsPage() {
                   placeholder="Search restaurants..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 bg-[#1E1E1E] border border-[#333333] rounded-[100px] text-white placeholder-[#666666] focus:outline-none focus:border-[#00B14F] transition-all"
+                  className="w-full pl-12 pr-4 py-3 bg-[#1E1E1E] border border-[#333333] rounded-[100px] text-white placeholder-[#666666] focus:outline-none focus:border-[#e52020] transition-all"
                 />
               </div>
               <button
                 type="submit"
-                className="px-6 py-3 bg-[#00B14F] text-white font-semibold rounded-[100px] hover:opacity-90 transition-all"
+                className="px-6 py-3 bg-[#e52020] text-white font-semibold rounded-[100px] hover:opacity-90 transition-all"
               >
                 Search
               </button>
@@ -91,7 +91,7 @@ export default function RestaurantsPage() {
                 Found <span className="font-semibold text-white">{restaurants.length}</span> restaurants
                 {selectedCategory && (
                   <span className="ml-1">
-                    in <span className="font-semibold text-[#00B14F] capitalize">{selectedCategory.replace('_', ' ')}</span>
+                    in <span className="font-semibold text-[#e52020] capitalize">{selectedCategory.replace('_', ' ')}</span>
                   </span>
                 )}
               </>
@@ -134,7 +134,7 @@ export default function RestaurantsPage() {
                 setSearchQuery('');
                 fetchRestaurants();
               }}
-              className="px-6 py-3 bg-[#00B14F] text-white font-semibold rounded-[100px] hover:opacity-90 transition-all"
+              className="px-6 py-3 bg-[#e52020] text-white font-semibold rounded-[100px] hover:opacity-90 transition-all"
             >
               Clear Filters
             </button>

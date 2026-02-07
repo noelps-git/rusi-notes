@@ -61,7 +61,7 @@ export default function EmojiPicker({ onEmojiSelect }: EmojiPickerProps) {
                   onClick={() => setActiveCategory(category)}
                   className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all whitespace-nowrap ${
                     activeCategory === category
-                      ? 'bg-[#00B14F] text-white'
+                      ? 'bg-[#e52020] text-white'
                       : 'text-[#999999] hover:bg-[#333333] hover:text-white'
                   }`}
                 >

@@ -30,7 +30,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
+    <ClerkProvider
+      appearance={{
+        variables: {
+          colorPrimary: '#e52020',
+          colorTextOnPrimaryBackground: '#ffffff',
+        },
+        elements: {
+          formButtonPrimary: 'bg-[#e52020] hover:bg-[#c41a1a]',
+          footerActionLink: 'text-[#e52020] hover:text-[#c41a1a]',
+        },
+      }}
+    >
       <html lang="en">
         <body className={`${inter.variable} font-sans antialiased`}>
           <Providers>{children}</Providers>

@@ -14,7 +14,7 @@ export default function SignUpPage() {
       </div>
 
       {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#00B14F]/10 via-transparent to-[#00B14F]/20 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-br from-[#e52020]/10 via-transparent to-[#e52020]/20 pointer-events-none" />
 
       {/* Content */}
       <div className="relative z-10">

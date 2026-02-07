@@ -57,11 +57,42 @@ export default function NoteDetailPage({
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [bookmarkId, setBookmarkId] = useState<string | null>(null);
   const [likesCount, setLikesCount] = useState(0);
+  const [isOwner, setIsOwner] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     fetchNote();
     checkBookmark();
   }, [resolvedParams.id]);
+
+  // Check ownership and admin status
+  useEffect(() => {
+    if (user && note) {
+      // Check if user is admin
+      const adminStatus = (user.publicMetadata as any)?.role === 'admin';
+      setIsAdmin(adminStatus);
+
+      // Check ownership by comparing emails
+      const userEmail = user.emailAddresses?.[0]?.emailAddress;
+      if (userEmail && note.user) {
+        // We need to fetch user's email from the database to compare
+        checkOwnership();
+      }
+    }
+  }, [user, note]);
+
+  const checkOwnership = async () => {
+    if (!user || !note) return;
+    try {
+      const res = await fetch('/api/users/me');
+      if (res.ok) {
+        const data = await res.json();
+        setIsOwner(data.id === note.user_id);
+      }
+    } catch (err) {
+      console.error('Error checking ownership:', err);
+    }
+  };
 
   const fetchNote = async () => {
     try {
@@ -152,7 +183,11 @@ export default function NoteDetailPage({
   };
 
   const handleDelete = async () => {
-    if (!confirm('Are you sure you want to delete this note?')) return;
+    const confirmMessage = isAdmin && !isOwner
+      ? 'Are you sure you want to delete this note as an admin? This action cannot be undone.'
+      : 'Are you sure you want to delete this note?';
+
+    if (!confirm(confirmMessage)) return;
 
     try {
       const res = await fetch(`/api/notes/${resolvedParams.id}`, {
@@ -161,9 +196,13 @@ export default function NoteDetailPage({
 
       if (res.ok) {
         router.push('/notes');
+      } else {
+        const data = await res.json();
+        alert(data.error || 'Failed to delete note');
       }
     } catch (err) {
       console.error('Error deleting note:', err);
+      alert('Failed to delete note');
     }
   };
 
@@ -193,7 +232,7 @@ export default function NoteDetailPage({
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#111111]">
-        <div className="animate-spin rounded-full h-12 w-12 border-2 border-[#00B14F] border-t-transparent"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-2 border-[#e52020] border-t-transparent"></div>
       </div>
     );
   }
@@ -202,7 +241,7 @@ export default function NoteDetailPage({
     return null;
   }
 
-  const isOwner = user?.id === note.user_id;
+  const canDelete = isOwner || isAdmin;
 
   return (
     <div className="min-h-screen bg-[#111111] py-8 px-4 sm:px-6 lg:px-8">
@@ -262,10 +301,10 @@ export default function NoteDetailPage({
                 {/* Author & Date */}
                 <div className="flex items-center gap-4 text-sm text-[#999999]">
                   <div className="flex items-center gap-2">
-                    <div className="w-10 h-10 rounded-full bg-[#00B14F] flex items-center justify-center text-white font-medium">
-                      {note.user.full_name.charAt(0).toUpperCase()}
+                    <div className="w-10 h-10 rounded-full bg-[#e52020] flex items-center justify-center text-white font-medium">
+                      {note.user?.full_name?.charAt(0)?.toUpperCase() || 'U'}
                     </div>
-                    <span className="font-medium text-white">{note.user.full_name}</span>
+                    <span className="font-medium text-white">{note.user?.full_name || 'Unknown User'}</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <Calendar size={16} />
@@ -277,24 +316,27 @@ export default function NoteDetailPage({
               {/* Action Buttons */}
               <div className="flex items-center gap-2">
                 {isOwner && (
-                  <>
-                    <Link
-                      href={`/notes/${note.id}/edit`}
-                      className="p-2 text-[#666666] hover:text-[#00B14F] hover:bg-[#00B14F]/10 rounded-lg transition-colors"
-                    >
-                      <Edit size={20} />
-                    </Link>
-                    <button
-                      onClick={handleDelete}
-                      className="p-2 text-[#666666] hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
-                    >
-                      <Trash2 size={20} />
-                    </button>
-                  </>
+                  <Link
+                    href={`/notes/${note.id}/edit`}
+                    className="p-2 text-[#666666] hover:text-[#e52020] hover:bg-[#e52020]/10 rounded-lg transition-colors"
+                    title="Edit"
+                  >
+                    <Edit size={20} />
+                  </Link>
+                )}
+                {canDelete && (
+                  <button
+                    onClick={handleDelete}
+                    className="p-2 text-[#666666] hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
+                    title={isAdmin && !isOwner ? 'Delete (Admin)' : 'Delete'}
+                  >
+                    <Trash2 size={20} />
+                  </button>
                 )}
                 <button
                   onClick={handleShare}
-                  className="p-2 text-[#666666] hover:text-[#00B14F] hover:bg-[#00B14F]/10 rounded-lg transition-colors"
+                  className="p-2 text-[#666666] hover:text-[#e52020] hover:bg-[#e52020]/10 rounded-lg transition-colors"
+                  title="Share"
                 >
                   <Share2 size={20} />
                 </button>
@@ -309,7 +351,7 @@ export default function NoteDetailPage({
                     href={`/restaurants/${note.restaurant.id}`}
                     className="flex items-start gap-3 hover:bg-[#333333] p-2 rounded-lg transition-colors"
                   >
-                    <MapPin size={20} className="text-[#00B14F] mt-1" />
+                    <MapPin size={20} className="text-[#e52020] mt-1" />
                     <div>
                       <h3 className="font-semibold text-white">
                         {note.restaurant.name}
@@ -352,7 +394,7 @@ export default function NoteDetailPage({
                 {note.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="inline-flex items-center gap-1 px-3 py-1 bg-[#00B14F]/20 text-[#00B14F] rounded-full text-sm border border-[#00B14F]/30"
+                    className="inline-flex items-center gap-1 px-3 py-1 bg-[#e52020]/20 text-[#e52020] rounded-full text-sm border border-[#e52020]/30"
                   >
                     <TagIcon size={14} />
                     {tag}
@@ -383,8 +425,8 @@ export default function NoteDetailPage({
                 onClick={handleBookmark}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
                   isBookmarked
-                    ? 'bg-[#00B14F]/20 text-[#00B14F]'
-                    : 'bg-[#2A2A2A] text-[#999999] hover:bg-[#00B14F]/20 hover:text-[#00B14F]'
+                    ? 'bg-[#e52020]/20 text-[#e52020]'
+                    : 'bg-[#2A2A2A] text-[#999999] hover:bg-[#e52020]/20 hover:text-[#e52020]'
                 }`}
               >
                 <Bookmark
@@ -501,13 +543,13 @@ function CommentsSection({ noteId }: { noteId: string }) {
             onChange={(e) => setCommentText(e.target.value)}
             placeholder="Share your thoughts..."
             rows={3}
-            className="w-full px-4 py-3 bg-[#2A2A2A] border border-[#333333] rounded-lg text-white placeholder-[#666666] focus:outline-none focus:border-[#00B14F] transition-all resize-none"
+            className="w-full px-4 py-3 bg-[#2A2A2A] border border-[#333333] rounded-lg text-white placeholder-[#666666] focus:outline-none focus:border-[#e52020] transition-all resize-none"
           />
           <div className="flex justify-end mt-2">
             <button
               type="submit"
               disabled={submitting || !commentText.trim()}
-              className="px-6 py-2 bg-[#00B14F] text-white rounded-lg hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-2 bg-[#e52020] text-white rounded-lg hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {submitting ? 'Posting...' : 'Post Comment'}
             </button>
@@ -589,8 +631,8 @@ function CommentItem({
   return (
     <div className="flex gap-3">
       {/* Avatar */}
-      <div className="w-10 h-10 rounded-full bg-[#00B14F] flex items-center justify-center text-white text-sm font-medium flex-shrink-0">
-        {comment.user.full_name.charAt(0).toUpperCase()}
+      <div className="w-10 h-10 rounded-full bg-[#e52020] flex items-center justify-center text-white text-sm font-medium flex-shrink-0">
+        {comment.user?.full_name?.charAt(0)?.toUpperCase() || 'U'}
       </div>
 
       {/* Comment Content */}
@@ -599,7 +641,7 @@ function CommentItem({
           <div className="flex items-start justify-between mb-2">
             <div>
               <span className="font-semibold text-white">
-                {comment.user.full_name}
+                {comment.user?.full_name || 'Unknown User'}
               </span>
               <span className="text-sm text-[#666666] ml-2">
                 {formatDate(comment.created_at)}
@@ -621,7 +663,7 @@ function CommentItem({
         {user && (
           <button
             onClick={() => onReply(comment.id)}
-            className="text-sm text-[#00B14F] hover:text-[#00B14F]/80 mt-2"
+            className="text-sm text-[#e52020] hover:text-[#e52020]/80 mt-2"
           >
             Reply
           </button>

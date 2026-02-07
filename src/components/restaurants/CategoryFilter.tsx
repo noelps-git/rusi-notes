@@ -16,8 +16,8 @@ export function CategoryFilter({ selected, onSelect }: CategoryFilterProps) {
           onClick={() => onSelect(null)}
           className={`px-4 py-2 rounded-[100px] text-sm font-medium transition-all ${
             selected === null
-              ? 'bg-[#00B14F] text-white'
-              : 'bg-[#1E1E1E] text-[#999999] border border-[#333333] hover:border-[#00B14F] hover:text-white'
+              ? 'bg-[#e52020] text-white'
+              : 'bg-[#1E1E1E] text-[#999999] border border-[#333333] hover:border-[#e52020] hover:text-white'
           }`}
         >
           All Restaurants
@@ -28,8 +28,8 @@ export function CategoryFilter({ selected, onSelect }: CategoryFilterProps) {
             onClick={() => onSelect(category.id)}
             className={`px-4 py-2 rounded-[100px] text-sm font-medium transition-all flex items-center gap-2 ${
               selected === category.id
-                ? 'bg-[#00B14F] text-white'
-                : 'bg-[#1E1E1E] border border-[#333333] text-[#999999] hover:border-[#00B14F] hover:text-white'
+                ? 'bg-[#e52020] text-white'
+                : 'bg-[#1E1E1E] border border-[#333333] text-[#999999] hover:border-[#e52020] hover:text-white'
             }`}
           >
             <span>{category.icon}</span>

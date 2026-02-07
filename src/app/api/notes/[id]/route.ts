@@ -118,8 +118,9 @@ export async function DELETE(
 
     const user = await currentUser();
     const supabase = await createClient();
+    const isAdmin = (user?.publicMetadata as any)?.role === 'admin';
 
-    // Check if user owns this note
+    // Get the note
     const { data: note } = await supabase
       .from('tasting_notes')
       .select('user_id')
@@ -133,9 +134,23 @@ export async function DELETE(
       );
     }
 
-    if (note.user_id !== userId && (user?.publicMetadata as any)?.role !== 'admin') {
+    // Check ownership by looking up user by email
+    const email = user?.emailAddresses[0]?.emailAddress;
+    let isOwner = false;
+
+    if (email) {
+      const { data: dbUser } = await supabase
+        .from('users')
+        .select('id')
+        .eq('email', email)
+        .maybeSingle();
+
+      isOwner = dbUser?.id === note.user_id;
+    }
+
+    if (!isOwner && !isAdmin) {
       return NextResponse.json(
-        { error: 'Unauthorized' },
+        { error: 'You can only delete your own notes' },
         { status: 403 }
       );
     }

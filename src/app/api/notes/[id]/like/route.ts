@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { auth, currentUser } from '@clerk/nextjs/server';
 import { createClient } from '@/lib/supabase/server';
 
 // POST /api/notes/[id]/like - Toggle like
@@ -8,23 +8,40 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { userId } = await auth();
+    const { userId: clerkUserId } = await auth();
 
-    if (!userId) {
+    if (!clerkUserId) {
       return NextResponse.json(
         { error: 'Unauthorized. Please sign in.' },
         { status: 401 }
       );
     }
 
+    const user = await currentUser();
+    const email = user?.emailAddresses[0]?.emailAddress;
+
     const resolvedParams = await params;
     const supabase = await createClient();
+
+    // Look up the database user by email
+    const { data: dbUser } = await supabase
+      .from('users')
+      .select('id')
+      .eq('email', email)
+      .maybeSingle();
+
+    if (!dbUser) {
+      return NextResponse.json(
+        { error: 'Please complete your profile setup first' },
+        { status: 400 }
+      );
+    }
 
     // Check if already liked
     const { data: existingLike } = await supabase
       .from('likes')
       .select('id')
-      .eq('user_id', userId)
+      .eq('user_id', dbUser.id)
       .eq('note_id', resolvedParams.id)
       .single();
 
@@ -33,7 +50,7 @@ export async function POST(
       await supabase
         .from('likes')
         .delete()
-        .eq('user_id', userId)
+        .eq('user_id', dbUser.id)
         .eq('note_id', resolvedParams.id);
 
       // Decrement likes count
@@ -45,7 +62,7 @@ export async function POST(
       await supabase
         .from('likes')
         .insert({
-          user_id: userId,
+          user_id: dbUser.id,
           note_id: resolvedParams.id,
         });
 

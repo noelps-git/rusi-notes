@@ -67,14 +67,14 @@ export function HamburgerMenu({ isOpen, onClose }: HamburgerMenuProps) {
       )}
 
       <div
-        className={`fixed top-0 right-0 bottom-0 w-80 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${
-          isOpen ? 'translate-x-0' : 'translate-x-full'
+        className={`fixed top-0 left-0 bottom-0 w-[85vw] max-w-xs sm:max-w-sm bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${
+          isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         <div className="flex flex-col h-full">
-          <div className="p-6 border-b border-[#E5E5E5]">
+          <div className="p-4 sm:p-6 border-b border-[#E5E5E5]">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold text-[#111111]">Menu</h2>
+              <h2 className="text-lg sm:text-xl font-semibold text-[#111111]">Menu</h2>
               <button
                 onClick={onClose}
                 className="p-2 text-[#666666] hover:text-[#111111] rounded-lg hover:bg-[#F9F9F9] transition-colors"
@@ -93,16 +93,18 @@ export function HamburgerMenu({ isOpen, onClose }: HamburgerMenuProps) {
               </button>
             </div>
 
-            <div className="flex items-center gap-3 p-3 bg-[#F9F9F9] rounded-lg">
-              <div className="h-12 w-12 rounded-full bg-[#00B14F] flex items-center justify-center text-white font-medium">
-                {user?.fullName?.charAt(0).toUpperCase()}
+            <div className="flex items-center gap-3 p-2 sm:p-3 bg-[#F9F9F9] rounded-lg">
+              <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-[#e52020] flex items-center justify-center text-white font-medium flex-shrink-0">
+                {user?.fullName?.charAt(0)?.toUpperCase() || 'U'}
               </div>
-              <div>
-                <div className="font-medium text-[#111111]">{user?.fullName}</div>
-                <div className="text-sm text-[#666666]">{user?.emailAddresses[0]?.emailAddress}</div>
-                <div className="text-xs text-[#00B14F] font-medium capitalize mt-1">
-                  {(user?.publicMetadata as any)?.role}
-                </div>
+              <div className="min-w-0">
+                <div className="font-medium text-[#111111] truncate">{user?.fullName || 'User'}</div>
+                <div className="text-xs sm:text-sm text-[#666666] truncate">{user?.emailAddresses[0]?.emailAddress}</div>
+                {(user?.publicMetadata as any)?.role && (
+                  <div className="text-xs text-[#e52020] font-medium capitalize mt-1">
+                    {(user?.publicMetadata as any)?.role}
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -114,7 +116,7 @@ export function HamburgerMenu({ isOpen, onClose }: HamburgerMenuProps) {
                   key={item.href}
                   href={item.href}
                   onClick={onClose}
-                  className="flex items-center gap-3 px-4 py-3 text-[#666666] hover:bg-[#00B14F]/10 hover:text-[#00B14F] rounded-lg transition-colors"
+                  className="flex items-center gap-3 px-4 py-3 text-[#666666] hover:bg-[#e52020]/10 hover:text-[#e52020] rounded-lg transition-colors"
                 >
                   <span className="text-xl">{item.icon}</span>
                   <span className="font-medium">{item.label}</span>

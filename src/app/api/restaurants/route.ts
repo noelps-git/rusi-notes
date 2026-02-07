@@ -10,13 +10,18 @@ export async function GET(req: NextRequest) {
     const area = searchParams.get('area');
     const search = searchParams.get('search');
     const dietary = searchParams.get('dietary');
+    const includeAll = searchParams.get('includeAll') === 'true'; // Include unverified for review form
 
     const supabase = await createClient();
     let query = supabase
       .from('restaurants')
       .select('*')
-      .eq('is_verified', true)
       .order('created_at', { ascending: false });
+
+    // By default, only show verified restaurants unless includeAll is true
+    if (!includeAll) {
+      query = query.eq('is_verified', true);
+    }
 
     // Apply filters
     if (category) {

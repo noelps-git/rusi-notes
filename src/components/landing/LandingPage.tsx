@@ -83,7 +83,7 @@ export default function LandingPage() {
               <a href="#reviews" className="text-[#666666] hover:text-[#111111] transition-colors font-medium text-sm">Reviews</a>
               <Link href="/sign-in" className="text-[#666666] hover:text-[#111111] transition-colors font-medium text-sm">Sign In</Link>
               <Link href="/sign-up">
-                <button className="px-6 h-11 bg-[#00B14F] text-white rounded-full font-medium text-sm hover:bg-[#009944] transition-all">
+                <button className="px-6 h-11 bg-[#e52020] text-white rounded-full font-medium text-sm hover:bg-[#c41a1a] transition-all">
                   Sign Up
                 </button>
               </Link>
@@ -106,7 +106,7 @@ export default function LandingPage() {
                 <a href="#reviews" className="text-[#666666] hover:text-[#111111] transition-colors font-medium text-sm" onClick={() => setMobileMenuOpen(false)}>Reviews</a>
                 <Link href="/sign-in" className="text-[#666666] hover:text-[#111111] transition-colors font-medium text-sm" onClick={() => setMobileMenuOpen(false)}>Sign In</Link>
                 <Link href="/sign-up" onClick={() => setMobileMenuOpen(false)}>
-                  <button className="w-full px-6 h-11 bg-[#00B14F] text-white rounded-full font-medium text-sm">
+                  <button className="w-full px-6 h-11 bg-[#e52020] text-white rounded-full font-medium text-sm">
                     Sign Up
                   </button>
                 </Link>
@@ -129,7 +129,7 @@ export default function LandingPage() {
             {/* Headline - Minimalistic */}
             <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-6 leading-tight text-[#111111] px-4">
               Track every dish.<br />
-              <span className="text-[#00B14F]">Share with nanbas.</span>
+              <span className="text-[#e52020]">Share with nanbas.</span>
             </h1>
 
             {/* Subheadline - Minimal */}
@@ -140,12 +140,12 @@ export default function LandingPage() {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 px-4">
               <Link href="/sign-up" className="w-full sm:w-auto">
-                <button className="w-full sm:w-auto px-8 min-h-[48px] bg-[#00B14F] text-white rounded-full font-semibold text-base hover:bg-[#009944] transition-all shadow-lg active:scale-95">
+                <button className="w-full sm:w-auto px-8 min-h-[48px] bg-[#e52020] text-white rounded-full font-semibold text-base hover:bg-[#c41a1a] transition-all shadow-lg active:scale-95">
                   Get Started
                 </button>
               </Link>
               <Link href="#features" className="w-full sm:w-auto">
-                <button className="w-full sm:w-auto px-8 min-h-[48px] bg-white border-2 border-[#E5E5E5] text-[#111111] rounded-full font-semibold text-base hover:border-[#00B14F] transition-all active:scale-95">
+                <button className="w-full sm:w-auto px-8 min-h-[48px] bg-white border-2 border-[#E5E5E5] text-[#111111] rounded-full font-semibold text-base hover:border-[#e52020] transition-all active:scale-95">
                   Learn More
                 </button>
               </Link>
@@ -184,8 +184,8 @@ export default function LandingPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 max-w-5xl mx-auto px-4">
             {/* Feature 1 */}
-            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E5E5E5] hover:border-[#00B14F] hover:shadow-lg transition-all">
-              <div className="w-14 h-14 bg-[#00B14F]/10 rounded-2xl flex items-center justify-center mb-6 text-3xl">
+            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E5E5E5] hover:border-[#e52020] hover:shadow-lg transition-all">
+              <div className="w-14 h-14 bg-[#e52020]/10 rounded-2xl flex items-center justify-center mb-6 text-3xl">
                 🍛
               </div>
               <h3 className="text-xl font-bold mb-3 text-[#111111]">
@@ -197,8 +197,8 @@ export default function LandingPage() {
             </div>
 
             {/* Feature 2 */}
-            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E5E5E5] hover:border-[#00B14F] hover:shadow-lg transition-all">
-              <div className="w-14 h-14 bg-[#00B14F]/10 rounded-2xl flex items-center justify-center mb-6 text-3xl">
+            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E5E5E5] hover:border-[#e52020] hover:shadow-lg transition-all">
+              <div className="w-14 h-14 bg-[#e52020]/10 rounded-2xl flex items-center justify-center mb-6 text-3xl">
                 👥
               </div>
               <h3 className="text-xl font-bold mb-3 text-[#111111]">
@@ -210,8 +210,8 @@ export default function LandingPage() {
             </div>
 
             {/* Feature 3 */}
-            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E5E5E5] hover:border-[#00B14F] hover:shadow-lg transition-all">
-              <div className="w-14 h-14 bg-[#00B14F]/10 rounded-2xl flex items-center justify-center mb-6 text-3xl">
+            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E5E5E5] hover:border-[#e52020] hover:shadow-lg transition-all">
+              <div className="w-14 h-14 bg-[#e52020]/10 rounded-2xl flex items-center justify-center mb-6 text-3xl">
                 📍
               </div>
               <h3 className="text-xl font-bold mb-3 text-[#111111]">
@@ -248,7 +248,7 @@ export default function LandingPage() {
               </div>
               <div className="flex gap-1 mb-4">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 fill-[#00B14F] text-[#00B14F]" />
+                  <Star key={i} className="w-5 h-5 fill-[#fba518] text-[#fba518]" />
                 ))}
               </div>
               <p className="text-[#111111] text-lg leading-relaxed">
@@ -258,7 +258,7 @@ export default function LandingPage() {
               <div className="flex items-center justify-center gap-4 mt-8">
                 <button
                   onClick={prevTestimonial}
-                  className="min-w-[44px] min-h-[44px] bg-white border border-[#E5E5E5] rounded-full flex items-center justify-center hover:border-[#00B14F] active:scale-95 transition-all"
+                  className="min-w-[44px] min-h-[44px] bg-white border border-[#E5E5E5] rounded-full flex items-center justify-center hover:border-[#e52020] active:scale-95 transition-all"
                   aria-label="Previous testimonial"
                 >
                   <ChevronLeft className="w-5 h-5 text-[#111111]" />
@@ -268,14 +268,14 @@ export default function LandingPage() {
                     <div
                       key={index}
                       className={`w-2 h-2 rounded-full transition-all ${
-                        index === currentTestimonial ? 'bg-[#00B14F] w-6' : 'bg-[#E5E5E5]'
+                        index === currentTestimonial ? 'bg-[#e52020] w-6' : 'bg-[#E5E5E5]'
                       }`}
                     />
                   ))}
                 </div>
                 <button
                   onClick={nextTestimonial}
-                  className="min-w-[44px] min-h-[44px] bg-white border border-[#E5E5E5] rounded-full flex items-center justify-center hover:border-[#00B14F] active:scale-95 transition-all"
+                  className="min-w-[44px] min-h-[44px] bg-white border border-[#E5E5E5] rounded-full flex items-center justify-center hover:border-[#e52020] active:scale-95 transition-all"
                   aria-label="Next testimonial"
                 >
                   <ChevronRight className="w-5 h-5 text-[#111111]" />
@@ -287,7 +287,7 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-[#00B14F]">
+      <section className="py-20 bg-[#e52020]">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center px-4">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-white">

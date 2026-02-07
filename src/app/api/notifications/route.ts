@@ -1,29 +1,48 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { auth, currentUser } from '@clerk/nextjs/server';
 import { createClient } from '@/lib/supabase/server';
+
+// Helper to get database user ID from Clerk user
+async function getDbUserId(supabase: any, email: string) {
+  const { data: dbUser } = await supabase
+    .from('users')
+    .select('id')
+    .eq('email', email)
+    .maybeSingle();
+  return dbUser?.id;
+}
 
 // GET /api/notifications - Get user's notifications
 export async function GET(req: NextRequest) {
   try {
-    const { userId } = await auth();
+    const { userId: clerkUserId } = await auth();
 
-    if (!userId) {
+    if (!clerkUserId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
       );
     }
 
+    const user = await currentUser();
+    const email = user?.emailAddresses[0]?.emailAddress;
+
     const searchParams = req.nextUrl.searchParams;
     const unreadOnly = searchParams.get('unread') === 'true';
     const limit = parseInt(searchParams.get('limit') || '50');
 
     const supabase = await createClient();
+    const dbUserId = await getDbUserId(supabase, email || '');
+
+    if (!dbUserId) {
+      // Return empty array if user not in database yet
+      return NextResponse.json([]);
+    }
 
     let query = supabase
       .from('notifications')
       .select('*')
-      .eq('user_id', userId)
+      .eq('user_id', dbUserId)
       .order('created_at', { ascending: false })
       .limit(limit);
 
@@ -100,16 +119,24 @@ export async function POST(req: NextRequest) {
 // PUT /api/notifications/read-all - Mark all as read
 export async function PUT(req: NextRequest) {
   try {
-    const { userId } = await auth();
+    const { userId: clerkUserId } = await auth();
 
-    if (!userId) {
+    if (!clerkUserId) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
       );
     }
 
+    const user = await currentUser();
+    const email = user?.emailAddresses[0]?.emailAddress;
+
     const supabase = await createClient();
+    const dbUserId = await getDbUserId(supabase, email || '');
+
+    if (!dbUserId) {
+      return NextResponse.json({ success: true });
+    }
 
     const { error } = await supabase
       .from('notifications')
@@ -117,7 +144,7 @@ export async function PUT(req: NextRequest) {
         is_read: true,
         read_at: new Date().toISOString(),
       })
-      .eq('user_id', userId)
+      .eq('user_id', dbUserId)
       .eq('is_read', false);
 
     if (error) throw error;

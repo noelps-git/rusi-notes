@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@clerk/nextjs';
-import { Star, MapPin, Calendar, Heart, Bookmark, Plus } from 'lucide-react';
+import { Star, MapPin, Calendar, Heart, Bookmark, Plus, Trash2 } from 'lucide-react';
+import { useToast } from '@/components/ui/Toast';
 import Link from 'next/link';
 
 type Note = {
@@ -30,9 +31,13 @@ type Note = {
 export default function NotesPage() {
   const router = useRouter();
   const { user, isSignedIn } = useUser();
+  const { showToast } = useToast();
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'my-notes'>('all');
+  const [deleting, setDeleting] = useState<string | null>(null);
+
+  const isAdmin = (user?.publicMetadata as any)?.role === 'admin';
 
   useEffect(() => {
     fetchNotes();
@@ -58,6 +63,33 @@ export default function NotesPage() {
     }
   };
 
+  const handleDelete = async (e: React.MouseEvent, noteId: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!confirm('Are you sure you want to delete this note?')) return;
+
+    setDeleting(noteId);
+    try {
+      const res = await fetch(`/api/notes/${noteId}`, {
+        method: 'DELETE',
+      });
+
+      if (res.ok) {
+        setNotes((prev) => prev.filter((n) => n.id !== noteId));
+        showToast('Note deleted successfully', 'success');
+      } else {
+        const data = await res.json();
+        showToast(data.error || 'Failed to delete note', 'error');
+      }
+    } catch (err) {
+      console.error('Error deleting note:', err);
+      showToast('Failed to delete note', 'error');
+    } finally {
+      setDeleting(null);
+    }
+  };
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-IN', {
@@ -71,13 +103,13 @@ export default function NotesPage() {
     <div className="min-h-screen bg-[#111111]">
       {/* Header */}
       <div className="bg-[#1E1E1E] border-b border-[#333333] sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-white">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
                 Tasting Notes 🍛
               </h1>
-              <p className="text-[#999999] mt-1">
+              <p className="text-xs sm:text-sm text-[#999999] mt-0.5 sm:mt-1">
                 Discover food experiences from the community
               </p>
             </div>
@@ -85,33 +117,34 @@ export default function NotesPage() {
             {isSignedIn && (
               <Link
                 href="/notes/create"
-                className="flex items-center gap-2 px-6 py-3 bg-[#00B14F] text-white rounded-[100px] hover:opacity-90 transition-all"
+                className="hidden sm:flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-[#e52020] text-white rounded-[100px] hover:opacity-90 transition-all text-sm sm:text-base"
               >
-                <Plus size={20} />
-                Create Note
+                <Plus size={18} />
+                <span className="hidden md:inline">Create Note</span>
+                <span className="md:hidden">Create</span>
               </Link>
             )}
           </div>
 
           {/* Filter Tabs */}
           {isSignedIn && (
-            <div className="flex gap-4 mt-6">
+            <div className="flex gap-2 sm:gap-4 mt-4 sm:mt-6">
               <button
                 onClick={() => setFilter('all')}
-                className={`px-4 py-2 rounded-[100px] font-medium transition-all ${
+                className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-[100px] font-medium transition-all text-sm ${
                   filter === 'all'
-                    ? 'bg-[#00B14F] text-white'
-                    : 'text-[#999999] bg-[#2A2A2A] border border-[#333333] hover:border-[#00B14F]'
+                    ? 'bg-[#e52020] text-white'
+                    : 'text-[#999999] bg-[#2A2A2A] border border-[#333333] hover:border-[#e52020]'
                 }`}
               >
                 All Notes
               </button>
               <button
                 onClick={() => setFilter('my-notes')}
-                className={`px-4 py-2 rounded-[100px] font-medium transition-all ${
+                className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-[100px] font-medium transition-all text-sm ${
                   filter === 'my-notes'
-                    ? 'bg-[#00B14F] text-white'
-                    : 'text-[#999999] bg-[#2A2A2A] border border-[#333333] hover:border-[#00B14F]'
+                    ? 'bg-[#e52020] text-white'
+                    : 'text-[#999999] bg-[#2A2A2A] border border-[#333333] hover:border-[#e52020]'
                 }`}
               >
                 My Notes
@@ -122,17 +155,17 @@ export default function NotesPage() {
       </div>
 
       {/* Notes Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
         {loading ? (
           // Loading Skeletons
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {[1, 2, 3, 4, 5, 6].map((n) => (
               <div
                 key={n}
                 className="bg-[#1E1E1E] rounded-2xl border border-[#333333] overflow-hidden animate-pulse"
               >
-                <div className="h-48 bg-[#2A2A2A]"></div>
-                <div className="p-6 space-y-3">
+                <div className="h-36 sm:h-40 md:h-48 bg-[#2A2A2A]"></div>
+                <div className="p-4 sm:p-6 space-y-3">
                   <div className="h-4 bg-[#2A2A2A] rounded w-3/4"></div>
                   <div className="h-3 bg-[#2A2A2A] rounded w-full"></div>
                   <div className="h-3 bg-[#2A2A2A] rounded w-5/6"></div>
@@ -142,16 +175,16 @@ export default function NotesPage() {
           </div>
         ) : notes.length === 0 ? (
           // Empty State
-          <div className="text-center py-16">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#00B14F]/20 mb-4">
-              <Star size={32} className="text-[#00B14F]" />
+          <div className="text-center py-8 sm:py-12 md:py-16 px-4">
+            <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#e52020]/20 mb-4">
+              <Star size={28} className="text-[#e52020] sm:w-8 sm:h-8" />
             </div>
-            <h2 className="text-2xl font-bold text-white mb-2">
+            <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">
               {filter === 'my-notes'
                 ? 'No notes yet'
                 : 'No tasting notes found'}
             </h2>
-            <p className="text-[#999999] mb-6">
+            <p className="text-sm sm:text-base text-[#999999] mb-6">
               {filter === 'my-notes'
                 ? 'Start sharing your food experiences'
                 : 'Be the first to share a tasting note'}
@@ -159,25 +192,25 @@ export default function NotesPage() {
             {isSignedIn && (
               <Link
                 href="/notes/create"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-[#00B14F] text-white rounded-[100px] hover:opacity-90 transition-all"
+                className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 bg-[#e52020] text-white rounded-[100px] hover:opacity-90 transition-all text-sm sm:text-base"
               >
-                <Plus size={20} />
+                <Plus size={18} />
                 Create Your First Note
               </Link>
             )}
           </div>
         ) : (
           // Notes Grid
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {notes.map((note) => (
               <Link
                 key={note.id}
                 href={`/notes/${note.id}`}
-                className="group bg-[#1E1E1E] rounded-2xl border border-[#333333] overflow-hidden hover:border-[#00B14F] transition-all"
+                className="group bg-[#1E1E1E] rounded-xl sm:rounded-2xl border border-[#333333] overflow-hidden hover:border-[#e52020] transition-all"
               >
                 {/* Image */}
                 {note.images && note.images.length > 0 ? (
-                  <div className="h-48 overflow-hidden">
+                  <div className="h-36 sm:h-40 md:h-48 overflow-hidden">
                     <img
                       src={note.images[0]}
                       alt={note.title}
@@ -185,13 +218,13 @@ export default function NotesPage() {
                     />
                   </div>
                 ) : (
-                  <div className="h-48 bg-gradient-to-br from-[#00B14F]/20 to-[#00B14F]/10 flex items-center justify-center">
-                    <span className="text-6xl">🍽️</span>
+                  <div className="h-36 sm:h-40 md:h-48 bg-gradient-to-br from-[#e52020]/20 to-[#e52020]/10 flex items-center justify-center">
+                    <span className="text-4xl sm:text-5xl md:text-6xl">🍽️</span>
                   </div>
                 )}
 
                 {/* Content */}
-                <div className="p-6">
+                <div className="p-4 sm:p-5 md:p-6">
                   {/* Rating */}
                   <div className="flex items-center gap-1 mb-2">
                     {[1, 2, 3, 4, 5].map((star) => (
@@ -211,7 +244,7 @@ export default function NotesPage() {
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-lg font-semibold text-white mb-2 line-clamp-2 group-hover:text-[#00B14F] transition-colors">
+                  <h3 className="text-lg font-semibold text-white mb-2 line-clamp-2 group-hover:text-[#e52020] transition-colors">
                     {note.title}
                   </h3>
 
@@ -223,7 +256,7 @@ export default function NotesPage() {
                   {/* Restaurant */}
                   {note.restaurant && (
                     <div className="flex items-center gap-2 text-sm text-[#666666] mb-3">
-                      <MapPin size={14} className="text-[#00B14F]" />
+                      <MapPin size={14} className="text-[#e52020]" />
                       <span className="line-clamp-1">
                         {note.restaurant.name}
                       </span>
@@ -236,7 +269,7 @@ export default function NotesPage() {
                       {note.tags.slice(0, 3).map((tag) => (
                         <span
                           key={tag}
-                          className="px-2 py-1 bg-[#00B14F]/20 text-[#00B14F] text-xs rounded-full border border-[#00B14F]/30"
+                          className="px-2 py-1 bg-[#e52020]/20 text-[#e52020] text-xs rounded-full border border-[#e52020]/30"
                         >
                           #{tag}
                         </span>
@@ -253,12 +286,12 @@ export default function NotesPage() {
                   <div className="flex items-center justify-between pt-4 border-t border-[#333333]">
                     {/* Author */}
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full bg-[#00B14F] flex items-center justify-center text-white text-sm font-medium">
-                        {note.user.full_name.charAt(0).toUpperCase()}
+                      <div className="w-8 h-8 rounded-full bg-[#e52020] flex items-center justify-center text-white text-sm font-medium">
+                        {note.user?.full_name?.charAt(0)?.toUpperCase() || 'U'}
                       </div>
                       <div>
                         <p className="text-sm font-medium text-white">
-                          {note.user.full_name}
+                          {note.user?.full_name || 'Unknown User'}
                         </p>
                         <div className="flex items-center gap-1 text-xs text-[#666666]">
                           <Calendar size={12} />
@@ -269,25 +302,22 @@ export default function NotesPage() {
 
                     {/* Actions */}
                     <div className="flex items-center gap-3">
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                        }}
-                        className="flex items-center gap-1 text-[#666666] hover:text-red-500 transition-colors"
-                      >
+                      <div className="flex items-center gap-1 text-[#666666]">
                         <Heart size={16} />
                         <span className="text-xs">
                           {note.likes_count || 0}
                         </span>
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                        }}
-                        className="text-[#666666] hover:text-[#00B14F] transition-colors"
-                      >
-                        <Bookmark size={16} />
-                      </button>
+                      </div>
+                      {(filter === 'my-notes' || isAdmin) && (
+                        <button
+                          onClick={(e) => handleDelete(e, note.id)}
+                          disabled={deleting === note.id}
+                          className="p-1.5 text-[#666666] hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors disabled:opacity-50"
+                          title="Delete note"
+                        >
+                          <Trash2 size={16} className={deleting === note.id ? 'animate-pulse' : ''} />
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -301,7 +331,7 @@ export default function NotesPage() {
       {isSignedIn && (
         <Link
           href="/notes/create"
-          className="fixed bottom-6 right-6 md:hidden flex items-center justify-center w-14 h-14 bg-[#00B14F] text-white rounded-full shadow-2xl hover:scale-110 transition-transform z-20"
+          className="fixed bottom-20 right-4 sm:hidden flex items-center justify-center w-14 h-14 bg-[#e52020] text-white rounded-full shadow-[0_4px_20px_rgba(229,32,32,0.4)] active:scale-95 transition-transform z-20"
         >
           <Plus size={24} />
         </Link>

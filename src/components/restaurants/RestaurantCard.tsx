@@ -14,9 +14,9 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
 
   return (
     <Link href={`/restaurants/${restaurant.id}`}>
-      <div className="group bg-[#1E1E1E] rounded-2xl border border-[#333333] overflow-hidden cursor-pointer transition-all duration-300 hover:border-[#00B14F] hover:shadow-[0_0_20px_rgba(0,177,79,0.2)]">
+      <div className="group bg-[#1E1E1E] rounded-2xl border border-[#333333] overflow-hidden cursor-pointer transition-all duration-300 hover:border-[#e52020] hover:shadow-[0_0_20px_rgba(229,32,32,0.2)]">
         {/* Restaurant Image or Placeholder */}
-        <div className="relative h-48 bg-gradient-to-br from-[#00B14F]/20 to-[#00B14F]/10 overflow-hidden">
+        <div className="relative h-48 bg-gradient-to-br from-[#e52020]/20 to-[#e52020]/10 overflow-hidden">
           {restaurant.cover_image_url ? (
             <img
               src={restaurant.cover_image_url}
@@ -31,7 +31,7 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
 
           {/* Verified Badge */}
           {restaurant.is_verified && (
-            <div className="absolute top-3 right-3 bg-[#00B14F] text-white text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
+            <div className="absolute top-3 right-3 bg-[#e52020] text-white text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
               <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
               </svg>
@@ -55,7 +55,7 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
 
         {/* Restaurant Info */}
         <div className="p-4">
-          <h3 className="font-bold text-lg text-white mb-1 group-hover:text-[#00B14F] transition-colors">
+          <h3 className="font-bold text-lg text-white mb-1 group-hover:text-[#e52020] transition-colors">
             {restaurant.name}
           </h3>
 
@@ -93,7 +93,7 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
               <span className="truncate">{restaurant.city}</span>
             </div>
             {restaurant.price_range && (
-              <span className="font-semibold text-[#00B14F]">
+              <span className="font-semibold text-[#e52020]">
                 {restaurant.price_range}
               </span>
             )}

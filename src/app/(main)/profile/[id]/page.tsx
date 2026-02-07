@@ -104,14 +104,14 @@ export default async function UserProfilePage({
           <div className="flex flex-col md:flex-row gap-6">
             {/* Avatar */}
             <div className="flex-shrink-0">
-              <div className="w-24 h-24 rounded-full bg-[#00B14F] flex items-center justify-center text-white text-4xl font-bold">
-                {user.full_name.charAt(0).toUpperCase()}
+              <div className="w-24 h-24 rounded-full bg-[#e52020] flex items-center justify-center text-white text-4xl font-bold">
+                {user?.full_name?.charAt(0)?.toUpperCase() || 'U'}
               </div>
             </div>
 
             {/* Info */}
             <div className="flex-1">
-              <h1 className="text-3xl font-bold text-white mb-2">{user.full_name}</h1>
+              <h1 className="text-3xl font-bold text-white mb-2">{user?.full_name || 'Unknown User'}</h1>
 
               <div className="flex flex-wrap gap-4 text-sm text-[#999999] mb-4">
                 <div className="flex items-center gap-2">
@@ -133,7 +133,7 @@ export default async function UserProfilePage({
                   {user.dietary_preferences.map((pref: string) => (
                     <span
                       key={pref}
-                      className="px-3 py-1 bg-[#00B14F]/20 text-[#00B14F] text-xs font-medium rounded-full border border-[#00B14F]/30"
+                      className="px-3 py-1 bg-[#e52020]/20 text-[#e52020] text-xs font-medium rounded-full border border-[#e52020]/30"
                     >
                       {pref}
                     </span>
@@ -166,24 +166,24 @@ export default async function UserProfilePage({
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div className="bg-[#1E1E1E] rounded-2xl border border-[#333333] p-6 text-center">
-            <div className="w-12 h-12 bg-[#00B14F]/20 rounded-full flex items-center justify-center mx-auto mb-3">
-              <MessageCircle className="w-6 h-6 text-[#00B14F]" />
+            <div className="w-12 h-12 bg-[#e52020]/20 rounded-full flex items-center justify-center mx-auto mb-3">
+              <MessageCircle className="w-6 h-6 text-[#e52020]" />
             </div>
             <div className="text-3xl font-bold text-white mb-1">{stats.notes}</div>
             <div className="text-sm text-[#999999]">Rusi Notes</div>
           </div>
 
           <div className="bg-[#1E1E1E] rounded-2xl border border-[#333333] p-6 text-center">
-            <div className="w-12 h-12 bg-[#00B14F]/20 rounded-full flex items-center justify-center mx-auto mb-3">
-              <Users className="w-6 h-6 text-[#00B14F]" />
+            <div className="w-12 h-12 bg-[#e52020]/20 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Users className="w-6 h-6 text-[#e52020]" />
             </div>
             <div className="text-3xl font-bold text-white mb-1">{stats.friends}</div>
             <div className="text-sm text-[#999999]">Nanbas</div>
           </div>
 
           <div className="bg-[#1E1E1E] rounded-2xl border border-[#333333] p-6 text-center">
-            <div className="w-12 h-12 bg-[#00B14F]/20 rounded-full flex items-center justify-center mx-auto mb-3">
-              <Heart className="w-6 h-6 text-[#00B14F]" />
+            <div className="w-12 h-12 bg-[#e52020]/20 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Heart className="w-6 h-6 text-[#e52020]" />
             </div>
             <div className="text-3xl font-bold text-white mb-1">{stats.likes}</div>
             <div className="text-sm text-[#999999]">Likes Given</div>
@@ -202,14 +202,14 @@ export default async function UserProfilePage({
                 <Link
                   key={note.id}
                   href={`/notes/${note.id}`}
-                  className="bg-[#111111] border border-[#333333] rounded-xl p-4 hover:border-[#00B14F] transition-all"
+                  className="bg-[#111111] border border-[#333333] rounded-xl p-4 hover:border-[#e52020] transition-all"
                 >
                   <h3 className="font-semibold text-white mb-2 line-clamp-1">{note.title}</h3>
                   <p className="text-sm text-[#999999] mb-3 line-clamp-2">{note.content}</p>
 
                   <div className="flex items-center gap-4 text-xs text-[#666666]">
                     <div className="flex items-center gap-1">
-                      <Award size={14} className="text-[#00B14F]" />
+                      <Award size={14} className="text-[#e52020]" />
                       <span>{note.rating}/5</span>
                     </div>
                     <div className="flex items-center gap-1">
