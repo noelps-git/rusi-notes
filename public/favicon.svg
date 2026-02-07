@@ -1,9 +1,14 @@
-<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Red background -->
-  <rect width="32" height="32" rx="6" fill="#e52020"/>
+<svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Red circle background -->
+  <circle cx="20" cy="20" r="20" fill="#e52020"/>
 
-  <!-- Fork and Spoon icon in white -->
-  <path d="M11 8 L11 24 M10 8 L10 11 M11 8 L11 11 M12 8 L12 11" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-  <ellipse cx="21" cy="9.5" rx="1.5" ry="2" fill="white"/>
-  <path d="M21 11.5 L21 24" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Fork (left) -->
+  <path d="M14 12 L14 28 M12 12 L12 16 M14 12 L14 16 M16 12 L16 16" stroke="white" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Spoon (right) -->
+  <ellipse cx="26" cy="14" rx="2" ry="3" fill="white"/>
+  <path d="M26 17 L26 28" stroke="white" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- "R" letter overlay (subtle) -->
+  <text x="20" y="26" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white" text-anchor="middle" opacity="0.3">R</text>
 </svg>
