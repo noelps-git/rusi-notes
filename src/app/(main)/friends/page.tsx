@@ -188,8 +188,8 @@ export default function FriendsPage() {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">Friend Gang 🦁</h1>
-          <p className="text-[#999999]">Connect with your foodie friends! <span className="text-[#e52020]">"Machan, anga poi try pannu!"</span></p>
+          <h1 className="text-4xl font-bold text-white mb-2">Friends</h1>
+          <p className="text-[#999999]">Connect with your foodie friends and share recommendations!</p>
         </div>
 
         {/* Tabs */}
@@ -242,8 +242,8 @@ export default function FriendsPage() {
               {friends.length === 0 ? (
                 <div className="text-center py-12">
                   <Users size={48} className="mx-auto text-[#333333] mb-4" />
-                  <p className="text-[#999999] mb-2">No friends yet da! 🤷</p>
-                  <p className="text-sm text-[#666666] mb-4">"Yenna koduma sir idhu?"</p>
+                  <p className="text-[#999999] mb-2">No friends yet</p>
+                  <p className="text-sm text-[#666666] mb-4">Start connecting with fellow food lovers!</p>
                   <button
                     onClick={() => setActiveTab('search')}
                     className="px-6 py-2 bg-[#e52020] text-white rounded-[100px] hover:opacity-90 transition-all"
@@ -296,7 +296,7 @@ export default function FriendsPage() {
                   Received ({receivedRequests.length}) 📩
                 </h3>
                 {receivedRequests.length === 0 ? (
-                  <p className="text-[#999999] text-center py-8">"Yarum illa da!" - No pending requests</p>
+                  <p className="text-[#999999] text-center py-8">No pending requests</p>
                 ) : (
                   <div className="space-y-3">
                     {receivedRequests.map((request) => (
@@ -382,8 +382,9 @@ export default function FriendsPage() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                    placeholder="Yaara thedanumnu sollu... (name or email)"
-                    className="flex-1 px-4 py-3 bg-[#111111] border border-[#333333] rounded-[100px] text-white placeholder-[#666666] focus:outline-none focus:border-[#e52020] transition-all"
+                    placeholder="Search by name or email..."
+                    style={{ color: '#FFFFFF', WebkitTextFillColor: '#FFFFFF' }}
+                    className="flex-1 px-4 py-3 bg-[#111111] border border-[#333333] rounded-[100px] placeholder-[#666666] focus:outline-none focus:border-[#e52020] transition-all caret-white"
                   />
                   <button
                     onClick={handleSearch}
@@ -431,13 +432,13 @@ export default function FriendsPage() {
                 </div>
               ) : searchQuery.length > 0 && !searching ? (
                 <div className="text-center py-12 text-[#999999]">
-                  <p>"Yarum illa da!" - No users found 🤷</p>
+                  <p>No users found</p>
                 </div>
               ) : (
                 <div className="text-center py-12 text-[#999999]">
                   <Search size={48} className="mx-auto mb-4 text-[#333333]" />
                   <p className="mb-2">Search for friends by name or email</p>
-                  <p className="text-sm text-[#666666]">"Machan, evana add pannalam?"</p>
+                  <p className="text-sm text-[#666666]">Find and connect with fellow food lovers</p>
                 </div>
               )}
             </div>
