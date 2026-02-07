@@ -4,7 +4,19 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@clerk/nextjs';
 import Link from 'next/link';
-import { ArrowLeft, Bell, Check, CheckCheck, Trash2 } from 'lucide-react';
+import { ArrowLeft, Bell, Check, CheckCheck, Trash2, MapPin, Loader2 } from 'lucide-react';
+
+type NotificationMetadata = {
+  reviewer_id?: string;
+  reviewer_name?: string;
+  reviewer_avatar?: string;
+  note_id?: string;
+  note_title?: string;
+  note_rating?: number;
+  restaurant_id?: string;
+  restaurant_name?: string;
+  [key: string]: any;
+};
 
 type Notification = {
   id: string;
@@ -14,6 +26,7 @@ type Notification = {
   link: string | null;
   is_read: boolean;
   created_at: string;
+  metadata?: NotificationMetadata;
 };
 
 export default function NotificationsPage() {
@@ -21,6 +34,8 @@ export default function NotificationsPage() {
   const { isLoaded, isSignedIn } = useUser();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
+  const [addingToBucket, setAddingToBucket] = useState<string | null>(null);
+  const [addedToBucket, setAddedToBucket] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (isLoaded && !isSignedIn) {
@@ -75,10 +90,41 @@ export default function NotificationsPage() {
     }
   };
 
+  const addToBucketList = async (notification: Notification) => {
+    if (!notification.metadata?.restaurant_id) return;
+
+    setAddingToBucket(notification.id);
+    try {
+      const res = await fetch('/api/bucket-list', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          restaurant_id: notification.metadata.restaurant_id,
+          note: `Recommended by ${notification.metadata.reviewer_name || 'a friend'}`,
+          added_from_friend_id: notification.metadata.reviewer_id,
+        }),
+      });
+
+      if (res.ok) {
+        setAddedToBucket((prev) => new Set([...prev, notification.id]));
+      } else {
+        const data = await res.json();
+        if (data.error?.includes('already')) {
+          setAddedToBucket((prev) => new Set([...prev, notification.id]));
+        }
+      }
+    } catch (err) {
+      console.error('Error adding to bucket list:', err);
+    } finally {
+      setAddingToBucket(null);
+    }
+  };
+
   const getIcon = (type: string) => {
     const icons: Record<string, string> = {
       friend_request: '👋',
       friend_accepted: '🤝',
+      friend_review: '🍽️',
       comment: '💬',
       like: '❤️',
       group_invite: '👥',
@@ -190,7 +236,29 @@ export default function NotificationsPage() {
                           {formatTime(notification.created_at)}
                         </p>
                       </div>
-                      <div className="flex gap-3 mt-3">
+                      <div className="flex flex-wrap gap-3 mt-3">
+                        {/* Add to Bucket List button for friend reviews */}
+                        {notification.type === 'friend_review' && notification.metadata?.restaurant_id && (
+                          addedToBucket.has(notification.id) ? (
+                            <span className="flex items-center gap-1 text-xs text-green-500">
+                              <Check size={14} />
+                              Added to bucket list
+                            </span>
+                          ) : (
+                            <button
+                              onClick={() => addToBucketList(notification)}
+                              disabled={addingToBucket === notification.id}
+                              className="flex items-center gap-1 text-xs text-[#e52020] hover:opacity-80 bg-[#e52020]/10 px-2 py-1 rounded-full transition-all"
+                            >
+                              {addingToBucket === notification.id ? (
+                                <Loader2 size={14} className="animate-spin" />
+                              ) : (
+                                <MapPin size={14} />
+                              )}
+                              Add to Bucket List
+                            </button>
+                          )
+                        )}
                         {!notification.is_read && (
                           <button
                             onClick={() => markAsRead(notification.id)}

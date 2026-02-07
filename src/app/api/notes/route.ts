@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth, currentUser } from '@clerk/nextjs/server';
 import { createClient } from '@/lib/supabase/server';
+import { createNotification } from '@/lib/utils/notifications';
 
 // GET /api/notes - List all tasting notes
 export async function GET(req: NextRequest) {
@@ -133,6 +134,54 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (error) throw error;
+
+    // Notify all friends about the new review (if public)
+    if (is_public !== false && note.restaurant) {
+      try {
+        // Get all accepted friendships where user is either requester or recipient
+        const { data: friendships } = await supabase
+          .from('friendships')
+          .select('requester_id, recipient_id')
+          .eq('status', 'accepted')
+          .or(`requester_id.eq.${dbUser.id},recipient_id.eq.${dbUser.id}`);
+
+        if (friendships && friendships.length > 0) {
+          // Get friend IDs (the other person in each friendship)
+          const friendIds = friendships.map((f: any) =>
+            f.requester_id === dbUser.id ? f.recipient_id : f.requester_id
+          );
+
+          // Create notifications for all friends
+          const notificationPromises = friendIds.map((friendId: string) =>
+            createNotification({
+              user_id: friendId,
+              type: 'friend_review',
+              title: 'New Review from Friend',
+              message: `${user?.fullName || 'Your friend'} reviewed ${note.restaurant?.name || 'a restaurant'}`,
+              link: `/notes/${note.id}`,
+              metadata: {
+                reviewer_id: dbUser.id,
+                reviewer_name: user?.fullName,
+                reviewer_avatar: user?.imageUrl,
+                note_id: note.id,
+                note_title: note.title,
+                note_rating: note.rating,
+                restaurant_id: note.restaurant?.id,
+                restaurant_name: note.restaurant?.name,
+              },
+            })
+          );
+
+          // Fire and forget - don't wait for notifications to complete
+          Promise.all(notificationPromises).catch((err) =>
+            console.error('Error sending friend notifications:', err)
+          );
+        }
+      } catch (notifyError) {
+        // Don't fail the note creation if notifications fail
+        console.error('Error notifying friends:', notifyError);
+      }
+    }
 
     return NextResponse.json(note, { status: 201 });
   } catch (error) {

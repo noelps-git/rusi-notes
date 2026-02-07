@@ -13,7 +13,9 @@ import {
   Check,
   Sparkles,
   ChevronRight,
+  Bell,
 } from 'lucide-react';
+import BucketList from './BucketList';
 
 interface WelcomeDashboardProps {
   userName: string;
@@ -229,6 +231,14 @@ export default function WelcomeDashboard({ userName, userEmail }: WelcomeDashboa
               </div>
             </Link>
           </div>
+        </div>
+
+        {/* Bucket List Section */}
+        <div className="mb-8 sm:mb-12 max-w-4xl mx-auto">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6 text-center px-2">
+            Your <span className="text-[#e52020]">Bucket List</span> 📍
+          </h2>
+          <BucketList />
         </div>
 
         {/* Share Section */}
