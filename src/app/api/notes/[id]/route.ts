@@ -41,6 +41,16 @@ export async function GET(
   }
 }
 
+// Helper to get database user ID from Clerk user
+async function getDbUserId(supabase: any, email: string): Promise<string | null> {
+  const { data: dbUser } = await supabase
+    .from('users')
+    .select('id')
+    .eq('email', email)
+    .maybeSingle();
+  return dbUser?.id || null;
+}
+
 // PUT /api/notes/[id] - Update note
 export async function PUT(
   req: NextRequest,
@@ -55,7 +65,9 @@ export async function PUT(
     }
 
     const user = await currentUser();
+    const email = user?.emailAddresses[0]?.emailAddress;
     const supabase = await createClient();
+    const dbUserId = await getDbUserId(supabase, email || '');
 
     // Check if user owns this note
     const { data: note } = await supabase
@@ -71,7 +83,7 @@ export async function PUT(
       );
     }
 
-    if (note.user_id !== userId && (user?.publicMetadata as any)?.role !== 'admin') {
+    if (note.user_id !== dbUserId && (user?.publicMetadata as any)?.role !== 'admin') {
       return NextResponse.json(
         { error: 'Unauthorized. You can only edit your own notes.' },
         { status: 403 }

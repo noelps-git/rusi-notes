@@ -43,6 +43,20 @@ export default function FriendsPage() {
     }
   }, [isLoaded, isSignedIn, router]);
 
+  // Auto-search with debounce when user types
+  useEffect(() => {
+    if (searchQuery.trim().length < 2) {
+      setSearchResults([]);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      handleSearch();
+    }, 300); // 300ms debounce
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
   const fetchFriendships = async () => {
     setLoading(true);
     try {
@@ -376,24 +390,24 @@ export default function FriendsPage() {
             <div>
               {/* Search Bar */}
               <div className="mb-6">
-                <div className="flex gap-2">
+                <div className="relative">
+                  <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#666666]" />
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                    placeholder="Search by name or email..."
+                    placeholder="Search by name, email, or handle..."
                     style={{ color: '#FFFFFF', WebkitTextFillColor: '#FFFFFF' }}
-                    className="flex-1 px-4 py-3 bg-[#111111] border border-[#333333] rounded-[100px] placeholder-[#666666] focus:outline-none focus:border-[#e52020] transition-all caret-white"
+                    className="w-full pl-12 pr-12 py-3 bg-[#111111] border border-[#333333] rounded-[100px] placeholder-[#666666] focus:outline-none focus:border-[#e52020] transition-all caret-white"
+                    autoFocus
                   />
-                  <button
-                    onClick={handleSearch}
-                    disabled={searching || searchQuery.trim().length < 2}
-                    className="px-6 py-3 bg-[#e52020] text-white rounded-[100px] hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {searching ? 'Searching...' : 'Search 🔍'}
-                  </button>
+                  {searching && (
+                    <Loader2 size={20} className="absolute right-4 top-1/2 -translate-y-1/2 text-[#e52020] animate-spin" />
+                  )}
                 </div>
+                {searchQuery.length > 0 && searchQuery.length < 2 && (
+                  <p className="text-sm text-[#666666] mt-2 ml-4">Type at least 2 characters to search</p>
+                )}
               </div>
 
               {/* Search Results */}

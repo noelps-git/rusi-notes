@@ -2,6 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth, currentUser } from '@clerk/nextjs/server';
 import { createClient } from '@/lib/supabase/server';
 
+// Helper to get database user ID from Clerk user
+async function getDbUserId(supabase: any, email: string): Promise<string | null> {
+  const { data: dbUser } = await supabase
+    .from('users')
+    .select('id')
+    .eq('email', email)
+    .maybeSingle();
+  return dbUser?.id || null;
+}
+
 // PUT /api/comments/[id] - Update a comment
 export async function PUT(
   req: NextRequest,
@@ -18,6 +28,7 @@ export async function PUT(
       );
     }
 
+    const email = user?.emailAddresses[0]?.emailAddress;
     const resolvedParams = await params;
     const body = await req.json();
     const { content } = body;
@@ -30,6 +41,14 @@ export async function PUT(
     }
 
     const supabase = await createClient();
+    const dbUserId = await getDbUserId(supabase, email || '');
+
+    if (!dbUserId) {
+      return NextResponse.json(
+        { error: 'User profile not found' },
+        { status: 400 }
+      );
+    }
 
     // Check if user owns this comment
     const { data: comment } = await supabase
@@ -45,7 +64,7 @@ export async function PUT(
       );
     }
 
-    if (comment.user_id !== userId) {
+    if (comment.user_id !== dbUserId) {
       return NextResponse.json(
         { error: 'You can only edit your own comments' },
         { status: 403 }
@@ -95,8 +114,17 @@ export async function DELETE(
       );
     }
 
+    const email = user?.emailAddresses[0]?.emailAddress;
     const resolvedParams = await params;
     const supabase = await createClient();
+    const dbUserId = await getDbUserId(supabase, email || '');
+
+    if (!dbUserId) {
+      return NextResponse.json(
+        { error: 'User profile not found' },
+        { status: 400 }
+      );
+    }
 
     // Check if user owns this comment or is admin
     const { data: comment } = await supabase
@@ -112,7 +140,7 @@ export async function DELETE(
       );
     }
 
-    if (comment.user_id !== userId && (user?.publicMetadata as any)?.role !== 'admin') {
+    if (comment.user_id !== dbUserId && (user?.publicMetadata as any)?.role !== 'admin') {
       return NextResponse.json(
         { error: 'You can only delete your own comments' },
         { status: 403 }

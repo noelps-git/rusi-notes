@@ -1,6 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { auth, currentUser } from '@clerk/nextjs/server';
 import { createClient } from '@/lib/supabase/server';
+
+// Helper to get database user ID from Clerk user
+async function getDbUserId(supabase: any, email: string): Promise<string | null> {
+  const { data: dbUser } = await supabase
+    .from('users')
+    .select('id')
+    .eq('email', email)
+    .maybeSingle();
+  return dbUser?.id || null;
+}
 
 // POST /api/groups/[id]/votes - Create a vote
 export async function POST(
@@ -17,6 +27,8 @@ export async function POST(
       );
     }
 
+    const user = await currentUser();
+    const email = user?.emailAddresses[0]?.emailAddress;
     const resolvedParams = await params;
     const body = await req.json();
     const { question, options, expires_in_hours } = body;
@@ -29,13 +41,21 @@ export async function POST(
     }
 
     const supabase = await createClient();
+    const dbUserId = await getDbUserId(supabase, email || '');
+
+    if (!dbUserId) {
+      return NextResponse.json(
+        { error: 'Please complete your profile setup first' },
+        { status: 400 }
+      );
+    }
 
     // Check if user is a member
     const { data: membership } = await supabase
       .from('group_members')
       .select('id')
       .eq('group_id', resolvedParams.id)
-      .eq('user_id', userId)
+      .eq('user_id', dbUserId)
       .single();
 
     if (!membership) {
@@ -50,7 +70,7 @@ export async function POST(
       .from('messages')
       .insert({
         group_id: resolvedParams.id,
-        sender_id: userId,
+        sender_id: dbUserId,
         content: `📊 Poll: ${question}`,
         message_type: 'vote',
       })
@@ -78,7 +98,7 @@ export async function POST(
         message_id: message.id,
         question,
         options: formattedOptions,
-        created_by: userId,
+        created_by: dbUserId,
         expires_at: expiresAt,
       })
       .select()
@@ -114,15 +134,25 @@ export async function GET(
       );
     }
 
+    const user = await currentUser();
+    const email = user?.emailAddresses[0]?.emailAddress;
     const resolvedParams = await params;
     const supabase = await createClient();
+    const dbUserId = await getDbUserId(supabase, email || '');
+
+    if (!dbUserId) {
+      return NextResponse.json(
+        { error: 'User profile not found' },
+        { status: 400 }
+      );
+    }
 
     // Check if user is a member
     const { data: membership } = await supabase
       .from('group_members')
       .select('id')
       .eq('group_id', resolvedParams.id)
-      .eq('user_id', userId)
+      .eq('user_id', dbUserId)
       .single();
 
     if (!membership) {
@@ -159,7 +189,7 @@ export async function GET(
       .from('vote_responses')
       .select('vote_id, option_id')
       .in('vote_id', voteIds)
-      .eq('user_id', userId);
+      .eq('user_id', dbUserId);
 
     const votesWithUserResponse = votes?.map((vote: any) => ({
       ...vote,

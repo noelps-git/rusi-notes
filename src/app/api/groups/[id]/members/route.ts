@@ -1,6 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { auth, currentUser } from '@clerk/nextjs/server';
 import { createClient } from '@/lib/supabase/server';
+
+// Helper to get database user ID from Clerk user
+async function getDbUserId(supabase: any, email: string): Promise<string | null> {
+  const { data: dbUser } = await supabase
+    .from('users')
+    .select('id')
+    .eq('email', email)
+    .maybeSingle();
+  return dbUser?.id || null;
+}
 
 // POST /api/groups/[id]/members - Add member to group
 export async function POST(
@@ -17,6 +27,8 @@ export async function POST(
       );
     }
 
+    const user = await currentUser();
+    const email = user?.emailAddresses[0]?.emailAddress;
     const resolvedParams = await params;
     const body = await req.json();
     const { user_id } = body;
@@ -29,13 +41,21 @@ export async function POST(
     }
 
     const supabase = await createClient();
+    const dbUserId = await getDbUserId(supabase, email || '');
+
+    if (!dbUserId) {
+      return NextResponse.json(
+        { error: 'User profile not found' },
+        { status: 400 }
+      );
+    }
 
     // Check if requester is admin
     const { data: membership } = await supabase
       .from('group_members')
       .select('role')
       .eq('group_id', resolvedParams.id)
-      .eq('user_id', userId)
+      .eq('user_id', dbUserId)
       .single();
 
     if (!membership || membership.role !== 'admin') {
@@ -104,6 +124,8 @@ export async function DELETE(
       );
     }
 
+    const user = await currentUser();
+    const email = user?.emailAddresses[0]?.emailAddress;
     const resolvedParams = await params;
     const searchParams = req.nextUrl.searchParams;
     const targetUserId = searchParams.get('userId');
@@ -116,13 +138,21 @@ export async function DELETE(
     }
 
     const supabase = await createClient();
+    const dbUserId = await getDbUserId(supabase, email || '');
+
+    if (!dbUserId) {
+      return NextResponse.json(
+        { error: 'User profile not found' },
+        { status: 400 }
+      );
+    }
 
     // Check if requester is admin or removing themselves
     const { data: membership } = await supabase
       .from('group_members')
       .select('role')
       .eq('group_id', resolvedParams.id)
-      .eq('user_id', userId)
+      .eq('user_id', dbUserId)
       .single();
 
     if (!membership) {
@@ -133,7 +163,7 @@ export async function DELETE(
     }
 
     // Allow self-removal or admin removing others
-    if (targetUserId !== userId && membership.role !== 'admin') {
+    if (targetUserId !== dbUserId && membership.role !== 'admin') {
       return NextResponse.json(
         { error: 'Only admins can remove other members' },
         { status: 403 }

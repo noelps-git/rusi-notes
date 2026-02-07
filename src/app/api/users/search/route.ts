@@ -15,27 +15,27 @@ export async function GET(req: NextRequest) {
     }
 
     const searchParams = req.nextUrl.searchParams;
-    const query = searchParams.get('q');
+    const query = searchParams.get('q')?.trim();
     const limit = parseInt(searchParams.get('limit') || '10');
 
-    if (!query || query.trim().length < 2) {
-      return NextResponse.json(
-        { error: 'Search query must be at least 2 characters' },
-        { status: 400 }
-      );
+    if (!query || query.length < 2) {
+      return NextResponse.json([]);
     }
 
-    const supabase = await createClient();
+    // Run both queries in parallel for faster response
+    const [user, supabase] = await Promise.all([
+      currentUser(),
+      createClient()
+    ]);
 
-    // Get current user's email to exclude them from search
-    const user = await currentUser();
     const currentUserEmail = user?.emailAddresses[0]?.emailAddress;
+    const searchPattern = `%${query}%`;
 
     // Search users by name, email, or handle
     let queryBuilder = supabase
       .from('users')
-      .select('id, full_name, email, avatar_url, role, handle')
-      .or(`full_name.ilike.%${query}%,email.ilike.%${query}%,handle.ilike.%${query}%`)
+      .select('id, full_name, email, avatar_url, handle')
+      .or(`full_name.ilike.${searchPattern},email.ilike.${searchPattern},handle.ilike.${searchPattern}`)
       .limit(limit);
 
     // Exclude current user by email if available

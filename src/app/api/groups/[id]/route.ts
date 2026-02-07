@@ -1,6 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { auth, currentUser } from '@clerk/nextjs/server';
 import { createClient } from '@/lib/supabase/server';
+
+// Helper to get database user ID from Clerk user
+async function getDbUserId(supabase: any, email: string): Promise<string | null> {
+  const { data: dbUser } = await supabase
+    .from('users')
+    .select('id')
+    .eq('email', email)
+    .maybeSingle();
+  return dbUser?.id || null;
+}
 
 // GET /api/groups/[id] - Get single group with members
 export async function GET(
@@ -17,15 +27,25 @@ export async function GET(
       );
     }
 
+    const user = await currentUser();
+    const email = user?.emailAddresses[0]?.emailAddress;
     const resolvedParams = await params;
     const supabase = await createClient();
+    const dbUserId = await getDbUserId(supabase, email || '');
+
+    if (!dbUserId) {
+      return NextResponse.json(
+        { error: 'User profile not found' },
+        { status: 400 }
+      );
+    }
 
     // Check if user is a member
     const { data: membership } = await supabase
       .from('group_members')
       .select('role')
       .eq('group_id', resolvedParams.id)
-      .eq('user_id', userId)
+      .eq('user_id', dbUserId)
       .single();
 
     if (!membership) {
@@ -93,15 +113,25 @@ export async function PUT(
       );
     }
 
+    const user = await currentUser();
+    const email = user?.emailAddresses[0]?.emailAddress;
     const resolvedParams = await params;
     const supabase = await createClient();
+    const dbUserId = await getDbUserId(supabase, email || '');
+
+    if (!dbUserId) {
+      return NextResponse.json(
+        { error: 'User profile not found' },
+        { status: 400 }
+      );
+    }
 
     // Check if user is admin
     const { data: membership } = await supabase
       .from('group_members')
       .select('role')
       .eq('group_id', resolvedParams.id)
-      .eq('user_id', userId)
+      .eq('user_id', dbUserId)
       .single();
 
     if (!membership || membership.role !== 'admin') {
@@ -153,15 +183,25 @@ export async function DELETE(
       );
     }
 
+    const user = await currentUser();
+    const email = user?.emailAddresses[0]?.emailAddress;
     const resolvedParams = await params;
     const supabase = await createClient();
+    const dbUserId = await getDbUserId(supabase, email || '');
+
+    if (!dbUserId) {
+      return NextResponse.json(
+        { error: 'User profile not found' },
+        { status: 400 }
+      );
+    }
 
     // Check if user is admin
     const { data: membership } = await supabase
       .from('group_members')
       .select('role')
       .eq('group_id', resolvedParams.id)
-      .eq('user_id', userId)
+      .eq('user_id', dbUserId)
       .single();
 
     if (!membership || membership.role !== 'admin') {

@@ -1,6 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { auth, currentUser } from '@clerk/nextjs/server';
 import { createClient } from '@/lib/supabase/server';
+
+// Helper to get database user ID from Clerk user
+async function getDbUserId(supabase: any, email: string): Promise<string | null> {
+  const { data: dbUser } = await supabase
+    .from('users')
+    .select('id')
+    .eq('email', email)
+    .maybeSingle();
+  return dbUser?.id || null;
+}
 
 // GET /api/groups - Get all groups user is a member of
 export async function GET(req: NextRequest) {
@@ -14,7 +24,14 @@ export async function GET(req: NextRequest) {
       );
     }
 
+    const user = await currentUser();
+    const email = user?.emailAddresses[0]?.emailAddress;
     const supabase = await createClient();
+    const dbUserId = await getDbUserId(supabase, email || '');
+
+    if (!dbUserId) {
+      return NextResponse.json([]);
+    }
 
     // Get all groups where user is a member
     const { data: memberships, error } = await supabase
@@ -33,7 +50,7 @@ export async function GET(req: NextRequest) {
           creator:users!groups_creator_id_fkey(id, full_name, avatar_url)
         )
       `)
-      .eq('user_id', userId);
+      .eq('user_id', dbUserId);
 
     if (error) throw error;
 
@@ -66,6 +83,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const user = await currentUser();
+    const email = user?.emailAddresses[0]?.emailAddress;
+
     const body = await req.json();
     const { name, description, is_private } = body;
 
@@ -77,6 +97,14 @@ export async function POST(req: NextRequest) {
     }
 
     const supabase = await createClient();
+    const dbUserId = await getDbUserId(supabase, email || '');
+
+    if (!dbUserId) {
+      return NextResponse.json(
+        { error: 'Please complete your profile setup first' },
+        { status: 400 }
+      );
+    }
 
     // Create group
     const { data: group, error: groupError } = await supabase
@@ -84,7 +112,7 @@ export async function POST(req: NextRequest) {
       .insert({
         name: name.trim(),
         description: description?.trim() || null,
-        creator_id: userId,
+        creator_id: dbUserId,
         is_private: is_private !== undefined ? is_private : true,
       })
       .select()
@@ -97,7 +125,7 @@ export async function POST(req: NextRequest) {
       .from('group_members')
       .insert({
         group_id: group.id,
-        user_id: userId,
+        user_id: dbUserId,
         role: 'admin',
       });
 
