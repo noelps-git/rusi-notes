@@ -22,6 +22,20 @@ export const metadata: Metadata = {
     icon: '/favicon.svg',
     apple: '/logo.svg',
   },
+  metadataBase: new URL('https://rusinotes.com'),
+  openGraph: {
+    title: 'Rusi Notes - Your Personal Food Journal',
+    description: 'Track your favorite dishes, share reviews with friends, and discover amazing restaurants.',
+    url: 'https://rusinotes.com',
+    siteName: 'Rusi Notes',
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Rusi Notes - Your Personal Food Journal',
+    description: 'Track your favorite dishes, share reviews with friends, and discover amazing restaurants.',
+  },
 };
 
 export default function RootLayout({
