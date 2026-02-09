@@ -1,12 +1,16 @@
 -- ============================================================================
 -- RUSI NOTES - COMPLETE DATABASE SCHEMA (SAFE VERSION)
 -- ============================================================================
--- This version uses IF NOT EXISTS to avoid errors if objects already exist
+-- This version uses IF NOT EXISTS and proper ordering to avoid all errors
 -- Safe to run multiple times without errors
 -- ============================================================================
 
 -- Enable UUID extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+-- ============================================================================
+-- STEP 1: CREATE ALL TABLES
+-- ============================================================================
 
 -- Create users table
 CREATE TABLE IF NOT EXISTS users (
@@ -20,10 +24,6 @@ CREATE TABLE IF NOT EXISTS users (
   updated_at TIMESTAMP DEFAULT NOW()
 );
 
--- Create indexes (with IF NOT EXISTS)
-CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
-CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);
-
 -- Create sessions table (for NextAuth)
 CREATE TABLE IF NOT EXISTS sessions (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -32,9 +32,6 @@ CREATE TABLE IF NOT EXISTS sessions (
   expires TIMESTAMP NOT NULL,
   created_at TIMESTAMP DEFAULT NOW()
 );
-
-CREATE INDEX IF NOT EXISTS idx_sessions_user_id ON sessions(user_id);
-CREATE INDEX IF NOT EXISTS idx_sessions_token ON sessions(session_token);
 
 -- Create restaurants table
 CREATE TABLE IF NOT EXISTS restaurants (
@@ -57,40 +54,6 @@ CREATE TABLE IF NOT EXISTS restaurants (
   updated_at TIMESTAMP DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_restaurants_city ON restaurants(city);
-CREATE INDEX IF NOT EXISTS idx_restaurants_owner ON restaurants(owner_id);
-
--- Add missing columns to restaurants table if they don't exist
-DO $$
-BEGIN
-  -- Add verified column
-  IF NOT EXISTS (SELECT 1 FROM information_schema.columns
-                 WHERE table_name='restaurants' AND column_name='verified') THEN
-    ALTER TABLE restaurants ADD COLUMN verified BOOLEAN DEFAULT FALSE;
-  END IF;
-
-  -- Add rating column
-  IF NOT EXISTS (SELECT 1 FROM information_schema.columns
-                 WHERE table_name='restaurants' AND column_name='rating') THEN
-    ALTER TABLE restaurants ADD COLUMN rating DECIMAL(3,2) DEFAULT 0.00;
-  END IF;
-
-  -- Add review_count column
-  IF NOT EXISTS (SELECT 1 FROM information_schema.columns
-                 WHERE table_name='restaurants' AND column_name='review_count') THEN
-    ALTER TABLE restaurants ADD COLUMN review_count INTEGER DEFAULT 0;
-  END IF;
-
-  -- Add gst_number column
-  IF NOT EXISTS (SELECT 1 FROM information_schema.columns
-                 WHERE table_name='restaurants' AND column_name='gst_number') THEN
-    ALTER TABLE restaurants ADD COLUMN gst_number VARCHAR(15);
-  END IF;
-END $$;
-
-CREATE INDEX IF NOT EXISTS idx_restaurants_verified ON restaurants(verified);
-CREATE INDEX IF NOT EXISTS idx_restaurants_gst ON restaurants(gst_number);
-
 -- Create tasting_notes table
 CREATE TABLE IF NOT EXISTS tasting_notes (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -106,10 +69,6 @@ CREATE TABLE IF NOT EXISTS tasting_notes (
   updated_at TIMESTAMP DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_notes_user ON tasting_notes(user_id);
-CREATE INDEX IF NOT EXISTS idx_notes_restaurant ON tasting_notes(restaurant_id);
-CREATE INDEX IF NOT EXISTS idx_notes_created ON tasting_notes(created_at DESC);
-
 -- Create comments table
 CREATE TABLE IF NOT EXISTS comments (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -121,10 +80,6 @@ CREATE TABLE IF NOT EXISTS comments (
   updated_at TIMESTAMP DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_comments_note ON comments(note_id);
-CREATE INDEX IF NOT EXISTS idx_comments_user ON comments(user_id);
-CREATE INDEX IF NOT EXISTS idx_comments_parent ON comments(parent_id);
-
 -- Create friendships table
 CREATE TABLE IF NOT EXISTS friendships (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -135,10 +90,6 @@ CREATE TABLE IF NOT EXISTS friendships (
   updated_at TIMESTAMP DEFAULT NOW(),
   UNIQUE(user_id, friend_id)
 );
-
-CREATE INDEX IF NOT EXISTS idx_friendships_user ON friendships(user_id);
-CREATE INDEX IF NOT EXISTS idx_friendships_friend ON friendships(friend_id);
-CREATE INDEX IF NOT EXISTS idx_friendships_status ON friendships(status);
 
 -- Create groups table
 CREATE TABLE IF NOT EXISTS groups (
@@ -152,8 +103,6 @@ CREATE TABLE IF NOT EXISTS groups (
   updated_at TIMESTAMP DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_groups_creator ON groups(creator_id);
-
 -- Create group_members table
 CREATE TABLE IF NOT EXISTS group_members (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -164,9 +113,6 @@ CREATE TABLE IF NOT EXISTS group_members (
   UNIQUE(group_id, user_id)
 );
 
-CREATE INDEX IF NOT EXISTS idx_group_members_group ON group_members(group_id);
-CREATE INDEX IF NOT EXISTS idx_group_members_user ON group_members(user_id);
-
 -- Create messages table
 CREATE TABLE IF NOT EXISTS messages (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -176,9 +122,6 @@ CREATE TABLE IF NOT EXISTS messages (
   created_at TIMESTAMP DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_messages_group ON messages(group_id);
-CREATE INDEX IF NOT EXISTS idx_messages_created ON messages(created_at DESC);
-
 -- Create bookmarks table
 CREATE TABLE IF NOT EXISTS bookmarks (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -187,9 +130,6 @@ CREATE TABLE IF NOT EXISTS bookmarks (
   created_at TIMESTAMP DEFAULT NOW(),
   UNIQUE(user_id, note_id)
 );
-
-CREATE INDEX IF NOT EXISTS idx_bookmarks_user ON bookmarks(user_id);
-CREATE INDEX IF NOT EXISTS idx_bookmarks_note ON bookmarks(note_id);
 
 -- Create notifications table
 CREATE TABLE IF NOT EXISTS notifications (
@@ -203,11 +143,6 @@ CREATE TABLE IF NOT EXISTS notifications (
   actor_id UUID REFERENCES users(id) ON DELETE SET NULL,
   created_at TIMESTAMP DEFAULT NOW()
 );
-
-CREATE INDEX IF NOT EXISTS idx_notifications_user ON notifications(user_id);
-CREATE INDEX IF NOT EXISTS idx_notifications_read ON notifications(read);
-CREATE INDEX IF NOT EXISTS idx_notifications_created ON notifications(created_at DESC);
-CREATE INDEX IF NOT EXISTS idx_notifications_type ON notifications(type);
 
 -- Create dishes table
 CREATE TABLE IF NOT EXISTS dishes (
@@ -231,11 +166,6 @@ CREATE TABLE IF NOT EXISTS dishes (
   updated_at TIMESTAMP DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_dishes_restaurant ON dishes(restaurant_id);
-CREATE INDEX IF NOT EXISTS idx_dishes_category ON dishes(category);
-CREATE INDEX IF NOT EXISTS idx_dishes_available ON dishes(is_available);
-CREATE INDEX IF NOT EXISTS idx_dishes_vegetarian ON dishes(is_vegetarian);
-
 -- Create dish_feedback table
 CREATE TABLE IF NOT EXISTS dish_feedback (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -249,12 +179,79 @@ CREATE TABLE IF NOT EXISTS dish_feedback (
   UNIQUE(dish_id, user_id)
 );
 
+-- ============================================================================
+-- STEP 2: ADD MISSING COLUMNS TO EXISTING TABLES
+-- ============================================================================
+
+-- Add missing columns to restaurants table if they don't exist
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns
+                 WHERE table_name='restaurants' AND column_name='verified') THEN
+    ALTER TABLE restaurants ADD COLUMN verified BOOLEAN DEFAULT FALSE;
+  END IF;
+
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns
+                 WHERE table_name='restaurants' AND column_name='rating') THEN
+    ALTER TABLE restaurants ADD COLUMN rating DECIMAL(3,2) DEFAULT 0.00;
+  END IF;
+
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns
+                 WHERE table_name='restaurants' AND column_name='review_count') THEN
+    ALTER TABLE restaurants ADD COLUMN review_count INTEGER DEFAULT 0;
+  END IF;
+
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns
+                 WHERE table_name='restaurants' AND column_name='gst_number') THEN
+    ALTER TABLE restaurants ADD COLUMN gst_number VARCHAR(15);
+  END IF;
+END $$;
+
+-- ============================================================================
+-- STEP 3: CREATE INDEXES
+-- ============================================================================
+
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);
+CREATE INDEX IF NOT EXISTS idx_sessions_user_id ON sessions(user_id);
+CREATE INDEX IF NOT EXISTS idx_sessions_token ON sessions(session_token);
+CREATE INDEX IF NOT EXISTS idx_restaurants_city ON restaurants(city);
+CREATE INDEX IF NOT EXISTS idx_restaurants_owner ON restaurants(owner_id);
+CREATE INDEX IF NOT EXISTS idx_restaurants_verified ON restaurants(verified);
+CREATE INDEX IF NOT EXISTS idx_restaurants_gst ON restaurants(gst_number);
+CREATE INDEX IF NOT EXISTS idx_notes_user ON tasting_notes(user_id);
+CREATE INDEX IF NOT EXISTS idx_notes_restaurant ON tasting_notes(restaurant_id);
+CREATE INDEX IF NOT EXISTS idx_notes_created ON tasting_notes(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_comments_note ON comments(note_id);
+CREATE INDEX IF NOT EXISTS idx_comments_user ON comments(user_id);
+CREATE INDEX IF NOT EXISTS idx_comments_parent ON comments(parent_id);
+CREATE INDEX IF NOT EXISTS idx_friendships_user ON friendships(user_id);
+CREATE INDEX IF NOT EXISTS idx_friendships_friend ON friendships(friend_id);
+CREATE INDEX IF NOT EXISTS idx_friendships_status ON friendships(status);
+CREATE INDEX IF NOT EXISTS idx_groups_creator ON groups(creator_id);
+CREATE INDEX IF NOT EXISTS idx_group_members_group ON group_members(group_id);
+CREATE INDEX IF NOT EXISTS idx_group_members_user ON group_members(user_id);
+CREATE INDEX IF NOT EXISTS idx_messages_group ON messages(group_id);
+CREATE INDEX IF NOT EXISTS idx_messages_created ON messages(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_bookmarks_user ON bookmarks(user_id);
+CREATE INDEX IF NOT EXISTS idx_bookmarks_note ON bookmarks(note_id);
+CREATE INDEX IF NOT EXISTS idx_notifications_user ON notifications(user_id);
+CREATE INDEX IF NOT EXISTS idx_notifications_read ON notifications(read);
+CREATE INDEX IF NOT EXISTS idx_notifications_created ON notifications(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_notifications_type ON notifications(type);
+CREATE INDEX IF NOT EXISTS idx_dishes_restaurant ON dishes(restaurant_id);
+CREATE INDEX IF NOT EXISTS idx_dishes_category ON dishes(category);
+CREATE INDEX IF NOT EXISTS idx_dishes_available ON dishes(is_available);
+CREATE INDEX IF NOT EXISTS idx_dishes_vegetarian ON dishes(is_vegetarian);
 CREATE INDEX IF NOT EXISTS idx_dish_feedback_dish ON dish_feedback(dish_id);
 CREATE INDEX IF NOT EXISTS idx_dish_feedback_user ON dish_feedback(user_id);
 CREATE INDEX IF NOT EXISTS idx_dish_feedback_rating ON dish_feedback(rating);
 CREATE INDEX IF NOT EXISTS idx_dish_feedback_created ON dish_feedback(created_at DESC);
 
--- Enable Row Level Security (safe to run multiple times)
+-- ============================================================================
+-- STEP 4: ENABLE ROW LEVEL SECURITY
+-- ============================================================================
+
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE sessions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE restaurants ENABLE ROW LEVEL SECURITY;
@@ -269,7 +266,10 @@ ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
 ALTER TABLE dishes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE dish_feedback ENABLE ROW LEVEL SECURITY;
 
--- Drop existing policies if they exist (to avoid conflicts)
+-- ============================================================================
+-- STEP 5: DROP EXISTING POLICIES (CLEAN SLATE)
+-- ============================================================================
+
 DROP POLICY IF EXISTS "Users are viewable by everyone" ON users;
 DROP POLICY IF EXISTS "Users can update own profile" ON users;
 DROP POLICY IF EXISTS "Users can manage own sessions" ON sessions;
@@ -312,76 +312,139 @@ DROP POLICY IF EXISTS "Users can create dish feedback" ON dish_feedback;
 DROP POLICY IF EXISTS "Users can update own feedback" ON dish_feedback;
 DROP POLICY IF EXISTS "Users can delete own feedback" ON dish_feedback;
 
--- Create RLS Policies
-CREATE POLICY "Users are viewable by everyone" ON users FOR SELECT USING (true);
-CREATE POLICY "Users can update own profile" ON users FOR UPDATE USING (auth.uid() = id);
-CREATE POLICY "Users can manage own sessions" ON sessions FOR ALL USING (auth.uid() = user_id);
-CREATE POLICY "Restaurants are viewable by everyone" ON restaurants FOR SELECT USING (true);
-CREATE POLICY "Business users can create restaurants" ON restaurants FOR INSERT WITH CHECK (auth.uid() = owner_id);
-CREATE POLICY "Business users can update own restaurants" ON restaurants FOR UPDATE USING (auth.uid() = owner_id);
-CREATE POLICY "Public notes are viewable by everyone" ON tasting_notes FOR SELECT USING (is_public = true OR auth.uid() = user_id);
-CREATE POLICY "Users can create notes" ON tasting_notes FOR INSERT WITH CHECK (auth.uid() = user_id);
-CREATE POLICY "Users can update own notes" ON tasting_notes FOR UPDATE USING (auth.uid() = user_id);
-CREATE POLICY "Users can delete own notes" ON tasting_notes FOR DELETE USING (auth.uid() = user_id);
-CREATE POLICY "Comments are viewable by everyone" ON comments FOR SELECT USING (true);
-CREATE POLICY "Users can create comments" ON comments FOR INSERT WITH CHECK (auth.uid() = user_id);
-CREATE POLICY "Users can update own comments" ON comments FOR UPDATE USING (auth.uid() = user_id);
-CREATE POLICY "Users can delete own comments" ON comments FOR DELETE USING (auth.uid() = user_id);
-CREATE POLICY "Users can view own friendships" ON friendships FOR SELECT USING (auth.uid() = user_id OR auth.uid() = friend_id);
-CREATE POLICY "Users can create friend requests" ON friendships FOR INSERT WITH CHECK (auth.uid() = user_id);
-CREATE POLICY "Users can update received friend requests" ON friendships FOR UPDATE USING (auth.uid() = friend_id);
-CREATE POLICY "Users can delete own friendships" ON friendships FOR DELETE USING (auth.uid() = user_id OR auth.uid() = friend_id);
-CREATE POLICY "Groups are viewable by members" ON groups FOR SELECT USING (
-  is_private = false OR
-  EXISTS (SELECT 1 FROM group_members WHERE group_members.group_id = groups.id AND group_members.user_id = auth.uid())
-);
-CREATE POLICY "Users can create groups" ON groups FOR INSERT WITH CHECK (auth.uid() = creator_id);
-CREATE POLICY "Group creators/admins can update groups" ON groups FOR UPDATE USING (
-  auth.uid() = creator_id OR
-  EXISTS (SELECT 1 FROM group_members WHERE group_members.group_id = groups.id AND group_members.user_id = auth.uid() AND group_members.role = 'admin')
-);
-CREATE POLICY "Group members are viewable by members" ON group_members FOR SELECT USING (
-  EXISTS (SELECT 1 FROM group_members gm WHERE gm.group_id = group_members.group_id AND gm.user_id = auth.uid())
-);
-CREATE POLICY "Group admins can add members" ON group_members FOR INSERT WITH CHECK (
-  EXISTS (SELECT 1 FROM group_members WHERE group_id = group_members.group_id AND user_id = auth.uid() AND role = 'admin')
-  OR EXISTS (SELECT 1 FROM groups WHERE id = group_members.group_id AND creator_id = auth.uid())
-);
-CREATE POLICY "Group admins can remove members" ON group_members FOR DELETE USING (
-  EXISTS (SELECT 1 FROM group_members gm WHERE gm.group_id = group_members.group_id AND gm.user_id = auth.uid() AND gm.role = 'admin')
-  OR EXISTS (SELECT 1 FROM groups WHERE id = group_members.group_id AND creator_id = auth.uid())
-  OR auth.uid() = user_id
-);
-CREATE POLICY "Group members can view messages" ON messages FOR SELECT USING (
-  EXISTS (SELECT 1 FROM group_members WHERE group_members.group_id = messages.group_id AND group_members.user_id = auth.uid())
-);
-CREATE POLICY "Group members can send messages" ON messages FOR INSERT WITH CHECK (
-  auth.uid() = user_id AND
-  EXISTS (SELECT 1 FROM group_members WHERE group_members.group_id = messages.group_id AND group_members.user_id = auth.uid())
-);
-CREATE POLICY "Users can view own bookmarks" ON bookmarks FOR SELECT USING (auth.uid() = user_id);
-CREATE POLICY "Users can create bookmarks" ON bookmarks FOR INSERT WITH CHECK (auth.uid() = user_id);
-CREATE POLICY "Users can delete own bookmarks" ON bookmarks FOR DELETE USING (auth.uid() = user_id);
-CREATE POLICY "Users can view own notifications" ON notifications FOR SELECT USING (auth.uid() = user_id);
-CREATE POLICY "Users can update own notifications" ON notifications FOR UPDATE USING (auth.uid() = user_id);
-CREATE POLICY "Users can delete own notifications" ON notifications FOR DELETE USING (auth.uid() = user_id);
-CREATE POLICY "System can create notifications" ON notifications FOR INSERT WITH CHECK (true);
-CREATE POLICY "Dishes are viewable by everyone" ON dishes FOR SELECT USING (true);
-CREATE POLICY "Restaurant owners can create dishes" ON dishes FOR INSERT WITH CHECK (
-  EXISTS (SELECT 1 FROM restaurants WHERE restaurants.id = dishes.restaurant_id AND restaurants.owner_id = auth.uid())
-);
-CREATE POLICY "Restaurant owners can update own dishes" ON dishes FOR UPDATE USING (
-  EXISTS (SELECT 1 FROM restaurants WHERE restaurants.id = dishes.restaurant_id AND restaurants.owner_id = auth.uid())
-);
-CREATE POLICY "Restaurant owners can delete own dishes" ON dishes FOR DELETE USING (
-  EXISTS (SELECT 1 FROM restaurants WHERE restaurants.id = dishes.restaurant_id AND restaurants.owner_id = auth.uid())
-);
-CREATE POLICY "Dish feedback is viewable by everyone" ON dish_feedback FOR SELECT USING (true);
-CREATE POLICY "Users can create dish feedback" ON dish_feedback FOR INSERT WITH CHECK (auth.uid() = user_id);
-CREATE POLICY "Users can update own feedback" ON dish_feedback FOR UPDATE USING (auth.uid() = user_id);
-CREATE POLICY "Users can delete own feedback" ON dish_feedback FOR DELETE USING (auth.uid() = user_id);
+-- ============================================================================
+-- STEP 6: CREATE RLS POLICIES (ONLY IF TABLES EXIST)
+-- ============================================================================
 
--- Create or replace functions and triggers
+DO $$
+BEGIN
+  -- Policies for users table
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'users') THEN
+    CREATE POLICY "Users are viewable by everyone" ON users FOR SELECT USING (true);
+    CREATE POLICY "Users can update own profile" ON users FOR UPDATE USING (auth.uid() = id);
+  END IF;
+
+  -- Policies for sessions table
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'sessions') AND
+     EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'sessions' AND column_name = 'user_id') THEN
+    CREATE POLICY "Users can manage own sessions" ON sessions FOR ALL USING (auth.uid() = user_id);
+  END IF;
+
+  -- Policies for restaurants table
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'restaurants') THEN
+    CREATE POLICY "Restaurants are viewable by everyone" ON restaurants FOR SELECT USING (true);
+    CREATE POLICY "Business users can create restaurants" ON restaurants FOR INSERT WITH CHECK (auth.uid() = owner_id);
+    CREATE POLICY "Business users can update own restaurants" ON restaurants FOR UPDATE USING (auth.uid() = owner_id);
+  END IF;
+
+  -- Policies for tasting_notes table
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'tasting_notes') THEN
+    CREATE POLICY "Public notes are viewable by everyone" ON tasting_notes FOR SELECT USING (is_public = true OR auth.uid() = user_id);
+    CREATE POLICY "Users can create notes" ON tasting_notes FOR INSERT WITH CHECK (auth.uid() = user_id);
+    CREATE POLICY "Users can update own notes" ON tasting_notes FOR UPDATE USING (auth.uid() = user_id);
+    CREATE POLICY "Users can delete own notes" ON tasting_notes FOR DELETE USING (auth.uid() = user_id);
+  END IF;
+
+  -- Policies for comments table
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'comments') THEN
+    CREATE POLICY "Comments are viewable by everyone" ON comments FOR SELECT USING (true);
+    CREATE POLICY "Users can create comments" ON comments FOR INSERT WITH CHECK (auth.uid() = user_id);
+    CREATE POLICY "Users can update own comments" ON comments FOR UPDATE USING (auth.uid() = user_id);
+    CREATE POLICY "Users can delete own comments" ON comments FOR DELETE USING (auth.uid() = user_id);
+  END IF;
+
+  -- Policies for friendships table
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'friendships') THEN
+    CREATE POLICY "Users can view own friendships" ON friendships FOR SELECT USING (auth.uid() = user_id OR auth.uid() = friend_id);
+    CREATE POLICY "Users can create friend requests" ON friendships FOR INSERT WITH CHECK (auth.uid() = user_id);
+    CREATE POLICY "Users can update received friend requests" ON friendships FOR UPDATE USING (auth.uid() = friend_id);
+    CREATE POLICY "Users can delete own friendships" ON friendships FOR DELETE USING (auth.uid() = user_id OR auth.uid() = friend_id);
+  END IF;
+
+  -- Policies for groups table
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'groups') THEN
+    CREATE POLICY "Groups are viewable by members" ON groups FOR SELECT USING (
+      is_private = false OR
+      EXISTS (SELECT 1 FROM group_members WHERE group_members.group_id = groups.id AND group_members.user_id = auth.uid())
+    );
+    CREATE POLICY "Users can create groups" ON groups FOR INSERT WITH CHECK (auth.uid() = creator_id);
+    CREATE POLICY "Group creators/admins can update groups" ON groups FOR UPDATE USING (
+      auth.uid() = creator_id OR
+      EXISTS (SELECT 1 FROM group_members WHERE group_members.group_id = groups.id AND group_members.user_id = auth.uid() AND group_members.role = 'admin')
+    );
+  END IF;
+
+  -- Policies for group_members table
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'group_members') THEN
+    CREATE POLICY "Group members are viewable by members" ON group_members FOR SELECT USING (
+      EXISTS (SELECT 1 FROM group_members gm WHERE gm.group_id = group_members.group_id AND gm.user_id = auth.uid())
+    );
+    CREATE POLICY "Group admins can add members" ON group_members FOR INSERT WITH CHECK (
+      EXISTS (SELECT 1 FROM group_members WHERE group_id = group_members.group_id AND user_id = auth.uid() AND role = 'admin')
+      OR EXISTS (SELECT 1 FROM groups WHERE id = group_members.group_id AND creator_id = auth.uid())
+    );
+    CREATE POLICY "Group admins can remove members" ON group_members FOR DELETE USING (
+      EXISTS (SELECT 1 FROM group_members gm WHERE gm.group_id = group_members.group_id AND gm.user_id = auth.uid() AND gm.role = 'admin')
+      OR EXISTS (SELECT 1 FROM groups WHERE id = group_members.group_id AND creator_id = auth.uid())
+      OR auth.uid() = user_id
+    );
+  END IF;
+
+  -- Policies for messages table
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'messages') THEN
+    CREATE POLICY "Group members can view messages" ON messages FOR SELECT USING (
+      EXISTS (SELECT 1 FROM group_members WHERE group_members.group_id = messages.group_id AND group_members.user_id = auth.uid())
+    );
+    CREATE POLICY "Group members can send messages" ON messages FOR INSERT WITH CHECK (
+      auth.uid() = user_id AND
+      EXISTS (SELECT 1 FROM group_members WHERE group_members.group_id = messages.group_id AND group_members.user_id = auth.uid())
+    );
+  END IF;
+
+  -- Policies for bookmarks table
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'bookmarks') THEN
+    CREATE POLICY "Users can view own bookmarks" ON bookmarks FOR SELECT USING (auth.uid() = user_id);
+    CREATE POLICY "Users can create bookmarks" ON bookmarks FOR INSERT WITH CHECK (auth.uid() = user_id);
+    CREATE POLICY "Users can delete own bookmarks" ON bookmarks FOR DELETE USING (auth.uid() = user_id);
+  END IF;
+
+  -- Policies for notifications table
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'notifications') THEN
+    CREATE POLICY "Users can view own notifications" ON notifications FOR SELECT USING (auth.uid() = user_id);
+    CREATE POLICY "Users can update own notifications" ON notifications FOR UPDATE USING (auth.uid() = user_id);
+    CREATE POLICY "Users can delete own notifications" ON notifications FOR DELETE USING (auth.uid() = user_id);
+    CREATE POLICY "System can create notifications" ON notifications FOR INSERT WITH CHECK (true);
+  END IF;
+
+  -- Policies for dishes table
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'dishes') THEN
+    CREATE POLICY "Dishes are viewable by everyone" ON dishes FOR SELECT USING (true);
+    CREATE POLICY "Restaurant owners can create dishes" ON dishes FOR INSERT WITH CHECK (
+      EXISTS (SELECT 1 FROM restaurants WHERE restaurants.id = dishes.restaurant_id AND restaurants.owner_id = auth.uid())
+    );
+    CREATE POLICY "Restaurant owners can update own dishes" ON dishes FOR UPDATE USING (
+      EXISTS (SELECT 1 FROM restaurants WHERE restaurants.id = dishes.restaurant_id AND restaurants.owner_id = auth.uid())
+    );
+    CREATE POLICY "Restaurant owners can delete own dishes" ON dishes FOR DELETE USING (
+      EXISTS (SELECT 1 FROM restaurants WHERE restaurants.id = dishes.restaurant_id AND restaurants.owner_id = auth.uid())
+    );
+  END IF;
+
+  -- Policies for dish_feedback table
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'dish_feedback') THEN
+    CREATE POLICY "Dish feedback is viewable by everyone" ON dish_feedback FOR SELECT USING (true);
+    CREATE POLICY "Users can create dish feedback" ON dish_feedback FOR INSERT WITH CHECK (auth.uid() = user_id);
+    CREATE POLICY "Users can update own feedback" ON dish_feedback FOR UPDATE USING (auth.uid() = user_id);
+    CREATE POLICY "Users can delete own feedback" ON dish_feedback FOR DELETE USING (auth.uid() = user_id);
+  END IF;
+
+END $$;
+
+-- ============================================================================
+-- STEP 7: CREATE FUNCTIONS AND TRIGGERS
+-- ============================================================================
+
+-- Create updated_at trigger function
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -535,6 +598,7 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- MIGRATION COMPLETE!
 -- ============================================================================
 -- ✅ All 13 tables created successfully
+-- ✅ All missing columns added
 -- ✅ All indexes created
 -- ✅ Row Level Security enabled
 -- ✅ All policies configured
