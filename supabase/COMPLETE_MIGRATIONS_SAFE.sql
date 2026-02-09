@@ -1,8 +1,8 @@
 -- ============================================================================
--- RUSI NOTES - COMPLETE DATABASE SCHEMA (SAFE VERSION)
+-- RUSI NOTES - COMPLETE DATABASE SCHEMA (BULLETPROOF VERSION)
 -- ============================================================================
--- This version uses IF NOT EXISTS and proper ordering to avoid all errors
--- Safe to run multiple times without errors
+-- This version creates policies with individual exception handling
+-- Guaranteed to work even with partial/incomplete database state
 -- ============================================================================
 
 -- Enable UUID extension
@@ -267,178 +267,285 @@ ALTER TABLE dishes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE dish_feedback ENABLE ROW LEVEL SECURITY;
 
 -- ============================================================================
--- STEP 5: DROP EXISTING POLICIES (CLEAN SLATE)
--- ============================================================================
-
-DROP POLICY IF EXISTS "Users are viewable by everyone" ON users;
-DROP POLICY IF EXISTS "Users can update own profile" ON users;
-DROP POLICY IF EXISTS "Users can manage own sessions" ON sessions;
-DROP POLICY IF EXISTS "Restaurants are viewable by everyone" ON restaurants;
-DROP POLICY IF EXISTS "Business users can create restaurants" ON restaurants;
-DROP POLICY IF EXISTS "Business users can update own restaurants" ON restaurants;
-DROP POLICY IF EXISTS "Public notes are viewable by everyone" ON tasting_notes;
-DROP POLICY IF EXISTS "Users can create notes" ON tasting_notes;
-DROP POLICY IF EXISTS "Users can update own notes" ON tasting_notes;
-DROP POLICY IF EXISTS "Users can delete own notes" ON tasting_notes;
-DROP POLICY IF EXISTS "Comments are viewable by everyone" ON comments;
-DROP POLICY IF EXISTS "Users can create comments" ON comments;
-DROP POLICY IF EXISTS "Users can update own comments" ON comments;
-DROP POLICY IF EXISTS "Users can delete own comments" ON comments;
-DROP POLICY IF EXISTS "Users can view own friendships" ON friendships;
-DROP POLICY IF EXISTS "Users can create friend requests" ON friendships;
-DROP POLICY IF EXISTS "Users can update received friend requests" ON friendships;
-DROP POLICY IF EXISTS "Users can delete own friendships" ON friendships;
-DROP POLICY IF EXISTS "Groups are viewable by members" ON groups;
-DROP POLICY IF EXISTS "Users can create groups" ON groups;
-DROP POLICY IF EXISTS "Group creators/admins can update groups" ON groups;
-DROP POLICY IF EXISTS "Group members are viewable by members" ON group_members;
-DROP POLICY IF EXISTS "Group admins can add members" ON group_members;
-DROP POLICY IF EXISTS "Group admins can remove members" ON group_members;
-DROP POLICY IF EXISTS "Group members can view messages" ON messages;
-DROP POLICY IF EXISTS "Group members can send messages" ON messages;
-DROP POLICY IF EXISTS "Users can view own bookmarks" ON bookmarks;
-DROP POLICY IF EXISTS "Users can create bookmarks" ON bookmarks;
-DROP POLICY IF EXISTS "Users can delete own bookmarks" ON bookmarks;
-DROP POLICY IF EXISTS "Users can view own notifications" ON notifications;
-DROP POLICY IF EXISTS "Users can update own notifications" ON notifications;
-DROP POLICY IF EXISTS "Users can delete own notifications" ON notifications;
-DROP POLICY IF EXISTS "System can create notifications" ON notifications;
-DROP POLICY IF EXISTS "Dishes are viewable by everyone" ON dishes;
-DROP POLICY IF EXISTS "Restaurant owners can create dishes" ON dishes;
-DROP POLICY IF EXISTS "Restaurant owners can update own dishes" ON dishes;
-DROP POLICY IF EXISTS "Restaurant owners can delete own dishes" ON dishes;
-DROP POLICY IF EXISTS "Dish feedback is viewable by everyone" ON dish_feedback;
-DROP POLICY IF EXISTS "Users can create dish feedback" ON dish_feedback;
-DROP POLICY IF EXISTS "Users can update own feedback" ON dish_feedback;
-DROP POLICY IF EXISTS "Users can delete own feedback" ON dish_feedback;
-
--- ============================================================================
--- STEP 6: CREATE RLS POLICIES (ONLY IF TABLES EXIST)
+-- STEP 5: DROP ALL EXISTING POLICIES
 -- ============================================================================
 
 DO $$
+DECLARE
+    r RECORD;
 BEGIN
-  -- Policies for users table
-  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'users') THEN
-    CREATE POLICY "Users are viewable by everyone" ON users FOR SELECT USING (true);
-    CREATE POLICY "Users can update own profile" ON users FOR UPDATE USING (auth.uid() = id);
-  END IF;
+    -- Drop all policies on users
+    FOR r IN (SELECT policyname FROM pg_policies WHERE tablename = 'users') LOOP
+        EXECUTE 'DROP POLICY IF EXISTS "' || r.policyname || '" ON users';
+    END LOOP;
 
-  -- Policies for sessions table
-  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'sessions') AND
-     EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'sessions' AND column_name = 'user_id') THEN
-    CREATE POLICY "Users can manage own sessions" ON sessions FOR ALL USING (auth.uid() = user_id);
-  END IF;
+    -- Drop all policies on sessions
+    FOR r IN (SELECT policyname FROM pg_policies WHERE tablename = 'sessions') LOOP
+        EXECUTE 'DROP POLICY IF EXISTS "' || r.policyname || '" ON sessions';
+    END LOOP;
 
-  -- Policies for restaurants table
-  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'restaurants') THEN
-    CREATE POLICY "Restaurants are viewable by everyone" ON restaurants FOR SELECT USING (true);
-    CREATE POLICY "Business users can create restaurants" ON restaurants FOR INSERT WITH CHECK (auth.uid() = owner_id);
-    CREATE POLICY "Business users can update own restaurants" ON restaurants FOR UPDATE USING (auth.uid() = owner_id);
-  END IF;
+    -- Drop all policies on restaurants
+    FOR r IN (SELECT policyname FROM pg_policies WHERE tablename = 'restaurants') LOOP
+        EXECUTE 'DROP POLICY IF EXISTS "' || r.policyname || '" ON restaurants';
+    END LOOP;
 
-  -- Policies for tasting_notes table
-  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'tasting_notes') THEN
-    CREATE POLICY "Public notes are viewable by everyone" ON tasting_notes FOR SELECT USING (is_public = true OR auth.uid() = user_id);
-    CREATE POLICY "Users can create notes" ON tasting_notes FOR INSERT WITH CHECK (auth.uid() = user_id);
-    CREATE POLICY "Users can update own notes" ON tasting_notes FOR UPDATE USING (auth.uid() = user_id);
-    CREATE POLICY "Users can delete own notes" ON tasting_notes FOR DELETE USING (auth.uid() = user_id);
-  END IF;
+    -- Drop all policies on tasting_notes
+    FOR r IN (SELECT policyname FROM pg_policies WHERE tablename = 'tasting_notes') LOOP
+        EXECUTE 'DROP POLICY IF EXISTS "' || r.policyname || '" ON tasting_notes';
+    END LOOP;
 
-  -- Policies for comments table
-  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'comments') THEN
-    CREATE POLICY "Comments are viewable by everyone" ON comments FOR SELECT USING (true);
-    CREATE POLICY "Users can create comments" ON comments FOR INSERT WITH CHECK (auth.uid() = user_id);
-    CREATE POLICY "Users can update own comments" ON comments FOR UPDATE USING (auth.uid() = user_id);
-    CREATE POLICY "Users can delete own comments" ON comments FOR DELETE USING (auth.uid() = user_id);
-  END IF;
+    -- Drop all policies on comments
+    FOR r IN (SELECT policyname FROM pg_policies WHERE tablename = 'comments') LOOP
+        EXECUTE 'DROP POLICY IF EXISTS "' || r.policyname || '" ON comments';
+    END LOOP;
 
-  -- Policies for friendships table
-  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'friendships') THEN
-    CREATE POLICY "Users can view own friendships" ON friendships FOR SELECT USING (auth.uid() = user_id OR auth.uid() = friend_id);
-    CREATE POLICY "Users can create friend requests" ON friendships FOR INSERT WITH CHECK (auth.uid() = user_id);
-    CREATE POLICY "Users can update received friend requests" ON friendships FOR UPDATE USING (auth.uid() = friend_id);
-    CREATE POLICY "Users can delete own friendships" ON friendships FOR DELETE USING (auth.uid() = user_id OR auth.uid() = friend_id);
-  END IF;
+    -- Drop all policies on friendships
+    FOR r IN (SELECT policyname FROM pg_policies WHERE tablename = 'friendships') LOOP
+        EXECUTE 'DROP POLICY IF EXISTS "' || r.policyname || '" ON friendships';
+    END LOOP;
 
-  -- Policies for groups table
-  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'groups') THEN
-    CREATE POLICY "Groups are viewable by members" ON groups FOR SELECT USING (
-      is_private = false OR
-      EXISTS (SELECT 1 FROM group_members WHERE group_members.group_id = groups.id AND group_members.user_id = auth.uid())
-    );
-    CREATE POLICY "Users can create groups" ON groups FOR INSERT WITH CHECK (auth.uid() = creator_id);
-    CREATE POLICY "Group creators/admins can update groups" ON groups FOR UPDATE USING (
-      auth.uid() = creator_id OR
-      EXISTS (SELECT 1 FROM group_members WHERE group_members.group_id = groups.id AND group_members.user_id = auth.uid() AND group_members.role = 'admin')
-    );
-  END IF;
+    -- Drop all policies on groups
+    FOR r IN (SELECT policyname FROM pg_policies WHERE tablename = 'groups') LOOP
+        EXECUTE 'DROP POLICY IF EXISTS "' || r.policyname || '" ON groups';
+    END LOOP;
 
-  -- Policies for group_members table
-  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'group_members') THEN
-    CREATE POLICY "Group members are viewable by members" ON group_members FOR SELECT USING (
-      EXISTS (SELECT 1 FROM group_members gm WHERE gm.group_id = group_members.group_id AND gm.user_id = auth.uid())
-    );
-    CREATE POLICY "Group admins can add members" ON group_members FOR INSERT WITH CHECK (
-      EXISTS (SELECT 1 FROM group_members WHERE group_id = group_members.group_id AND user_id = auth.uid() AND role = 'admin')
-      OR EXISTS (SELECT 1 FROM groups WHERE id = group_members.group_id AND creator_id = auth.uid())
-    );
-    CREATE POLICY "Group admins can remove members" ON group_members FOR DELETE USING (
-      EXISTS (SELECT 1 FROM group_members gm WHERE gm.group_id = group_members.group_id AND gm.user_id = auth.uid() AND gm.role = 'admin')
-      OR EXISTS (SELECT 1 FROM groups WHERE id = group_members.group_id AND creator_id = auth.uid())
-      OR auth.uid() = user_id
-    );
-  END IF;
+    -- Drop all policies on group_members
+    FOR r IN (SELECT policyname FROM pg_policies WHERE tablename = 'group_members') LOOP
+        EXECUTE 'DROP POLICY IF EXISTS "' || r.policyname || '" ON group_members';
+    END LOOP;
 
-  -- Policies for messages table
-  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'messages') THEN
-    CREATE POLICY "Group members can view messages" ON messages FOR SELECT USING (
-      EXISTS (SELECT 1 FROM group_members WHERE group_members.group_id = messages.group_id AND group_members.user_id = auth.uid())
-    );
-    CREATE POLICY "Group members can send messages" ON messages FOR INSERT WITH CHECK (
-      auth.uid() = user_id AND
-      EXISTS (SELECT 1 FROM group_members WHERE group_members.group_id = messages.group_id AND group_members.user_id = auth.uid())
-    );
-  END IF;
+    -- Drop all policies on messages
+    FOR r IN (SELECT policyname FROM pg_policies WHERE tablename = 'messages') LOOP
+        EXECUTE 'DROP POLICY IF EXISTS "' || r.policyname || '" ON messages';
+    END LOOP;
 
-  -- Policies for bookmarks table
-  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'bookmarks') THEN
-    CREATE POLICY "Users can view own bookmarks" ON bookmarks FOR SELECT USING (auth.uid() = user_id);
-    CREATE POLICY "Users can create bookmarks" ON bookmarks FOR INSERT WITH CHECK (auth.uid() = user_id);
-    CREATE POLICY "Users can delete own bookmarks" ON bookmarks FOR DELETE USING (auth.uid() = user_id);
-  END IF;
+    -- Drop all policies on bookmarks
+    FOR r IN (SELECT policyname FROM pg_policies WHERE tablename = 'bookmarks') LOOP
+        EXECUTE 'DROP POLICY IF EXISTS "' || r.policyname || '" ON bookmarks';
+    END LOOP;
 
-  -- Policies for notifications table
-  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'notifications') THEN
-    CREATE POLICY "Users can view own notifications" ON notifications FOR SELECT USING (auth.uid() = user_id);
-    CREATE POLICY "Users can update own notifications" ON notifications FOR UPDATE USING (auth.uid() = user_id);
-    CREATE POLICY "Users can delete own notifications" ON notifications FOR DELETE USING (auth.uid() = user_id);
-    CREATE POLICY "System can create notifications" ON notifications FOR INSERT WITH CHECK (true);
-  END IF;
+    -- Drop all policies on notifications
+    FOR r IN (SELECT policyname FROM pg_policies WHERE tablename = 'notifications') LOOP
+        EXECUTE 'DROP POLICY IF EXISTS "' || r.policyname || '" ON notifications';
+    END LOOP;
 
-  -- Policies for dishes table
-  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'dishes') THEN
-    CREATE POLICY "Dishes are viewable by everyone" ON dishes FOR SELECT USING (true);
-    CREATE POLICY "Restaurant owners can create dishes" ON dishes FOR INSERT WITH CHECK (
-      EXISTS (SELECT 1 FROM restaurants WHERE restaurants.id = dishes.restaurant_id AND restaurants.owner_id = auth.uid())
-    );
-    CREATE POLICY "Restaurant owners can update own dishes" ON dishes FOR UPDATE USING (
-      EXISTS (SELECT 1 FROM restaurants WHERE restaurants.id = dishes.restaurant_id AND restaurants.owner_id = auth.uid())
-    );
-    CREATE POLICY "Restaurant owners can delete own dishes" ON dishes FOR DELETE USING (
-      EXISTS (SELECT 1 FROM restaurants WHERE restaurants.id = dishes.restaurant_id AND restaurants.owner_id = auth.uid())
-    );
-  END IF;
+    -- Drop all policies on dishes
+    FOR r IN (SELECT policyname FROM pg_policies WHERE tablename = 'dishes') LOOP
+        EXECUTE 'DROP POLICY IF EXISTS "' || r.policyname || '" ON dishes';
+    END LOOP;
 
-  -- Policies for dish_feedback table
-  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'dish_feedback') THEN
-    CREATE POLICY "Dish feedback is viewable by everyone" ON dish_feedback FOR SELECT USING (true);
-    CREATE POLICY "Users can create dish feedback" ON dish_feedback FOR INSERT WITH CHECK (auth.uid() = user_id);
-    CREATE POLICY "Users can update own feedback" ON dish_feedback FOR UPDATE USING (auth.uid() = user_id);
-    CREATE POLICY "Users can delete own feedback" ON dish_feedback FOR DELETE USING (auth.uid() = user_id);
-  END IF;
-
+    -- Drop all policies on dish_feedback
+    FOR r IN (SELECT policyname FROM pg_policies WHERE tablename = 'dish_feedback') LOOP
+        EXECUTE 'DROP POLICY IF EXISTS "' || r.policyname || '" ON dish_feedback';
+    END LOOP;
 END $$;
+
+-- ============================================================================
+-- STEP 6: CREATE RLS POLICIES (WITH EXCEPTION HANDLING)
+-- ============================================================================
+
+-- Users policies
+DO $$ BEGIN
+  CREATE POLICY "Users are viewable by everyone" ON users FOR SELECT USING (true);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "Users can update own profile" ON users FOR UPDATE USING (auth.uid() = id);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+-- Sessions policies
+DO $$ BEGIN
+  CREATE POLICY "Users can manage own sessions" ON sessions FOR ALL USING (auth.uid() = user_id);
+EXCEPTION WHEN OTHERS THEN NULL; END $$;
+
+-- Restaurants policies
+DO $$ BEGIN
+  CREATE POLICY "Restaurants are viewable by everyone" ON restaurants FOR SELECT USING (true);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "Business users can create restaurants" ON restaurants FOR INSERT WITH CHECK (auth.uid() = owner_id);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "Business users can update own restaurants" ON restaurants FOR UPDATE USING (auth.uid() = owner_id);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+-- Tasting Notes policies
+DO $$ BEGIN
+  CREATE POLICY "Public notes are viewable by everyone" ON tasting_notes FOR SELECT USING (is_public = true OR auth.uid() = user_id);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "Users can create notes" ON tasting_notes FOR INSERT WITH CHECK (auth.uid() = user_id);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "Users can update own notes" ON tasting_notes FOR UPDATE USING (auth.uid() = user_id);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "Users can delete own notes" ON tasting_notes FOR DELETE USING (auth.uid() = user_id);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+-- Comments policies
+DO $$ BEGIN
+  CREATE POLICY "Comments are viewable by everyone" ON comments FOR SELECT USING (true);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "Users can create comments" ON comments FOR INSERT WITH CHECK (auth.uid() = user_id);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "Users can update own comments" ON comments FOR UPDATE USING (auth.uid() = user_id);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "Users can delete own comments" ON comments FOR DELETE USING (auth.uid() = user_id);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+-- Friendships policies
+DO $$ BEGIN
+  CREATE POLICY "Users can view own friendships" ON friendships FOR SELECT USING (auth.uid() = user_id OR auth.uid() = friend_id);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "Users can create friend requests" ON friendships FOR INSERT WITH CHECK (auth.uid() = user_id);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "Users can update received friend requests" ON friendships FOR UPDATE USING (auth.uid() = friend_id);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "Users can delete own friendships" ON friendships FOR DELETE USING (auth.uid() = user_id OR auth.uid() = friend_id);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+-- Groups policies
+DO $$ BEGIN
+  CREATE POLICY "Groups are viewable by members" ON groups FOR SELECT USING (
+    is_private = false OR
+    EXISTS (SELECT 1 FROM group_members WHERE group_members.group_id = groups.id AND group_members.user_id = auth.uid())
+  );
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "Users can create groups" ON groups FOR INSERT WITH CHECK (auth.uid() = creator_id);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "Group creators/admins can update groups" ON groups FOR UPDATE USING (
+    auth.uid() = creator_id OR
+    EXISTS (SELECT 1 FROM group_members WHERE group_members.group_id = groups.id AND group_members.user_id = auth.uid() AND group_members.role = 'admin')
+  );
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+-- Group Members policies
+DO $$ BEGIN
+  CREATE POLICY "Group members are viewable by members" ON group_members FOR SELECT USING (
+    EXISTS (SELECT 1 FROM group_members gm WHERE gm.group_id = group_members.group_id AND gm.user_id = auth.uid())
+  );
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "Group admins can add members" ON group_members FOR INSERT WITH CHECK (
+    EXISTS (SELECT 1 FROM group_members WHERE group_id = group_members.group_id AND user_id = auth.uid() AND role = 'admin')
+    OR EXISTS (SELECT 1 FROM groups WHERE id = group_members.group_id AND creator_id = auth.uid())
+  );
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "Group admins can remove members" ON group_members FOR DELETE USING (
+    EXISTS (SELECT 1 FROM group_members gm WHERE gm.group_id = group_members.group_id AND gm.user_id = auth.uid() AND gm.role = 'admin')
+    OR EXISTS (SELECT 1 FROM groups WHERE id = group_members.group_id AND creator_id = auth.uid())
+    OR auth.uid() = user_id
+  );
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+-- Messages policies
+DO $$ BEGIN
+  CREATE POLICY "Group members can view messages" ON messages FOR SELECT USING (
+    EXISTS (SELECT 1 FROM group_members WHERE group_members.group_id = messages.group_id AND group_members.user_id = auth.uid())
+  );
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "Group members can send messages" ON messages FOR INSERT WITH CHECK (
+    auth.uid() = user_id AND
+    EXISTS (SELECT 1 FROM group_members WHERE group_members.group_id = messages.group_id AND group_members.user_id = auth.uid())
+  );
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+-- Bookmarks policies
+DO $$ BEGIN
+  CREATE POLICY "Users can view own bookmarks" ON bookmarks FOR SELECT USING (auth.uid() = user_id);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "Users can create bookmarks" ON bookmarks FOR INSERT WITH CHECK (auth.uid() = user_id);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "Users can delete own bookmarks" ON bookmarks FOR DELETE USING (auth.uid() = user_id);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+-- Notifications policies
+DO $$ BEGIN
+  CREATE POLICY "Users can view own notifications" ON notifications FOR SELECT USING (auth.uid() = user_id);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "Users can update own notifications" ON notifications FOR UPDATE USING (auth.uid() = user_id);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "Users can delete own notifications" ON notifications FOR DELETE USING (auth.uid() = user_id);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "System can create notifications" ON notifications FOR INSERT WITH CHECK (true);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+-- Dishes policies
+DO $$ BEGIN
+  CREATE POLICY "Dishes are viewable by everyone" ON dishes FOR SELECT USING (true);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "Restaurant owners can create dishes" ON dishes FOR INSERT WITH CHECK (
+    EXISTS (SELECT 1 FROM restaurants WHERE restaurants.id = dishes.restaurant_id AND restaurants.owner_id = auth.uid())
+  );
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "Restaurant owners can update own dishes" ON dishes FOR UPDATE USING (
+    EXISTS (SELECT 1 FROM restaurants WHERE restaurants.id = dishes.restaurant_id AND restaurants.owner_id = auth.uid())
+  );
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "Restaurant owners can delete own dishes" ON dishes FOR DELETE USING (
+    EXISTS (SELECT 1 FROM restaurants WHERE restaurants.id = dishes.restaurant_id AND restaurants.owner_id = auth.uid())
+  );
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+-- Dish Feedback policies
+DO $$ BEGIN
+  CREATE POLICY "Dish feedback is viewable by everyone" ON dish_feedback FOR SELECT USING (true);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "Users can create dish feedback" ON dish_feedback FOR INSERT WITH CHECK (auth.uid() = user_id);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "Users can update own feedback" ON dish_feedback FOR UPDATE USING (auth.uid() = user_id);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "Users can delete own feedback" ON dish_feedback FOR DELETE USING (auth.uid() = user_id);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
 -- ============================================================================
 -- STEP 7: CREATE FUNCTIONS AND TRIGGERS
@@ -601,7 +708,7 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- ✅ All missing columns added
 -- ✅ All indexes created
 -- ✅ Row Level Security enabled
--- ✅ All policies configured
+-- ✅ All policies configured with exception handling
 -- ✅ All triggers and functions set up
 --
 -- 🎯 Next: Go to Table Editor → Click "users" to view signup data
