@@ -59,17 +59,36 @@ CREATE TABLE IF NOT EXISTS restaurants (
 
 CREATE INDEX IF NOT EXISTS idx_restaurants_city ON restaurants(city);
 CREATE INDEX IF NOT EXISTS idx_restaurants_owner ON restaurants(owner_id);
-CREATE INDEX IF NOT EXISTS idx_restaurants_verified ON restaurants(verified);
 
--- Add GST number column if it doesn't exist
+-- Add missing columns to restaurants table if they don't exist
 DO $$
 BEGIN
+  -- Add verified column
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns
+                 WHERE table_name='restaurants' AND column_name='verified') THEN
+    ALTER TABLE restaurants ADD COLUMN verified BOOLEAN DEFAULT FALSE;
+  END IF;
+
+  -- Add rating column
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns
+                 WHERE table_name='restaurants' AND column_name='rating') THEN
+    ALTER TABLE restaurants ADD COLUMN rating DECIMAL(3,2) DEFAULT 0.00;
+  END IF;
+
+  -- Add review_count column
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns
+                 WHERE table_name='restaurants' AND column_name='review_count') THEN
+    ALTER TABLE restaurants ADD COLUMN review_count INTEGER DEFAULT 0;
+  END IF;
+
+  -- Add gst_number column
   IF NOT EXISTS (SELECT 1 FROM information_schema.columns
                  WHERE table_name='restaurants' AND column_name='gst_number') THEN
     ALTER TABLE restaurants ADD COLUMN gst_number VARCHAR(15);
   END IF;
 END $$;
 
+CREATE INDEX IF NOT EXISTS idx_restaurants_verified ON restaurants(verified);
 CREATE INDEX IF NOT EXISTS idx_restaurants_gst ON restaurants(gst_number);
 
 -- Create tasting_notes table
