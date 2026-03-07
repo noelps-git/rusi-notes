@@ -16,6 +16,7 @@ import {
   Bell,
 } from 'lucide-react';
 import BucketList from './BucketList';
+import { RecommendationList } from '@/components/recommendations/RecommendationList';
 
 interface WelcomeDashboardProps {
   userName: string;
@@ -231,6 +232,11 @@ export default function WelcomeDashboard({ userName, userEmail }: WelcomeDashboa
               </div>
             </Link>
           </div>
+        </div>
+
+        {/* AI Recommendations Section */}
+        <div className="mb-8 sm:mb-12 max-w-6xl mx-auto">
+          <RecommendationList limit={6} showRefresh={true} />
         </div>
 
         {/* Bucket List Section */}

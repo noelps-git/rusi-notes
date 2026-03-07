@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { createClient } from '@/lib/supabase/server';
+import { generateUserTasteProfile } from '@/lib/recommendations';
 
 // GET /api/dishes/[id]/feedback - Get all feedback for a dish
 export async function GET(
@@ -106,6 +107,22 @@ export async function POST(
       .single();
 
     if (error) throw error;
+
+    // Fire and forget - regenerate user taste profile for AI recommendations
+    (async () => {
+      try {
+        const { data: dbUser } = await supabase
+          .from('users')
+          .select('id')
+          .eq('clerk_id', userId)
+          .maybeSingle();
+        if (dbUser) {
+          await generateUserTasteProfile(dbUser.id);
+        }
+      } catch (err) {
+        console.error('Error updating taste profile:', err);
+      }
+    })();
 
     return NextResponse.json(dishFeedback, { status: 201 });
   } catch (error) {

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth, currentUser } from '@clerk/nextjs/server';
 import { createClient } from '@/lib/supabase/server';
 import { createNotification } from '@/lib/utils/notifications';
+import { generateUserTasteProfile } from '@/lib/recommendations';
 
 // GET /api/notes - List all tasting notes
 export async function GET(req: NextRequest) {
@@ -134,6 +135,11 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (error) throw error;
+
+    // Fire and forget - regenerate user taste profile for AI recommendations
+    generateUserTasteProfile(dbUser.id).catch((err) =>
+      console.error('Error updating taste profile:', err)
+    );
 
     // Notify all friends about the new review (if public)
     if (is_public !== false && note.restaurant) {
