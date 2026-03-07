@@ -151,8 +151,7 @@ export default function OnboardingPage() {
                   onChange={handleInputChange}
                   placeholder="biriyani_lover"
                   maxLength={20}
-                  style={{ color: '#FFFFFF', WebkitTextFillColor: '#FFFFFF' }}
-                  className="w-full pl-12 pr-12 py-3 bg-[#2A2A2A] border border-[#333333] rounded-[100px] placeholder-[#666666] focus:outline-none focus:border-[#e52020] transition-all caret-white"
+                  className="w-full pl-12 pr-12 py-3 bg-[#2A2A2A] border border-[#333333] rounded-[100px] text-white placeholder-[#666666] focus:outline-none focus:border-[#e52020] transition-all caret-white [&:-webkit-autofill]:[-webkit-text-fill-color:#FFFFFF] [&:-webkit-autofill]:[box-shadow:0_0_0px_1000px_#2A2A2A_inset]"
                   required
                 />
                 {/* Status Icon */}
