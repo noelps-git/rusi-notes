@@ -14,6 +14,9 @@ import {
   Sparkles,
   ChevronRight,
   Bell,
+  Brain,
+  Heart,
+  Zap,
 } from 'lucide-react';
 import BucketList from './BucketList';
 import { RecommendationList } from '@/components/recommendations/RecommendationList';
@@ -231,6 +234,54 @@ export default function WelcomeDashboard({ userName, userEmail }: WelcomeDashboa
                 <ChevronRight size={16} />
               </div>
             </Link>
+          </div>
+        </div>
+
+        {/* AI Products Section */}
+        <div className="mb-8 sm:mb-12 max-w-6xl mx-auto">
+          <div className="text-center mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#e52020]/20 rounded-full mb-4">
+              <Sparkles className="w-4 h-4 text-[#e52020]" />
+              <span className="text-sm font-medium text-[#e52020]">Powered by AI</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-bold text-white">
+              Your AI Food Features
+            </h2>
+            <p className="text-[#999999] mt-2 text-sm max-w-xl mx-auto">
+              Write more reviews to unlock smarter recommendations. The AI learns your taste automatically.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+            <div className="bg-[#1A1A1A] border border-[#333333] rounded-2xl p-5 flex gap-4 items-start">
+              <div className="w-10 h-10 bg-[#e52020]/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                <Brain className="w-5 h-5 text-[#e52020]" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-white text-sm mb-1">Taste Profile</h3>
+                <p className="text-[#999999] text-xs leading-relaxed">Built automatically from every review you write. Tracks your cuisine preferences and flavour style.</p>
+              </div>
+            </div>
+
+            <div className="bg-[#1A1A1A] border border-[#333333] rounded-2xl p-5 flex gap-4 items-start">
+              <div className="w-10 h-10 bg-[#e52020]/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                <Zap className="w-5 h-5 text-[#e52020]" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-white text-sm mb-1">Smart Matching</h3>
+                <p className="text-[#999999] text-xs leading-relaxed">Uses vector similarity search to find restaurants that genuinely match your taste — not generic suggestions.</p>
+              </div>
+            </div>
+
+            <div className="bg-[#1A1A1A] border border-[#333333] rounded-2xl p-5 flex gap-4 items-start">
+              <div className="w-10 h-10 bg-[#e52020]/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                <Heart className="w-5 h-5 text-[#e52020]" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-white text-sm mb-1">Friend Boost</h3>
+                <p className="text-[#999999] text-xs leading-relaxed">Restaurants loved by your friends get ranked higher. Real social proof from people you trust.</p>
+              </div>
+            </div>
           </div>
         </div>
 

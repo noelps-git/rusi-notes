@@ -17,7 +17,11 @@ import {
   X,
   Utensils,
   BookOpen,
-  MapPin
+  MapPin,
+  Sparkles,
+  Brain,
+  Heart,
+  Zap
 } from 'lucide-react';
 
 export default function LandingPage() {
@@ -83,6 +87,7 @@ export default function LandingPage() {
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center gap-8">
               <a href="#features" className="text-[#666666] hover:text-[#111111] transition-colors font-medium text-sm">Features</a>
+              <a href="#ai" className="text-[#666666] hover:text-[#111111] transition-colors font-medium text-sm flex items-center gap-1"><Sparkles className="w-3.5 h-3.5 text-[#e52020]" />AI</a>
               <a href="#how-it-works" className="text-[#666666] hover:text-[#111111] transition-colors font-medium text-sm">How It Works</a>
               <a href="#reviews" className="text-[#666666] hover:text-[#111111] transition-colors font-medium text-sm">Reviews</a>
               <Link href="/sign-in" className="text-[#666666] hover:text-[#111111] transition-colors font-medium text-sm">Sign In</Link>
@@ -228,6 +233,78 @@ export default function LandingPage() {
               <p className="text-[#666666] leading-relaxed text-sm">
                 Find hidden restaurants and popular spots. Filter by cuisine, rating, or location.
               </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* AI Products Section */}
+      <section id="ai" className="py-20 bg-[#111111]">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16 px-4">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#e52020]/20 rounded-full mb-6">
+              <Sparkles className="w-4 h-4 text-[#e52020]" />
+              <span className="text-sm font-medium text-[#e52020]">Powered by AI</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-white">
+              Your AI Food Companion
+            </h2>
+            <p className="text-base sm:text-lg text-[#999999] max-w-2xl mx-auto">
+              The more you review, the smarter it gets. Rusi Notes learns your taste and finds restaurants you'll love.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto px-4 mb-16">
+            {/* AI Card 1 */}
+            <div className="bg-[#1E1E1E] border border-[#333333] hover:border-[#e52020]/50 rounded-3xl p-8 transition-all group">
+              <div className="w-14 h-14 bg-[#e52020]/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <Brain className="w-7 h-7 text-[#e52020]" />
+              </div>
+              <h3 className="text-xl font-bold mb-3 text-white">Taste Profile AI</h3>
+              <p className="text-[#999999] text-sm leading-relaxed">
+                Every review you write trains your personal AI. It learns your cuisine preferences, price range, and flavour style automatically.
+              </p>
+            </div>
+
+            {/* AI Card 2 */}
+            <div className="bg-[#1E1E1E] border border-[#333333] hover:border-[#e52020]/50 rounded-3xl p-8 transition-all group">
+              <div className="w-14 h-14 bg-[#e52020]/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <Sparkles className="w-7 h-7 text-[#e52020]" />
+              </div>
+              <h3 className="text-xl font-bold mb-3 text-white">Smart Recommendations</h3>
+              <p className="text-[#999999] text-sm leading-relaxed">
+                Using vector embeddings and semantic search, we surface restaurants that truly match your taste — not just random suggestions.
+              </p>
+            </div>
+
+            {/* AI Card 3 */}
+            <div className="bg-[#1E1E1E] border border-[#333333] hover:border-[#e52020]/50 rounded-3xl p-8 transition-all group">
+              <div className="w-14 h-14 bg-[#e52020]/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <Heart className="w-7 h-7 text-[#e52020]" />
+              </div>
+              <h3 className="text-xl font-bold mb-3 text-white">Social Intelligence</h3>
+              <p className="text-[#999999] text-sm leading-relaxed">
+                Recommendations get boosted when friends you trust have visited and loved the same spots. Real social proof, not fake ratings.
+              </p>
+            </div>
+          </div>
+
+          {/* How AI works strip */}
+          <div className="max-w-4xl mx-auto bg-[#1E1E1E] border border-[#333333] rounded-3xl p-8 px-4">
+            <h3 className="text-center text-xl font-bold text-white mb-8">How it works</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-12 h-12 bg-[#e52020] rounded-full flex items-center justify-center text-white font-bold text-lg">1</div>
+                <p className="text-sm text-[#999999]"><span className="text-white font-semibold">Write reviews</span> — rate dishes and restaurants you visit</p>
+              </div>
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-12 h-12 bg-[#e52020] rounded-full flex items-center justify-center text-white font-bold text-lg">2</div>
+                <p className="text-sm text-[#999999]"><span className="text-white font-semibold">AI builds your profile</span> — your taste gets encoded into a personalised vector</p>
+              </div>
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-12 h-12 bg-[#e52020] rounded-full flex items-center justify-center text-white font-bold text-lg">3</div>
+                <p className="text-sm text-[#999999]"><span className="text-white font-semibold">Get recommendations</span> — matched restaurants appear on your dashboard</p>
+              </div>
             </div>
           </div>
         </div>
