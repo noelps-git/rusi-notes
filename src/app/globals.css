@@ -220,11 +220,11 @@ body {
   animation-delay: 0.6s;
 }
 
-/* Ensure all form inputs inherit the correct text color */
+/* All inputs default to white text on this dark-themed app */
 input,
 textarea,
 select {
-  color: inherit;
+  color: #ffffff;
 }
 
 input:-webkit-autofill,
