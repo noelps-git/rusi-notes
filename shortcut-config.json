@@ -1,0 +1,7 @@
+{
+  "strava_client_id": "YOUR_CLIENT_ID",
+  "strava_client_secret": "YOUR_CLIENT_SECRET",
+  "strava_refresh_token": "YOUR_REFRESH_TOKEN",
+  "anthropic_api_key": "YOUR_ANTHROPIC_KEY",
+  "claude_model": "claude-sonnet-4-6"
+}
